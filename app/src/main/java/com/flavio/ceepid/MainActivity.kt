@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -13,14 +14,24 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import com.flavio.ceepid.Usuario
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class MainActivity : AppCompatActivity() {
 
     val FORMAT_CPF = "###.###.###-##"
 
+    // Esse objeto abaixo é o que vai nos permitir salvar dados no firebase
+    // ele recupera a referência do nosso banco de dados
+    private val referencia = FirebaseDatabase.getInstance().reference
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        recuperarDados()
 
         val editTextCpf = findViewById<EditText>(R.id.editTextCPF)
         val editTextSenha = findViewById<EditText>(R.id.editTextSenha)
@@ -58,6 +69,24 @@ class MainActivity : AppCompatActivity() {
         }
         findViewById<EditText>(R.id.editTextCPF).addTextChangedListener(Mask.mask(FORMAT_CPF, editTextCpf))
     }
+
+    fun salvarDados() {
+        val usuarios = referencia.child("usuarios")
+        val usuario = Usuario().usuario("Lailson", "Santana")
+        usuarios.child("001").setValue(usuario)
+    }
+
+    fun recuperarDados() {
+        val usuarios = referencia.child("usuarios")
+        usuarios.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.i("FIREBASE", snapshot.value.toString())
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+
 }
 
 fun isCPF(document: String): Boolean {
