@@ -13,7 +13,7 @@
         <item name="android:statusBarColor">#00000000</item>
         <!-- Customize your theme here. -->
         <item name="actionBarStyle">@style/Theme.Material3.Light.NoActionBar</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 </resources>

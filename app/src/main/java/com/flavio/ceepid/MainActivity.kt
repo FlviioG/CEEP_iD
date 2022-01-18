@@ -1,4 +1,4 @@
-package com.flavio.ceepacessofacil
+package com.ceep.id
 
 
 import android.content.res.Configuration

@@ -1,4 +1,4 @@
-package com.flavio.ceepacessofacil
+package com.flavio.ceepid
 
 import org.junit.Test
 

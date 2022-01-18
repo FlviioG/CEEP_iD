@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.CEEPAcessoFacil" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/light_blue</item>
+        <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryVariant">@color/dark_blue</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -15,5 +15,10 @@
         <item name="actionBarStyle">@style/Theme.Material3.Light.NoActionBar</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="buttonLogin">
+        <item name="background">@drawable/login_button</item>
+
     </style>
 </resources>

@@ -38,9 +38,8 @@
 
     <Button
         android:id="@+id/button_Entrar"
-        style="@style/Widget.Material3.Button.ElevatedButton"
-        android:layout_width="127dp"
-        android:layout_height="53dp"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
         android:layout_marginBottom="25dp"
         android:fontFamily="sans-serif-black"
         android:text="ENTRAR"
