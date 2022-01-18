@@ -12,33 +12,42 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 
 class MainActivity : AppCompatActivity() {
 
     val FORMAT_CPF = "###.###.###-##"
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val cpf_edit = findViewById<EditText>(R.id.editTextCPF)
+        val editTextCpf = findViewById<EditText>(R.id.editTextCPF)
+        val editTextSenha = findViewById<EditText>(R.id.editTextSenha)
         val background = findViewById<ImageView>(R.id.backgroud)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
+        ///Configuraçoes de Tema
         if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_NO) {
             background.visibility = View.VISIBLE
+            editTextCpf.background = AppCompatResources.getDrawable(this, R.drawable.edittext_white)
+            editTextCpf.setTextColor(AppCompatResources.getColorStateList(this, R.color.black))
+            editTextSenha.background = AppCompatResources.getDrawable(this, R.drawable.edittext_white)
+            editTextSenha.setTextColor(AppCompatResources.getColorStateList(this, R.color.black))
         }
         if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
             background.visibility = View.INVISIBLE
+            editTextCpf.background = AppCompatResources.getDrawable(this, R.drawable.edittext_dark)
+            editTextCpf.setTextColor(AppCompatResources.getColorStateList(this, R.color.white))
+            editTextSenha.background = AppCompatResources.getDrawable(this, R.drawable.edittext_dark)
+            editTextSenha.setTextColor(AppCompatResources.getColorStateList(this, R.color.white))
         }
 
-
-
+        ///Configuraçoes de Clique
         findViewById<Button>(R.id.button_Entrar).setOnClickListener {
-            val cpf = cpf_edit.text
-            var senha = findViewById<EditText>(R.id.editTextSenha).text.toString()
+            val cpf = editTextCpf.text
+            var senha = editTextSenha.text.toString()
 
             if (isCPF(cpf.toString()) && senha == "teste") {
                 Toast.makeText(this, "Proxima tela", Toast.LENGTH_LONG).show()
@@ -47,7 +56,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Dados incorretos, verifique e tente novamente.", Toast.LENGTH_LONG).show()
             }
         }
-        findViewById<EditText>(R.id.editTextCPF).addTextChangedListener(Mask.mask(FORMAT_CPF, cpf_edit))
+        findViewById<EditText>(R.id.editTextCPF).addTextChangedListener(Mask.mask(FORMAT_CPF, editTextCpf))
     }
 }
 
