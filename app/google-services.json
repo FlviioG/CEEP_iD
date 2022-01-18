@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:61912649107:android:bbd0a902579a41cbebac66",
         "android_client_info": {
-          "package_name": "com.example.qrcodereader"
+          "package_name": "com.flavio.ceepacessofacil"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "61912649107-551u5suu0ma99b7g5hrc1foq0607l6o2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.qrcodereader",
+            "package_name": "com.flavio.ceepacessofacil",
             "certificate_hash": "71716a03a6a861c1fad69565c586cdfa3f5a1130"
           }
         },
