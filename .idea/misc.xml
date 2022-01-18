@@ -3,15 +3,20 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/drawable/main_toolbar.xml" value="0.21302083333333333" />
         <entry key="app/src/main/res/drawable/background_login.xml" value="0.1875" />
         <entry key="app/src/main/res/drawable/edittext_dark.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/edittext_white.xml" value="0.1875" />
+        <entry key="app/src/main/res/drawable/green_ball.xml" value="0.20897435897435898" />
+        <entry key="app/src/main/res/drawable/historico_button.xml" value="0.20897435897435898" />
         <entry key="app/src/main/res/drawable/login_button.xml" value="0.1875" />
         <entry key="app/src/main/res/drawable/logo_CAF.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/logo_caf.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/pic_background.xml" value="0.20897435897435898" />
+        <entry key="app/src/main/res/drawable/red_ball.xml" value="0.20897435897435898" />
+        <entry key="app/src/main/res/drawable/shape_status.xml" value="0.20897435897435898" />
         <entry key="app/src/main/res/drawable/teste.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25172149961744456" />
+        <entry key="app/src/main/res/layout/activity_main_screen.xml" value="0.33" />
       </map>
     </option>
   </component>

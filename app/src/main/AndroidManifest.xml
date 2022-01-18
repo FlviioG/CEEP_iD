@@ -10,7 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CEEPAcessoFacil">
         <activity
-            android:name="com.ceep.id.MainActivity"
+            android:name="com.flavio.ceepid.MainScreen"
+            android:exported="true" />
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

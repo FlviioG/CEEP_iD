@@ -1,6 +1,7 @@
 package com.ceep.id
 
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
@@ -14,6 +15,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import com.flavio.ceepid.MainScreen
+import com.flavio.ceepid.SecurityPreferences
 import com.flavio.ceepid.Usuario
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -27,11 +30,17 @@ class MainActivity : AppCompatActivity() {
     // Esse objeto abaixo é o que vai nos permitir salvar dados no firebase
     // ele recupera a referência do nosso banco de dados
     private val referencia = FirebaseDatabase.getInstance().reference
+    private lateinit var mSecurityPreferences: SecurityPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         recuperarDados()
+
+        mSecurityPreferences = SecurityPreferences(this)
+        if (mSecurityPreferences.getInt("login") == 1) {
+            startActivity(Intent(this, MainScreen::class.java))
+        }
 
         val editTextCpf = findViewById<EditText>(R.id.editTextCPF)
         val editTextSenha = findViewById<EditText>(R.id.editTextSenha)
@@ -61,7 +70,8 @@ class MainActivity : AppCompatActivity() {
             var senha = editTextSenha.text.toString()
 
             if (isCPF(cpf.toString()) && senha == "teste") {
-                Toast.makeText(this, "Proxima tela", Toast.LENGTH_LONG).show()
+                startActivity(Intent(this, MainScreen::class.java))
+                mSecurityPreferences.storeInt("login", 1)
             }
             else {
                 Toast.makeText(this, "Dados incorretos, verifique e tente novamente.", Toast.LENGTH_LONG).show()
