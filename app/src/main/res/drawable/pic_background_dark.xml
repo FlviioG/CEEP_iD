@@ -6,8 +6,8 @@
     android:viewportWidth="380"
     android:viewportHeight="337">
     <path
-        android:fillColor="#FFFFFFFF"
-        android:pathData="M20 1h340c10.77 0 19.5 8.73 19.5 19.5v296c0 10.77-8.73 19.5-19.5 19.5H20c-10.77 0-19.5-8.73-19.5-19.5v-296C0.5 9.73 9.23 1 20 1Z"/>
+        android:fillColor="#145A6CEA"
+        android:pathData="M0 20.5c0-11.05 8.95-20 20-20h340c11.05 0 20 8.95 20 20v296c0 11.05-8.95 20-20 20H20c-11.05 0-20-8.95-20-20v-296Z"/>
     <group>
         <clip-path
             android:pathData="M85.5 24.5c0-4.42 3.58-8 8-8h195c4.42 0 8 3.58 8 8v195c0 4.42-3.58 8-8 8h-195c-4.42 0-8-3.58-8-8z"/>
@@ -16,4 +16,4 @@
                 android:pathData="M85.5 22.74c0-4.42 3.58-8 8-8h195c4.42 0 8 3.58 8 8v195c0 4.42-3.58 8-8 8h-195c-4.42 0-8-3.58-8-8z"/>
         </group>
     </group>
-   </vector>
+</vector>

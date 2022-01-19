@@ -18,6 +18,6 @@ class SecurityPreferences(context: Context) {
     }
 
     fun getInt(key: String): Int {
-        return mSharedPreferences.getInt(key, 1)
+        return mSharedPreferences.getInt(key, 0)
     }
 }

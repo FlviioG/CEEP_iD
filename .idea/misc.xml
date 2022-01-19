@@ -11,12 +11,15 @@
         <entry key="app/src/main/res/drawable/login_button.xml" value="0.1875" />
         <entry key="app/src/main/res/drawable/logo_CAF.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/logo_caf.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/main_toolbar_dark.xml" value="0.22" />
         <entry key="app/src/main/res/drawable/pic_background.xml" value="0.20897435897435898" />
         <entry key="app/src/main/res/drawable/red_ball.xml" value="0.20897435897435898" />
+        <entry key="app/src/main/res/drawable/shape_dark.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/shape_status.xml" value="0.20897435897435898" />
+        <entry key="app/src/main/res/drawable/shape_status_dark.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/teste.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25172149961744456" />
-        <entry key="app/src/main/res/layout/activity_main_screen.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2188449848024316" />
+        <entry key="app/src/main/res/layout/activity_main_screen.xml" value="0.19572649572649573" />
       </map>
     </option>
   </component>
@@ -25,5 +28,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.1" />
+      </ProjectState>
+    </option>
   </component>
 </project>

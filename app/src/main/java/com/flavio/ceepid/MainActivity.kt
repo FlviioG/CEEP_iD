@@ -1,8 +1,10 @@
 package com.ceep.id
 
 
+import android.annotation.TargetApi
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -49,19 +51,36 @@ class MainActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
         ///Configuraçoes de Tema
-        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_NO) {
-            background.visibility = View.VISIBLE
-            editTextCpf.background = AppCompatResources.getDrawable(this, R.drawable.edittext_white)
-            editTextCpf.setTextColor(AppCompatResources.getColorStateList(this, R.color.black))
-            editTextSenha.background = AppCompatResources.getDrawable(this, R.drawable.edittext_white)
-            editTextSenha.setTextColor(AppCompatResources.getColorStateList(this, R.color.black))
-        }
-        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
-            background.visibility = View.INVISIBLE
-            editTextCpf.background = AppCompatResources.getDrawable(this, R.drawable.edittext_dark)
-            editTextCpf.setTextColor(AppCompatResources.getColorStateList(this, R.color.white))
-            editTextSenha.background = AppCompatResources.getDrawable(this, R.drawable.edittext_dark)
-            editTextSenha.setTextColor(AppCompatResources.getColorStateList(this, R.color.white))
+        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_NO) {
+                background.visibility = View.VISIBLE
+                editTextCpf.background = AppCompatResources.getDrawable(this, R.drawable.edittext_white)
+                editTextCpf.setTextColor(AppCompatResources.getColorStateList(this, R.color.black))
+                editTextSenha.background =
+                    AppCompatResources.getDrawable(this, R.drawable.edittext_white)
+                editTextSenha.setTextColor(
+                    AppCompatResources.getColorStateList(
+                        this,
+                        R.color.black
+                    )
+                )
+            }
+            if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
+                background.visibility = View.INVISIBLE
+                editTextCpf.background =
+                    AppCompatResources.getDrawable(this, R.drawable.edittext_dark)
+                editTextCpf.setTextColor(AppCompatResources.getColorStateList(this, R.color.white))
+                editTextSenha.background =
+                    AppCompatResources.getDrawable(this, R.drawable.edittext_dark)
+                editTextSenha.setTextColor(
+                    AppCompatResources.getColorStateList(
+                        this,
+                        R.color.white
+                    )
+                )
+            }
+        } else {
+            background.visibility = View.GONE
         }
 
         ///Configuraçoes de Clique
