@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'com.google.gms.google-services'
+    ///id 'com.google.gms.google-services'
 }
 
 android {
@@ -11,8 +11,8 @@ android {
         applicationId "com.ceep.id"
         minSdk 25
         targetSdk 31
-        versionCode 3
-        versionName "0.3"
+        versionCode 4
+        versionName "0.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

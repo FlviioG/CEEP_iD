@@ -1,4 +1,4 @@
-package com.flavio.ceepid
+package com.ceep.id
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.flavio.ceepacessofacil", appContext.packageName)
+        assertEquals("com.ceep.id", appContext.packageName)
     }
 }
