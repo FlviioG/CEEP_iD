@@ -2,18 +2,28 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ceep.id">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
     <application
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CEEPAcessoFacil">
+
+        android:theme="@style/Theme.CEEPiD">
+           <activity
+            android:name="com.ceep.id.ui.RegisterActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"/>
         <activity
-            android:name="com.flavio.ceepid.MainScreen"
-            android:exported="true" />
+            android:name="com.ceep.id.ui.MainScreen"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan|adjustResize"/>
         <activity
-            android:name=".MainActivity"
+            android:name="com.ceep.id.ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
