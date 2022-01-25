@@ -10,18 +10,21 @@
         <entry key="app/src/main/res/drawable/historico_button.xml" value="0.20897435897435898" />
         <entry key="app/src/main/res/drawable/login_button.xml" value="0.1875" />
         <entry key="app/src/main/res/drawable/logo_CAF.xml" value="0.1" />
-        <entry key="app/src/main/res/drawable/logo_caf.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/logo_caf.xml" value="0.25" />
         <entry key="app/src/main/res/drawable/main_toolbar_dark.xml" value="0.22" />
         <entry key="app/src/main/res/drawable/pic_background.xml" value="0.20897435897435898" />
         <entry key="app/src/main/res/drawable/rectangle.xml" value="0.15384615384615385" />
         <entry key="app/src/main/res/drawable/red_ball.xml" value="0.20897435897435898" />
         <entry key="app/src/main/res/drawable/shape_dark.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/shape_nome.xml" value="0.15384615384615385" />
+        <entry key="app/src/main/res/drawable/shape_nome_dark.xml" value="0.15384615384615385" />
         <entry key="app/src/main/res/drawable/shape_status.xml" value="0.20897435897435898" />
         <entry key="app/src/main/res/drawable/shape_status_dark.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/teste.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2188449848024316" />
-        <entry key="app/src/main/res/layout/activity_main_screen.xml" value="0.308" />
-        <entry key="app/src/main/res/layout/activity_register.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_main_screen.xml" value="0.25057121096725055" />
+        <entry key="app/src/main/res/layout/activity_register.xml" value="0.21" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.15384615384615385" />
       </map>
     </option>
   </component>
@@ -34,7 +37,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.308" />
+        <option name="scale" value="0.1" />
       </ProjectState>
     </option>
   </component>

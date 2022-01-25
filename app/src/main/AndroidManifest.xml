@@ -12,12 +12,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-
         android:theme="@style/Theme.CEEPiD">
-           <activity
-            android:name="com.ceep.id.ui.RegisterActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"/>
         <activity
             android:name="com.ceep.id.ui.MainScreen"
             android:exported="true"

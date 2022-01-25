@@ -10,10 +10,10 @@
         <item name="colorSecondaryVariant">@color/really_light_blue</item>
         <item name="colorOnSecondary">#0C0F29</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:statusBarColor">@color/background_dark</item>
         <!-- Customize your theme here. -->
-        <item name="actionBarStyle">@style/Theme.Material3.Light.NoActionBar</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowTranslucentStatus">true</item>
+        <item name="theme">@style/Theme.Material3.Dark.NoActionBar</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 </resources>

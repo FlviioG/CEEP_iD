@@ -41,10 +41,14 @@ class SecurityPreferences(context: Context) {
     fun getBitmap(key: String): Bitmap? {
         val encodedImage = mSharedPreferences.getString(key, "") ?: ""
 
-        val b: ByteArray = Base64.decode(encodedImage, Base64.DEFAULT)
+        return if(encodedImage != "") {
+            val b: ByteArray = Base64.decode(encodedImage, Base64.DEFAULT)
 
-        val bitmap = BitmapFactory.decodeByteArray(b, 0, b.size)
+            val bitmap = BitmapFactory.decodeByteArray(b, 0, b.size)
 
-        return bitmap
+            bitmap
+        } else {
+            null
+        }
     }
 }
