@@ -25,8 +25,8 @@ import com.bumptech.glide.Glide
 import com.ceep.id.R
 import com.ceep.id.infra.FirebaseConfig
 import com.ceep.id.infra.Permissao
+import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.Usuario
-import com.flavio.ceepid.infra.SecurityPreferences
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.DataSnapshot
@@ -113,7 +113,7 @@ class MainScreen : AppCompatActivity() {
                             "fotoPerfil",
                             profilePic.drawable.toBitmap()
                         )
-                    }?.addOnFailureListener{
+                    }?.addOnFailureListener {
                         Glide.with(this).load(photoUsuario).into(profilePic)
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                             Handler.createAsync(Looper.getMainLooper()).postDelayed({
@@ -156,80 +156,85 @@ class MainScreen : AppCompatActivity() {
             buttonPic.visibility = View.VISIBLE
         }
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
-            backgroundView.setBackgroundColor(getColor(R.color.background_dark))
-            toolbar.setImageDrawable(
-                AppCompatResources.getDrawable(
-                    this,
-                    R.drawable.main_toolbar_dark
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
+                backgroundView.setBackgroundColor(getColor(R.color.background_dark))
+                toolbar.setImageDrawable(
+                    AppCompatResources.getDrawable(
+                        this,
+                        R.drawable.main_toolbar_dark
+                    )
                 )
-            )
-            backgroundPic.setImageDrawable(
-                AppCompatResources.getDrawable(
-                    this,
-                    R.drawable.pic_background_dark
+                backgroundPic.setImageDrawable(
+                    AppCompatResources.getDrawable(
+                        this,
+                        R.drawable.pic_background_dark
+                    )
                 )
-            )
-            shapeStatus.setImageDrawable(
-                AppCompatResources.getDrawable(
-                    this,
-                    R.drawable.shape_status_dark
+                shapeStatus.setImageDrawable(
+                    AppCompatResources.getDrawable(
+                        this,
+                        R.drawable.shape_status_dark
+                    )
                 )
-            )
-            shapeNome.setImageDrawable(
-                AppCompatResources.getDrawable(
-                    this,
-                    R.drawable.shape_nome_dark
+                shapeNome.setImageDrawable(
+                    AppCompatResources.getDrawable(
+                        this,
+                        R.drawable.shape_nome_dark
+                    )
                 )
-            )
-            statusText.setTextColor(resources.getColor(R.color.white))
-        } else {
-            backgroundView.setBackgroundColor(getColor(R.color.background_light))
-            toolbar.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.main_toolbar))
-            backgroundPic.setImageDrawable(
-                AppCompatResources.getDrawable(
-                    this,
-                    R.drawable.pic_background
+                statusText.setTextColor(resources.getColor(R.color.white))
+            } else {
+                backgroundView.setBackgroundColor(getColor(R.color.background_light))
+                toolbar.setImageDrawable(
+                    AppCompatResources.getDrawable(
+                        this,
+                        R.drawable.main_toolbar
+                    )
                 )
-            )
-            shapeStatus.setImageDrawable(
-                AppCompatResources.getDrawable(
-                    this,
-                    R.drawable.shape_status
+                backgroundPic.setImageDrawable(
+                    AppCompatResources.getDrawable(
+                        this,
+                        R.drawable.pic_background
+                    )
                 )
-            )
-            shapeNome.setImageDrawable(
-                AppCompatResources.getDrawable(
-                    this,
-                    R.drawable.shape_nome
+                shapeStatus.setImageDrawable(
+                    AppCompatResources.getDrawable(
+                        this,
+                        R.drawable.shape_status
+                    )
                 )
-            )
-            statusText.setTextColor(resources.getColor(R.color.black))
-        }
+                shapeNome.setImageDrawable(
+                    AppCompatResources.getDrawable(
+                        this,
+                        R.drawable.shape_nome
+                    )
+                )
+                statusText.setTextColor(resources.getColor(R.color.black))
+            }
         }
 
-        val postReference =  usuarioRef?.child("usuarios/${idUsuario}/liberado")
-        val postListener = object: ValueEventListener {
+        val postReference = usuarioRef?.child("usuarios/${idUsuario}/liberado")
+        val postListener = object : ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                val post = snapshot.getValue()
-                    if (post == true) {
-                        findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
-                            resources.getDrawable(
-                                R.drawable.green_ball
-                            )
+                val post = snapshot.value
+                if (post == true) {
+                    findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
+                        resources.getDrawable(
+                            R.drawable.green_ball
                         )
-                        statusText.text = "Liberado"
-                    } else if (post == null || post == false) {
-                        findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
-                            resources.getDrawable(
-                                R.drawable.red_ball
-                            )
+                    )
+                    statusText.text = "Liberado"
+                } else if (post == null || post == false) {
+                    findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
+                        resources.getDrawable(
+                            R.drawable.red_ball
                         )
-                        statusText.text = "Em aula/Fora do horario de aula"
-                    }
+                    )
+                    statusText.text = "Em aula/Fora do horario de aula"
                 }
+            }
 
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
@@ -245,50 +250,59 @@ class MainScreen : AppCompatActivity() {
     }
 
     private fun openGalleryForImage() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
-        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
-        startActivityForResult(intent, 1)
+        val photoPickerIntent = Intent(
+            Intent.ACTION_PICK,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        )
+        photoPickerIntent.type = "image/*"
+        photoPickerIntent.putExtra("crop", "true")
+        photoPickerIntent.putExtra("return-data", true)
+        photoPickerIntent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
+        startActivityForResult(photoPickerIntent, 1)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == 1) {
-            val profilePic = findViewById<ImageView>(R.id.profile_pic)
-            profilePic.setImageURI(data?.data)
+        val profilePic = findViewById<ImageView>(R.id.profile_pic)
 
-            val image = MediaStore.Images.Media.getBitmap(contentResolver, data?.data)
-            val roundDrawable = RoundedBitmapDrawableFactory.create(resources, image)
-            roundDrawable.cornerRadius = 49F
-            profilePic.setImageDrawable(roundDrawable)
-
-            val baos = ByteArrayOutputStream()
-            image.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-            val b = baos.toByteArray()
-
-            //Salvando a imagem no banco de dados (Firebase)
-
-            val imagemRef = storageReference!!.child("imagens")
-                .child("alunos").child(idUsuario)
-                .child("fotoPerfil.jpeg")
-
-            val uploadTask = imagemRef.putBytes(b)
-            uploadTask.addOnFailureListener {
-                Toast.makeText(
-                    this,
-                    "ERRO AO FAZER O UPLOAD DA IMAGEM", Toast.LENGTH_SHORT
-                ).show()
-            }.addOnSuccessListener {
-                Toast.makeText(
-                    this,
-                    "SUCESSO AO FAZER O UPLOAD DA IMAGEM", Toast.LENGTH_SHORT
-                ).show()
+        when (requestCode) {
+            1 -> if (resultCode === RESULT_OK) {
+                if (data != null) {
+                    val extras: Bundle? = data.extras
+                    val selectedBitmap = extras?.getParcelable<Bitmap>("data")
+                    val roundDrawable =
+                        RoundedBitmapDrawableFactory.create(resources, selectedBitmap)
+                    roundDrawable.cornerRadius = 49F
+                    profilePic.setImageDrawable(roundDrawable)
+                }
             }
-
-            mSecurityPreferences.storeBitmap("fotoPerfil", profilePic.drawable.toBitmap())
         }
-    }
 
+        val selectedBitmap = data?.extras?.getParcelable<Bitmap>("data")
+        val baos = ByteArrayOutputStream()
+        selectedBitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val b = baos.toByteArray()
+
+        //Salvando a imagem no banco de dados (Firebase)
+
+        val imagemRef = storageReference!!.child("imagens")
+            .child("alunos").child(idUsuario)
+            .child("fotoPerfil.jpeg")
+
+        val uploadTask = imagemRef.putBytes(b)
+        uploadTask.addOnFailureListener {
+            Toast.makeText(
+                this,
+                "ERRO AO FAZER O UPLOAD DA IMAGEM", Toast.LENGTH_SHORT
+            ).show()
+        }.addOnSuccessListener {
+            Toast.makeText(
+                this,
+                "SUCESSO AO FAZER O UPLOAD DA IMAGEM", Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        mSecurityPreferences.storeBitmap("fotoPerfil", profilePic.drawable.toBitmap())
+    }
 }
+

@@ -136,7 +136,6 @@
             app:layout_constraintBottom_toBottomOf="@id/shape_nome"/>
 
     <LinearLayout
-        android:id="@+id/button_group"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
@@ -182,7 +181,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <View
-            android:id="@+id/background_zoom"
             android:layout_width="1000dp"
             android:layout_height="1000dp"
             android:background="@color/dark_blue"

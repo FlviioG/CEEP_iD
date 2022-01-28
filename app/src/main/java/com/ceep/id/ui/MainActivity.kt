@@ -1,16 +1,24 @@
 package com.ceep.id.ui
 
 
+import android.app.KeyguardManager
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.hardware.biometrics.BiometricPrompt
+import android.os.Build
 import android.os.Bundle
+import android.os.CancellationSignal
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.ceep.id.R
 import com.ceep.id.infra.FirebaseConfig
-import com.flavio.ceepid.infra.SecurityPreferences
+import com.ceep.id.infra.SecurityPreferences
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -29,6 +37,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private var usuarioRef: DatabaseReference? = null
 
+    // create a CancellationSignal variable and assign a value null to it
+    private var cancellationSignal: CancellationSignal? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +86,7 @@ class MainActivity : AppCompatActivity() {
             mSecurityPreferences.storeInt("basicInformations", 1)
             updateUI(auth?.currentUser)
         }
+
     }
 
     // [START on_start_check_user]
@@ -84,9 +95,89 @@ class MainActivity : AppCompatActivity() {
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth?.currentUser
 
-        updateUI(currentUser)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            checkBiometricSupport()
+
+            // create an authenticationCallback
+            val authenticationCallback: BiometricPrompt.AuthenticationCallback =
+                object : BiometricPrompt.AuthenticationCallback() {
+                    // here we need to implement two methods
+                    // onAuthenticationError and onAuthenticationSucceeded
+                    // If the fingerprint is not recognized by the app it will call
+                    // onAuthenticationError and show a toast
+                    override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
+                        super.onAuthenticationError(errorCode, errString)
+                        notifyUser("Erro de autenticação : $errString")
+                    }
+
+                    // If the fingerprint is recognized by the app then it will call
+                    // onAuthenticationSucceeded and show a toast that Authentication has Succeed
+                    // Here you can also start a new activity after that
+                    override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult?) {
+                        super.onAuthenticationSucceeded(result)
+                        updateUI(currentUser)
+                    }
+                }
+
+            val biometricPrompt = BiometricPrompt.Builder(this)
+                .setTitle("Verificaçao biometrica")
+                .setSubtitle("Toque no sensor para liberar")
+                .setNegativeButton(
+                    "Cancel",
+                    this.mainExecutor,
+                    { dialog, which ->
+                        notifyUser("Processo cancelado.")
+                    }).build()
+
+            // start the authenticationCallback in mainExecutor
+            biometricPrompt.authenticate(
+                getCancellationSignal(),
+                mainExecutor,
+                authenticationCallback
+            )
+
+        } else {
+            updateUI(currentUser)
+        }
 
     }
+
+    // it will be called when authentication is cancelled by the user
+    private fun getCancellationSignal(): CancellationSignal {
+        cancellationSignal = CancellationSignal()
+        cancellationSignal?.setOnCancelListener {
+            notifyUser("Authentication was Cancelled by the user")
+        }
+        return cancellationSignal as CancellationSignal
+    }
+
+    // it checks whether the app the app has fingerprint permission
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun checkBiometricSupport(): Boolean {
+        val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        if (!keyguardManager.isDeviceSecure) {
+            notifyUser("Fingerprint authentication has not been enabled in settings")
+            return false
+        }
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.USE_BIOMETRIC
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            notifyUser("Fingerprint Authentication Permission is not enabled")
+            return false
+        }
+        return if (packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)) {
+            true
+        } else true
+    }
+
+    // this is a toast method which is responsible for showing toast
+    // it takes a string as parameter
+    private fun notifyUser(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
 
     // [END on_start_check_user]
 

@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">CEEP iD</string>
-    <string name="sec">Cadastrar</string>
     <string-array name="turmas">
         <item>Administração</item>
         <item>Logística</item>

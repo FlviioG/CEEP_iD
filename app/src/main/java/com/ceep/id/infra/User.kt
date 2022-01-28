@@ -23,7 +23,7 @@ class Usuario {
     fun Usuario() {}
 
     fun salvar() {
-        val firebaseRef = FirebaseConfig.getFirabaseDatabase()
+        val firebaseRef = getFirabaseDatabase()
         getId()?.let { firebaseRef!!.child("usuarios").child(it) }?.setValue(this)
     }
 

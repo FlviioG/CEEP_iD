@@ -1,7 +1,6 @@
 package com.ceep.id.infra
 
 import com.google.firebase.auth.FirebaseAuth
-import com.ceep.id.infra.FirebaseConfig
 
 object UsuarioFirebase {
     val identificadorUsuario: String

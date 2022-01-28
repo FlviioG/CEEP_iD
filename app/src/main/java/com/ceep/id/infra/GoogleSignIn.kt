@@ -1,4 +1,4 @@
-package com.google.firebase.quickstart.auth.kotlin
+package com.ceep.id.infra
 
 import android.app.Activity
 import android.content.Intent

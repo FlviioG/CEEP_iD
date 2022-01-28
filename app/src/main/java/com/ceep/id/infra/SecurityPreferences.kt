@@ -1,4 +1,4 @@
-package com.flavio.ceepid.infra
+package com.ceep.id.infra
 
 import android.content.Context
 import android.content.res.Resources
