@@ -2,79 +2,45 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/background_scrollview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.ceep.id.ui.MainScreen">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/background_view"
-        android:animateLayoutChanges="true"
-        android:keepScreenOn="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:keepScreenOn="true">
 
         <ImageView
             android:id="@+id/toolbar"
-            android:layout_width="395dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:paddingStart="25dp"
             android:paddingEnd="10dp"
-            android:layout_marginTop="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/main_toolbar" />
 
-
-    <ImageView
-        android:id="@+id/background_pic"
-        android:layout_width="380dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:srcCompat="@drawable/pic_background" />
-
-    <ImageView
-        android:id="@+id/profile_pic"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="@+id/background_pic"
-        app:layout_constraintEnd_toEndOf="@+id/background_pic"
-        app:layout_constraintStart_toStartOf="@id/background_pic"
-        app:layout_constraintTop_toTopOf="@id/background_pic" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/button_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="-16dp"
-        android:layout_marginBottom="-16dp"
-        android:contentDescription="Alterar foto"
-        android:src="@drawable/ic_baseline_add_photo_alternate_24"
-        app:layout_constraintBottom_toBottomOf="@+id/profile_pic"
-        app:layout_constraintEnd_toEndOf="@+id/profile_pic" />
-
-    <ImageView
-        android:id="@+id/shape_nome"
-        android:layout_width="380dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/background_pic"
-        app:srcCompat="@drawable/shape_nome" />
-
+        <ImageButton
+            android:id="@+id/refresh_button"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="3dp"
+            android:background="#00000000"
+            android:src="@drawable/ic_baseline_refresh_24"
+            app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+            app:layout_constraintEnd_toEndOf="@+id/background_pic"
+            app:layout_constraintStart_toEndOf="@+id/profile_pic"
+            app:layout_constraintTop_toTopOf="@+id/toolbar"
+            app:tint="@color/black" />
 
         <ImageView
-            android:id="@+id/shape_status"
+            android:id="@+id/background_pic"
             android:layout_width="380dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -82,132 +48,205 @@
             android:paddingEnd="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:srcCompat="@drawable/pic_background" />
+
+        <ImageView
+            android:id="@+id/profile_pic"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="@+id/background_pic"
+            app:layout_constraintEnd_toEndOf="@+id/background_pic"
+            app:layout_constraintStart_toStartOf="@id/background_pic"
+            app:layout_constraintTop_toTopOf="@id/background_pic" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/profile_pic"
+            app:layout_constraintEnd_toEndOf="@id/profile_pic"
+            app:layout_constraintBottom_toBottomOf="@id/profile_pic"
+            app:layout_constraintTop_toTopOf="@id/profile_pic"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/button_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="-16dp"
+            android:layout_marginBottom="-16dp"
+            android:contentDescription="Alterar foto"
+            android:src="@drawable/ic_baseline_add_photo_alternate_24"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_pic"
+            app:layout_constraintEnd_toEndOf="@+id/profile_pic" />
+
+        <ImageView
+            android:id="@+id/shape_nome"
+            android:layout_width="380dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/background_pic"
+            app:srcCompat="@drawable/shape_nome" />
+
+
+        <ImageView
+            android:id="@+id/shape_status"
+            android:layout_width="380dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/shape_nome"
             app:srcCompat="@drawable/shape_status" />
 
-    <ImageView
-        android:id="@+id/led_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="70dp"
-        app:layout_constraintStart_toStartOf="@+id/shape_status"
-        app:layout_constraintTop_toTopOf="@+id/shape_status"
-        app:srcCompat="@drawable/green_ball" />
+        <ImageView
+            android:id="@+id/led_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="70dp"
+            app:layout_constraintStart_toStartOf="@+id/shape_status"
+            app:layout_constraintTop_toTopOf="@+id/shape_status"
+            app:srcCompat="@drawable/green_ball" />
 
-    <TextView
-        android:id="@+id/status_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:fontFamily="sans-serif-light"
-        android:text="Liberado"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/led_indicator"
-        app:layout_constraintStart_toEndOf="@+id/led_indicator"
-        app:layout_constraintTop_toTopOf="@+id/led_indicator" />
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Liberado"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/led_indicator"
+            app:layout_constraintStart_toEndOf="@+id/led_indicator"
+            app:layout_constraintTop_toTopOf="@+id/led_indicator" />
 
 
-    <TextView
-        android:id="@+id/textNome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-black"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textSize="28sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/shape_nome"
-        app:layout_constraintBottom_toTopOf="@id/textTurma"/>
+        <TextView
+            android:id="@+id/textNome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="28sp"
+            app:layout_constraintBottom_toTopOf="@id/textTurma"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/shape_nome" />
 
         <TextView
             android:id="@+id/textTurma"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-black"
             android:layout_marginTop="-8dp"
+            android:fontFamily="sans-serif-black"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/shape_nome"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textNome"
-            app:layout_constraintBottom_toBottomOf="@id/shape_nome"/>
+            app:layout_constraintTop_toBottomOf="@id/textNome" />
 
-    <LinearLayout
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="24dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shape_status">
-
-
-        <ImageView
-            android:id="@+id/button_perfil"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-
-            app:layout_constraintBottom_toTopOf="@+id/button_historico"
+            android:layout_margin="24dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/shape_status"
-            app:srcCompat="@drawable/perfil_button" />
+            app:layout_constraintTop_toBottomOf="@id/shape_status">
 
-        <ImageView
-            android:id="@+id/button_historico"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button_perfil"
-            app:srcCompat="@drawable/historico_button" />
-    </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/zoom_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:padding="-10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+            <ImageView
+                android:id="@+id/button_perfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
-        <View
-            android:layout_width="1000dp"
-            android:layout_height="1000dp"
-            android:background="@color/dark_blue"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintBottom_toTopOf="@+id/button_historico"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/shape_status"
+                app:srcCompat="@drawable/perfil_button" />
 
-        <ImageView
-            android:id="@+id/zoom_pic"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:src="@drawable/rectangle"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/button_historico"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button_perfil"
+                app:srcCompat="@drawable/historico_button" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/button_voltar"
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/ad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:layout_marginEnd="40dp"
-            android:text="VOLTAR"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@id/shape_status"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/zoom_view"
+            android:background="@color/dark_blue"
+            android:layout_width="match_parent"
+            android:layout_height="850dp"
+            android:padding="-10dp"
+            android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:id="@+id/zoom_pic"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:src="@drawable/rectangle"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/button_voltar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80dp"
+                android:layout_marginEnd="40dp"
+                android:text="VOLTAR"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.takusemba.cropme.CropLayout
+            android:id="@+id/cropView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cropme_background_alpha="80%"
+            app:cropme_frame_height_percent="80%"
+            app:cropme_frame_width_percent="80%"
+            app:cropme_max_scale="1.0"
+            app:cropme_overlay_shape="rectangle"
+            app:cropme_with_border="true" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

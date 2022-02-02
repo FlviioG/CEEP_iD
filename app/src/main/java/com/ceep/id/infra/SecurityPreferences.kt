@@ -1,12 +1,9 @@
 package com.ceep.id.infra
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.util.Base64
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import java.io.ByteArrayOutputStream
 
 class SecurityPreferences(context: Context) {

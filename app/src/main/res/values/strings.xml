@@ -1,8 +1,59 @@
 <resources>
     <string name="app_name">CEEP iD</string>
     <string-array name="turmas">
-        <item>Administração</item>
-        <item>Logística</item>
-        <item>Meio Ambiente</item>
+        <item>Selecione o curso…</item>
+        <item>Técnico em Administração</item>
+        <item>Técnico em Logística</item>
+        <item>Técnico em Meio Ambiente</item>
+    </string-array>
+    <string-array name="Ano">
+        <item>Selecione o ano…</item>
+        <item>1º Ano</item>
+        <item>2º Ano</item>
+        <item>3º Ano</item>
+    </string-array>
+    <string-array name="Selecionar">
+        <item>Selecione ano e curso...</item>
+    </string-array>
+    <string-array name="Salas_LOG_1">
+        <item>1 LOG M1</item>
+        <item>1 LOG M2</item>
+        <item>1 LOG M3</item>
+        <item>1 LOG V1</item>
+        <item>1 LOG V2</item>
+    </string-array>
+    <string-array name="Salas_LOG_2">
+        <item>2 LOG M1</item>
+        <item>2 LOG V1</item>
+        <item>2 LOG V2</item>
+    </string-array>
+    <string-array name="Salas_LOG_3">
+        <item>3 LOG M1</item>
+        <item>3 LOG V1</item>
+    </string-array>
+    <string-array name="Salas_ADM_1">
+        <item>1 ADM M1</item>
+        <item>1 ADM M2</item>
+        <item>1 ADM M3</item>
+        <item>1 ADM V1</item>
+        <item>1 ADM V2</item>
+    </string-array>
+    <string-array name="Salas_ADM_2">
+        <item>2 ADM M1</item>
+        <item>2 ADM V1</item>
+        <item>2 ADM V2</item>
+    </string-array>
+    <string-array name="Salas_ADM_3">
+        <item>3 ADM M1</item>
+        <item>3 ADM V1</item>
+    </string-array>
+    <string-array name="Salas_MAM_1">
+        <item>1 MAM M1</item>
+    </string-array>
+    <string-array name="Salas_MAM_2">
+        <item>2 MAM M1</item>
+    </string-array>
+    <string-array name="Salas_MAM_3">
+        <item>3 MAM M1</item>
     </string-array>
 </resources>
