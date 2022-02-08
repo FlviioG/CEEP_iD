@@ -156,6 +156,7 @@ class MainScreenAdmin : AppCompatActivity() {
                 keysSelecionadas.clear()
                 keyAlunos.clear()
 
+
                 for (dados in snapshot.children) {
                     val usuario: Usuario? = dados.getValue(Usuario::class.java)
                     if (usuario != null) {
@@ -164,6 +165,12 @@ class MainScreenAdmin : AppCompatActivity() {
                     }
                 }
                 adapter?.notifyDataSetChanged()
+
+                with (findViewById<Button>(R.id.liberar_button)) {
+                    isActivated = listaAlunos.isNotEmpty()
+                    isClickable = listaAlunos.isNotEmpty()
+                    isEnabled = listaAlunos.isNotEmpty()
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {}
