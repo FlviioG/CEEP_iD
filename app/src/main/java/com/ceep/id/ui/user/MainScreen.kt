@@ -1,4 +1,4 @@
-package com.ceep.id.ui
+package com.ceep.id.ui.user
 
 import android.Manifest
 import android.content.Context
@@ -25,14 +25,15 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.graphics.drawable.toBitmap
 import com.bumptech.glide.Glide
 import com.ceep.id.R
-import com.ceep.id.infra.FirebaseConfig
 import com.ceep.id.infra.Permissao
 import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.Usuario
+import com.ceep.id.infra.auth.FirebaseConfig
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -42,6 +43,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.StorageReference
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.face.FaceDetection
+import com.google.mlkit.vision.face.FaceDetectorOptions
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.*
@@ -61,13 +65,16 @@ class MainScreen : AppCompatActivity() {
     private lateinit var photoUsuario: Uri
     private lateinit var nomeUsuario: String
     private lateinit var turmaUsuario: String
-    private var version: Int? = null
+    private var conection: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_screen)
 
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
 
         Permissao.validarPermissoes(permissoesNecessarias, this, 1)
         mSecurityPreferences = SecurityPreferences(this)
@@ -87,7 +94,6 @@ class MainScreen : AppCompatActivity() {
         val statusText = findViewById<TextView>(R.id.status_text)
         val buttonPic = findViewById<FloatingActionButton>(R.id.button_photo)
         val profilePic = findViewById<ImageView>(R.id.profile_pic)
-        val buttonVoltar = findViewById<Button>(R.id.button_voltar)
         val buttonPerfil = findViewById<ImageView>(R.id.button_perfil)
         val textName = findViewById<TextView>(R.id.textNome)
         val textTurma = findViewById<TextView>(R.id.textTurma)
@@ -95,8 +101,8 @@ class MainScreen : AppCompatActivity() {
 
         theme()
 
-        version = checkVersion()
-        if (version == 0 || version == 2) {
+        conection = checkConection()
+        if (conection == 0 || conection == 2) {
             getData(textName, textTurma, profilePic, statusText)
         }
 
@@ -107,22 +113,18 @@ class MainScreen : AppCompatActivity() {
             Usuario().liberar(idUsuario)
         }
         profilePic.setOnClickListener {
-            findViewById<View>(R.id.zoom_view).visibility = View.VISIBLE
-            buttonPic.visibility = View.GONE
-            findViewById<ImageView>(R.id.zoom_pic).setImageBitmap(mSecurityPreferences.getBitmap("fotoPerfil"))
-        }
-        buttonVoltar.setOnClickListener {
-            findViewById<View>(R.id.zoom_view).visibility = View.GONE
-            buttonPic.visibility = View.VISIBLE
+            startActivity(Intent(this, ViewPictureActivity::class.java))
         }
         buttonRefresh.setOnClickListener {
-            val rotate = RotateAnimation(0F,
-                360F,Animation.RELATIVE_TO_SELF,0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+            val rotate = RotateAnimation(
+                0F,
+                360F, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
+            )
             rotate.duration = 800
             rotate.interpolator = LinearInterpolator()
             buttonRefresh.startAnimation(rotate)
-            version = checkVersion()
-            if (version == 0 || version == 2) {
+            conection = checkConection()
+            if (conection == 0 || conection == 2) {
                 getData(textName, textTurma, profilePic, statusText)
             }
         }
@@ -135,43 +137,98 @@ class MainScreen : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val PICK_IMAGE_REQUEST = 100
+        val CROP_IMAGE_REQUEST = 200
 
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_REQUEST) {
-            val profilePic = findViewById<ImageView>(R.id.profile_pic)
             val image = MediaStore.Images.Media.getBitmap(contentResolver, data?.data)
+            mSecurityPreferences.storeBitmap("picToCrop", image)
+            val photoCropIntent = Intent(
+                this, EditPictureActivity::class.java
+            )
+            startActivityForResult(photoCropIntent, CROP_IMAGE_REQUEST)
+
+        }
+
+        if (resultCode == RESULT_OK && requestCode == CROP_IMAGE_REQUEST) {
+            val profilePic = findViewById<ImageView>(R.id.profile_pic)
             profilePic.visibility = View.INVISIBLE
             findViewById<ProgressBar>(R.id.progress).visibility = View.VISIBLE
+            val image = mSecurityPreferences.getBitmap("fotoPerfil")!!
 
-                    val baos = ByteArrayOutputStream()
-                    image.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                    val b = baos.toByteArray()
+            val imageP = InputImage.fromBitmap(image, 0)
+            val options = FaceDetectorOptions.Builder()
+                .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
+                .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+                .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+                .build()
 
-                    //Salvando a imagem no banco de dados (Firebase)
+            val detector = FaceDetection.getClient(options)
 
-                    val imagemRef = storageReference!!.child("imagens")
-                        .child("alunos").child(idUsuario)
-                        .child("fotoPerfil.jpeg")
+            detector.process(imageP).addOnSuccessListener {
 
-                    val uploadTask = imagemRef.putBytes(b)
-                    uploadTask.addOnFailureListener {
+                when (it.size) {
+                    0 -> {
                         Toast.makeText(
                             this@MainScreen,
-                            "ERRO AO FAZER O UPLOAD DA IMAGEM", Toast.LENGTH_SHORT
+                            "Escolha uma imagem nitida que contenha o seu rosto.",
+                            Toast.LENGTH_LONG
                         ).show()
-                    }.addOnSuccessListener {
-                        val roundDrawable = RoundedBitmapDrawableFactory.create(resources, image)
-                        roundDrawable.cornerRadius = 49F
-                        profilePic.setImageDrawable(roundDrawable)
+                        findViewById<ProgressBar>(R.id.progress).visibility = View.GONE
                         profilePic.visibility = View.VISIBLE
+                    }
+                    1 -> {
+                        ///MediaStore.Images.Media.getBitmap(this.contentResolver, data?.data)
+
+                        val baos = ByteArrayOutputStream()
+                        image.compress(Bitmap.CompressFormat.JPEG, 70, baos)
+                        val b = baos.toByteArray()
+
+                        //Salvando a imagem no banco de dados (Firebase)
+                        val imagemRef = storageReference!!.child("imagens")
+                            .child("alunos").child(idUsuario)
+                            .child("fotoPerfil.jpeg")
+
+                        val uploadTask = imagemRef.putBytes(b)
+                        uploadTask.addOnFailureListener {
+                            Toast.makeText(
+                                this@MainScreen,
+                                "Ocorreu um erro aao fazer o upload da imagem.", Toast.LENGTH_SHORT
+                            ).show()
+                            profilePic.visibility = View.VISIBLE
+                            findViewById<ProgressBar>(R.id.progress).visibility = View.GONE
+                        }.addOnSuccessListener {
+                            val roundDrawable =
+                                RoundedBitmapDrawableFactory.create(resources, image)
+                            roundDrawable.cornerRadius = 49F
+                            profilePic.setImageDrawable(roundDrawable)
+                            profilePic.visibility = View.VISIBLE
+                            Toast.makeText(
+                                this@MainScreen,
+                                "Imagem salva.", Toast.LENGTH_SHORT
+                            ).show()
+                            mSecurityPreferences.storeBitmap("fotoPerfil", image)
+                            findViewById<ProgressBar>(R.id.progress).visibility = View.GONE
+                            profilePic.visibility = View.VISIBLE
+                        }
+                    }
+                    else -> {
                         Toast.makeText(
                             this@MainScreen,
-                            "SUCESSO AO FAZER O UPLOAD DA IMAGEM", Toast.LENGTH_SHORT
+                            "Escolha uma imagem em que voce esteja sozinho.",
+                            Toast.LENGTH_LONG
                         ).show()
-                        mSecurityPreferences.storeBitmap("fotoPerfil", image)
                         findViewById<ProgressBar>(R.id.progress).visibility = View.GONE
                     }
                 }
+
+            }.addOnFailureListener {
+                Toast.makeText(this, "Erro", Toast.LENGTH_LONG).show()
+                profilePic.visibility = View.VISIBLE
+                findViewById<ProgressBar>(R.id.progress).visibility = View.INVISIBLE
+                profilePic.visibility = View.VISIBLE
             }
+        }
+    }
 
     private fun openGalleryForImage() {
         val PICK_IMAGE_REQUEST = 100
@@ -183,21 +240,26 @@ class MainScreen : AppCompatActivity() {
         startActivityForResult(photoPickerIntent, PICK_IMAGE_REQUEST)
     }
 
-    private fun checkVersion(): Int{
-        return if(Build.VERSION.SDK_INT >= M) {
+    private fun checkConection(): Int {
+        return if (Build.VERSION.SDK_INT >= M) {
             val isOnline = isOnline(this@MainScreen)
             if (isOnline) {
-                 0
+                0
             } else {
                 findViewById<TextView>(R.id.status_text).text = "Sem conexão com a internet."
                 1
             }
         } else {
-           2
+            2
         }
     }
 
-    private fun getData(textName: TextView, textTurma: TextView, profilePic: ImageView, statusText: TextView) {
+    private fun getData(
+        textName: TextView,
+        textTurma: TextView,
+        profilePic: ImageView,
+        statusText: TextView
+    ) {
         ///Nome
         usuarioRef?.child("usuarios/${idUsuario}/nome")?.get()?.addOnSuccessListener {
             nomeUsuario = it.value.toString()
@@ -208,9 +270,9 @@ class MainScreen : AppCompatActivity() {
 
             turmaUsuario = it.value.toString()
 
-           usuarioRef?.child("usuarios/${idUsuario}/sala")?.get()?.addOnSuccessListener {
-               textTurma.text = "$turmaUsuario - ${it.value.toString()}"
-           }
+            usuarioRef?.child("usuarios/${idUsuario}/sala")?.get()?.addOnSuccessListener {
+                textTurma.text = "$turmaUsuario - ${it.value.toString()}"
+            }
 
 
         }
@@ -261,11 +323,11 @@ class MainScreen : AppCompatActivity() {
         val postListener = object : ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                val post = snapshot.getValue()
+                val post = snapshot.value
                 if (post == true) {
                     findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
-                        resources.getDrawable(
-                            R.drawable.green_ball
+                        ContextCompat.getDrawable(
+                            this@MainScreen, R.drawable.green_ball
                         )
                     )
 
@@ -276,8 +338,8 @@ class MainScreen : AppCompatActivity() {
                     statusText.text = "Liberado. Atualizado às $hour:$minute."
                 } else if (post == null || post == false) {
                     findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
-                        resources.getDrawable(
-                            R.drawable.red_ball
+                        ContextCompat.getDrawable(
+                           this@MainScreen, R.drawable.red_ball
                         )
                     )
                     statusText.text = "Em aula/Fora do horario de aula"
@@ -286,8 +348,8 @@ class MainScreen : AppCompatActivity() {
 
             override fun onCancelled(error: DatabaseError) {
                 findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
-                    resources.getDrawable(
-                        R.drawable.red_ball
+                    ContextCompat.getDrawable(
+                      this@MainScreen,  R.drawable.red_ball
                     )
                 )
                 statusText.text = "Erro ao receber dados."
@@ -301,23 +363,21 @@ class MainScreen : AppCompatActivity() {
     fun isOnline(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        if (connectivityManager != null) {
-            val capabilities =
-                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-            if (capabilities != null) {
-                when {
-                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
-                        Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
-                        return true
-                    }
-                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
-                        Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
-                        return true
-                    }
-                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
-                        Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
-                        return true
-                    }
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                    return true
+                }
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                    return true
+                }
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                    return true
                 }
             }
         }

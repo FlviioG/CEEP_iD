@@ -1,11 +1,7 @@
 package com.ceep.id.infra
 
-import com.ceep.id.infra.FirebaseConfig.getFirabaseDatabase
+import com.ceep.id.infra.auth.FirebaseConfig.getFirabaseDatabase
 import com.google.firebase.database.Exclude
-import com.google.firebase.database.DatabaseReference
-
-
-
 
 
 class Usuario {

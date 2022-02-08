@@ -1,4 +1,4 @@
-package com.ceep.id.infra
+package com.ceep.id.infra.auth
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference

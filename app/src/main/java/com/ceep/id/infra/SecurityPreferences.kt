@@ -28,7 +28,7 @@ class SecurityPreferences(context: Context) {
 
     fun storeBitmap(key: String, value: Bitmap) {
         val baos = ByteArrayOutputStream()
-        value.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        value.compress(Bitmap.CompressFormat.JPEG, 70, baos)
         val b = baos.toByteArray()
 
         val encodedImage = Base64.encodeToString(b, Base64.DEFAULT)
@@ -47,5 +47,9 @@ class SecurityPreferences(context: Context) {
         } else {
             null
         }
+    }
+
+    fun remove(key: String) {
+        mSharedPreferences.edit().remove(key).apply()
     }
 }

@@ -5,7 +5,7 @@
     android:id="@+id/background_scrollview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ceep.id.ui.MainScreen">
+    tools:context="com.ceep.id.ui.user.MainScreen">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/background_view"
@@ -205,48 +205,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/zoom_view"
-            android:background="@color/dark_blue"
-            android:layout_width="match_parent"
-            android:layout_height="850dp"
-            android:padding="-10dp"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <ImageView
-                android:id="@+id/zoom_pic"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:src="@drawable/rectangle"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/button_voltar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="80dp"
-                android:layout_marginEnd="40dp"
-                android:text="VOLTAR"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <com.takusemba.cropme.CropLayout
-            android:id="@+id/cropView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:cropme_background_alpha="80%"
-            app:cropme_frame_height_percent="80%"
-            app:cropme_frame_width_percent="80%"
-            app:cropme_max_scale="1.0"
-            app:cropme_overlay_shape="rectangle"
-            app:cropme_with_border="true" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+           </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

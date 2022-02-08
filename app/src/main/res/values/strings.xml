@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">CEEP iD</string>
+    <string name="logistica">Técnico em Logística</string>
+    <string name="administracao">Técnico em Administração</string>
+    <string name="meio_ambiente">Técnico em Meio Ambiente</string>
+
     <string-array name="turmas">
         <item>Selecione o curso…</item>
         <item>Técnico em Administração</item>

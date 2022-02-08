@@ -1,8 +1,11 @@
-package com.ceep.id.infra
+package com.ceep.id.infra.auth
 
+import com.ceep.id.infra.Base64Custom
 import com.google.firebase.auth.FirebaseAuth
 
 object UsuarioFirebase {
+
+
     val identificadorUsuario: String
         get() {
             val usuario: FirebaseAuth? = FirebaseConfig.getFirebaseAuth()

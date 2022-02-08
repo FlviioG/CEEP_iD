@@ -2,7 +2,7 @@ package com.ceep.id.infra
 
 import android.util.Log
 import com.ceep.id.infra.Base64Custom.codificarBase64
-import com.ceep.id.infra.FirebaseConfig.getFirabaseDatabase
+import com.ceep.id.infra.auth.FirebaseConfig.getFirabaseDatabase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference

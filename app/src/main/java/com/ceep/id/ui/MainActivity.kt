@@ -17,14 +17,19 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.ceep.id.R
-import com.ceep.id.infra.FirebaseConfig
 import com.ceep.id.infra.SecurityPreferences
+import com.ceep.id.infra.auth.FirebaseConfig
+import com.ceep.id.ui.admin.MainScreenAdmin
+import com.ceep.id.ui.user.MainScreen
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -43,6 +48,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mSecurityPreferences = SecurityPreferences(this)
+
+        FirebaseApp.initializeApp(this)
+        val firebaseAppCheck = FirebaseAppCheck.getInstance()
+        firebaseAppCheck.installAppCheckProviderFactory(
+            SafetyNetAppCheckProviderFactory.getInstance()
+        )
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
@@ -140,6 +151,7 @@ class MainActivity : AppCompatActivity() {
                     override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
                         super.onAuthenticationError(errorCode, errString)
                         notifyUser("Erro de autenticação : $errString")
+                        finish()
                     }
 
                     // If the fingerprint is recognized by the app then it will call
@@ -155,7 +167,7 @@ class MainActivity : AppCompatActivity() {
                 .setTitle("Verificaçao biometrica")
                 .setSubtitle("Toque no sensor para liberar")
                 .setNegativeButton(
-                    "Cancel",
+                    "Cancelar",
                     this.mainExecutor
                 ) { dialog, which ->
                     notifyUser("Processo cancelado.")
@@ -168,6 +180,7 @@ class MainActivity : AppCompatActivity() {
                 mainExecutor,
                 authenticationCallback
             )
+
 
         } else {
             updateUI(currentUser)
@@ -216,10 +229,15 @@ class MainActivity : AppCompatActivity() {
 
         val idU = mSecurityPreferences.getString("idU")
 
+        usuarioRef?.child("usuarios/${idU}/admin")?.get()?.addOnSuccessListener {
+            if (it.value == true) {
+                startActivity(Intent(this, MainScreenAdmin::class.java))
+            }
+        }
+
         if (idU != "" && mSecurityPreferences.getInt("basicInformations") == 1) {
             startActivity(Intent(this, MainScreen::class.java))
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -267,6 +285,7 @@ class MainActivity : AppCompatActivity() {
                             findViewById<Button>(R.id.button_continuar).visibility =
                                 View.VISIBLE
                             findViewById<EditText>(R.id.editNome).visibility = View.VISIBLE
+                            findViewById<EditText>(R.id.editNome).isEnabled = false
                             findViewById<Spinner>(R.id.editSala).visibility = View.VISIBLE
                             findViewById<Spinner>(R.id.editAno).visibility = View.VISIBLE
                             spinner.visibility = View.VISIBLE
