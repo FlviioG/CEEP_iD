@@ -94,6 +94,8 @@ class MainScreenAdmin : AppCompatActivity() {
                     } else {
                         Usuario().liberar(key)
                     }
+
+                    findViewById<View>(R.id.adapter_alunos).setBackgroundColor(Color.TRANSPARENT)
                 }
             }
         }
@@ -149,12 +151,14 @@ class MainScreenAdmin : AppCompatActivity() {
 
         valueEventListener = usuariosPesquisa.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+
+                listaAlunos.clear()
+                keysSelecionadas.clear()
+                keyAlunos.clear()
+
                 for (dados in snapshot.children) {
                     val usuario: Usuario? = dados.getValue(Usuario::class.java)
                     if (usuario != null) {
-                        listaAlunos.clear()
-                        keysSelecionadas.clear()
-                        keyAlunos.clear()
                         keyAlunos.add(dados.key)
                         listaAlunos.add(usuario)
                     }
