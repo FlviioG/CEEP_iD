@@ -1,5 +1,6 @@
 package com.ceep.id.ui.admin
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ceep.id.R
@@ -122,7 +124,7 @@ class MainScreenAdmin : AppCompatActivity() {
                 applicationContext,
                 recyclerAlunos!!,
                 object : RecyclerItemClickListener.OnItemClickListener {
-                    override fun onItemClick(view: View?, position: Int): Unit {
+                    override fun onItemClick(view: View?, position: Int) {
 
                         if (isSelectedMode) {
                             isSelectedMode = false
@@ -134,7 +136,7 @@ class MainScreenAdmin : AppCompatActivity() {
 
                             val keySelecionada = keyAlunos[position]
                             keysSelecionadas.add(keySelecionada)
-                            view?.setBackgroundColor(resources.getColor(R.color.really_light_blue))
+                            view?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.really_light_blue, theme))
                         }
                     }
 
@@ -150,6 +152,7 @@ class MainScreenAdmin : AppCompatActivity() {
         val usuariosPesquisa = referenciaAlunos!!.orderByChild("sala").equalTo(sala)
 
         valueEventListener = usuariosPesquisa.addValueEventListener(object : ValueEventListener {
+            @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
 
                 listaAlunos.clear()

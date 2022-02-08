@@ -31,7 +31,6 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
 
@@ -88,20 +87,18 @@ class MainActivity : AppCompatActivity() {
             val liberado = usuarioRef!!.child("usuarios").child(idU).child("liberado")
 
             val nomeSel = findViewById<EditText>(R.id.editNome).text
-            val turmaSel = findViewById<Spinner>(R.id.editTurma)
-            val anoSel = findViewById<Spinner>(R.id.editAno)
             val salaSel = findViewById<Spinner>(R.id.editSala)
 
-            if (turmaSel.selectedItemId.toInt() != 0 && anoSel.selectedItemId.toInt() != 0) {
+            if (editTurma.selectedItemId.toInt() != 0 && editAno.selectedItemId.toInt() != 0) {
                 nome.setValue(nomeSel.toString())
-                ano.setValue(anoSel.selectedItem.toString())
-                turma.setValue(turmaSel.selectedItem.toString())
+                ano.setValue(editAno.selectedItem.toString())
+                turma.setValue(editTurma.selectedItem.toString())
                 sala.setValue(salaSel.selectedItem.toString())
                 liberado.setValue(false)
 
                 mSecurityPreferences.storeString("idU", idU.toString())
                 mSecurityPreferences.storeInt("basicInformations", 1)
-                updateUI(auth?.currentUser)
+                updateUI()
             } else {
                 Toast.makeText(this, "Preencha todos os campos primeiro.", Toast.LENGTH_LONG).show()
             }
@@ -133,8 +130,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth?.currentUser
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
             && mSecurityPreferences.getInt("basicInformations") == 1
@@ -159,17 +154,17 @@ class MainActivity : AppCompatActivity() {
                     // Here you can also start a new activity after that
                     override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult?) {
                         super.onAuthenticationSucceeded(result)
-                        updateUI(currentUser)
+                        updateUI()
                     }
                 }
 
             val biometricPrompt = BiometricPrompt.Builder(this)
                 .setTitle("Verificaçao biometrica")
-                .setSubtitle("Toque no sensor para liberar")
+                .setSubtitle("Desbloqueie seu app")
                 .setNegativeButton(
                     "Cancelar",
                     this.mainExecutor
-                ) { dialog, which ->
+                ) { _, _ ->
                     notifyUser("Processo cancelado.")
                     this.finishAffinity()
                 }.build()
@@ -183,7 +178,7 @@ class MainActivity : AppCompatActivity() {
 
 
         } else {
-            updateUI(currentUser)
+            updateUI()
         }
 
     }
@@ -225,7 +220,7 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
-    private fun updateUI(user: FirebaseUser?) {
+    private fun updateUI() {
 
         val idU = mSecurityPreferences.getString("idU")
 
@@ -269,7 +264,6 @@ class MainActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
-                    val user = auth?.currentUser
                     val idU = mSecurityPreferences.getString("idU")
 
                     usuarioRef?.child("usuarios/${idU}/turma")?.get()?.addOnSuccessListener {
@@ -278,7 +272,7 @@ class MainActivity : AppCompatActivity() {
 
                         if (snap != null) {
                             mSecurityPreferences.storeInt("basicInformations", 1)
-                            updateUI(user)
+                            updateUI()
                         } else {
                             val spinner = findViewById<Spinner>(R.id.editTurma)
 
@@ -298,7 +292,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
-                    updateUI(null)
+                    updateUI()
                 }
             }
     }

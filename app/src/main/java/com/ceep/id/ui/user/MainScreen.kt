@@ -26,6 +26,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.graphics.drawable.toBitmap
 import com.bumptech.glide.Glide
@@ -266,7 +267,7 @@ class MainScreen : AppCompatActivity() {
             textName.text = nomeUsuario
         }
         ///Turma
-        usuarioRef?.child("usuarios/${idUsuario}/turma")?.get()?.addOnSuccessListener {
+        usuarioRef?.child("usuarios/${idUsuario}/turma")?.get()?.addOnSuccessListener { it ->
 
             turmaUsuario = it.value.toString()
 
@@ -339,7 +340,7 @@ class MainScreen : AppCompatActivity() {
                 } else if (post == null || post == false) {
                     findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
                         ContextCompat.getDrawable(
-                           this@MainScreen, R.drawable.red_ball
+                            this@MainScreen, R.drawable.red_ball
                         )
                     )
                     statusText.text = "Em aula/Fora do horario de aula"
@@ -349,7 +350,7 @@ class MainScreen : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {
                 findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
                     ContextCompat.getDrawable(
-                      this@MainScreen,  R.drawable.red_ball
+                        this@MainScreen, R.drawable.red_ball
                     )
                 )
                 statusText.text = "Erro ao receber dados."
@@ -422,7 +423,7 @@ class MainScreen : AppCompatActivity() {
                         R.drawable.shape_nome_dark
                     )
                 )
-                statusText.setTextColor(resources.getColor(R.color.white))
+                statusText.setTextColor(ResourcesCompat.getColor(resources, R.color.white, theme))
             } else {
                 backgroundView.setBackgroundColor(getColor(R.color.background_light))
                 buttonRefresh.setColorFilter(getColor(R.color.black))
@@ -450,7 +451,7 @@ class MainScreen : AppCompatActivity() {
                         R.drawable.shape_nome
                     )
                 )
-                statusText.setTextColor(resources.getColor(R.color.black))
+                statusText.setTextColor(ResourcesCompat.getColor(resources, R.color.black, theme))
             }
         }
     }
