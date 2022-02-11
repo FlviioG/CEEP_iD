@@ -13,6 +13,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ceep.id.R
+import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.Usuario
 import com.ceep.id.infra.auth.FirebaseConfig
 import com.google.firebase.database.DataSnapshot
@@ -31,17 +32,28 @@ class MainScreenAdmin : AppCompatActivity() {
     private val keysSelecionadas: ArrayList<String?> = ArrayList()
     private var isSelectedMode = false
     private var usuarioRef: DatabaseReference? = null
+    private val viewsAlunos: ArrayList<View> = ArrayList()
+    private lateinit var mSecurityPreferences: SecurityPreferences
+    private lateinit var idU: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_screen_admin)
 
         usuarioRef = FirebaseConfig.getFirabaseDatabase()
+        mSecurityPreferences = SecurityPreferences(this)
+        idU = mSecurityPreferences.getString("idU")
 
         recyclerAlunos = findViewById(R.id.recyclerAlunos)
         referenciaAlunos = FirebaseConfig.getFirabaseDatabase()?.child("usuarios")
         adapter = AlunosAdapter(listaAlunos, this, keyAlunos)
         configuraRecyclerView()
+
+        usuarioRef?.child("usuarios/${idU}/admin")?.get()?.addOnSuccessListener {
+            if (it.value == false) {
+               this.finishAffinity()
+            }
+        }
 
         val spinnerAno = findViewById<Spinner>(R.id.spinnerAno)
         val spinnerTurma = findViewById<Spinner>(R.id.spinnerTurma)
@@ -89,16 +101,32 @@ class MainScreenAdmin : AppCompatActivity() {
             }
 
         buttonLiberar.setOnClickListener {
-            keysSelecionadas.forEach { key ->
-                usuarioRef?.child("usuarios/${key}/liberado")?.get()?.addOnSuccessListener {
-                    if (it.value == true) {
-                        Usuario().desliberar(key)
-                    } else {
-                        Usuario().liberar(key)
-                    }
 
-                    findViewById<View>(R.id.adapter_alunos).setBackgroundColor(Color.TRANSPARENT)
+            if(keysSelecionadas.isEmpty()) {
+                keyAlunos.forEach { key ->
+                    usuarioRef?.child("usuarios/${key}/liberado")?.get()?.addOnSuccessListener {
+                        if (it.value == true) {
+                            Usuario().desliberar(key)
+                        } else {
+                            Usuario().liberar(key)
+                        }
+
+                    }
                 }
+            } else {
+                keysSelecionadas.forEach { key ->
+                    usuarioRef?.child("usuarios/${key}/liberado")?.get()?.addOnSuccessListener {
+                        if (it.value == true) {
+                            Usuario().desliberar(key)
+                        } else {
+                            Usuario().liberar(key)
+                        }
+                    }
+                }
+            }
+
+            for (v in viewsAlunos) {
+                v.setBackgroundColor(Color.TRANSPARENT)
             }
         }
     }
@@ -130,13 +158,15 @@ class MainScreenAdmin : AppCompatActivity() {
                             isSelectedMode = false
                             val keySelecionada = keyAlunos[position]
                             keysSelecionadas.remove(keySelecionada)
-                            view?.setBackgroundColor(Color.TRANSPARENT)
+                            viewsAlunos.remove(view)
+                            view?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.trnsparent, theme))
+
                         } else {
                             isSelectedMode = true
-
                             val keySelecionada = keyAlunos[position]
                             keysSelecionadas.add(keySelecionada)
-                            view?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.really_light_blue, theme))
+                            viewsAlunos.add((view!!))
+                            view.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.really_light_blue, theme))
                         }
                     }
 

@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">CEEP iD</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="default_notification_channel_name" translatable="true">Situação</string>
+
+    <string name="fcm_message">CEEP iD Status</string>
     <string name="logistica">Técnico em Logística</string>
     <string name="administracao">Técnico em Administração</string>
     <string name="meio_ambiente">Técnico em Meio Ambiente</string>

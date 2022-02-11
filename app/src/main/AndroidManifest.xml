@@ -19,6 +19,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CEEPiD">
+        <service
+            android:name=".infra.NotificationService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action
+                    android:name="com.ceep.id.NotificationService"/>
+                <category
+                    android:name="android.intent.category.DEFAULT"/>
+
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".ui.admin.MainScreenAdmin"
             android:exported="false" />
@@ -35,6 +48,9 @@
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
             android:value="face" />
+        <meta-data
+            android:name="firebase_performance_logcat_enabled"
+            android:value="true" />
 
         <activity
             android:name=".ui.user.MainScreen"

@@ -1,6 +1,9 @@
 package com.ceep.id.ui.user
 
 import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -25,16 +28,20 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.graphics.drawable.toBitmap
 import com.bumptech.glide.Glide
 import com.ceep.id.R
+import com.ceep.id.infra.NotificationService
 import com.ceep.id.infra.Permissao
 import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.Usuario
 import com.ceep.id.infra.auth.FirebaseConfig
+import com.ceep.id.ui.MainActivity
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -71,6 +78,8 @@ class MainScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_screen)
+
+        createNotificationChannel()
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_SECURE,
@@ -135,6 +144,11 @@ class MainScreen : AppCompatActivity() {
         this.finishAffinity()
     }
 
+    override fun onStop() {
+        startService(Intent(this, NotificationService::class.java))
+        super.onStop()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val PICK_IMAGE_REQUEST = 100
@@ -158,9 +172,10 @@ class MainScreen : AppCompatActivity() {
 
             val imageP = InputImage.fromBitmap(image, 0)
             val options = FaceDetectorOptions.Builder()
-                .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
+                .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
                 .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
                 .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+                .setContourMode(FaceDetectorOptions.CONTOUR_MODE_ALL)
                 .build()
 
             val detector = FaceDetection.getClient(options)
@@ -325,6 +340,23 @@ class MainScreen : AppCompatActivity() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 val post = snapshot.value
+
+                val contentIntent = PendingIntent.getActivity(
+                    this@MainScreen,
+                    0,
+                    Intent(this@MainScreen, MainActivity::class.java),
+                    0
+                )
+                val CHANNEL_ID = "default_id"
+                val builder = NotificationCompat.Builder(this@MainScreen, CHANNEL_ID)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("Situação:")
+                    .setContentText("Liberado!")
+                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .setDefaults(NotificationCompat.DEFAULT_ALL)
+                    .setContentIntent(contentIntent)
+                    .setAutoCancel(true)
+
                 if (post == true) {
                     findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
                         ContextCompat.getDrawable(
@@ -337,6 +369,11 @@ class MainScreen : AppCompatActivity() {
                     val minute = date.get(Calendar.MINUTE)
 
                     statusText.text = "Liberado. Atualizado às $hour:$minute."
+
+                    with(NotificationManagerCompat.from(this@MainScreen)) {
+                        // notificationId is a unique int for each notification that you must define
+                        notify(1, builder.build())
+                    }
                 } else if (post == null || post == false) {
                     findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
                         ContextCompat.getDrawable(
@@ -344,6 +381,10 @@ class MainScreen : AppCompatActivity() {
                         )
                     )
                     statusText.text = "Em aula/Fora do horario de aula"
+                    with(NotificationManagerCompat.from(this@MainScreen)) {
+                        // notificationId is a unique int for each notification that you must define
+                        cancel(1)
+                    }
                 }
             }
 
@@ -453,6 +494,24 @@ class MainScreen : AppCompatActivity() {
                 )
                 statusText.setTextColor(ResourcesCompat.getColor(resources, R.color.black, theme))
             }
+        }
+    }
+
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Sitaçao"
+            val descriptionText = "Situaçao do aluno"
+            val CHANNEL_ID = "default_id"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
 }

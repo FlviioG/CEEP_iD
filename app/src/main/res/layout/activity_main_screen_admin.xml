@@ -8,7 +8,7 @@
 
     <Spinner
         android:id="@+id/spinnerTurma"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:entries="@array/turmas"
         app:layout_constraintBottom_toTopOf="@id/spinnerSala"
@@ -19,7 +19,7 @@
     <Spinner
         android:id="@+id/spinnerAno"
         android:entries="@array/Ano"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/spinnerTurma"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,7 +28,7 @@
 
     <Spinner
         android:id="@+id/spinnerSala"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/recyclerAlunos"
         app:layout_constraintEnd_toEndOf="parent"
