@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -345,8 +346,9 @@ class MainScreen : AppCompatActivity() {
                     this@MainScreen,
                     0,
                     Intent(this@MainScreen, MainActivity::class.java),
-                    0
+                    FLAG_IMMUTABLE
                 )
+
                 val CHANNEL_ID = "default_id"
                 val builder = NotificationCompat.Builder(this@MainScreen, CHANNEL_ID)
                     .setSmallIcon(R.mipmap.ic_launcher)
