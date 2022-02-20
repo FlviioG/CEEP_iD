@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ceep.id">
+    package="com.ceep.id"
+    xmlns:dist="http://schemas.android.com/apk/distribution">
+
+    <dist:module dist:instant="true" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
@@ -18,17 +21,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CEEPiD">
-        <service
-            android:name=".infra.NotificationService"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action
-                    android:name="com.ceep.id.NotificationService"/>
-                <category
-                    android:name="android.intent.category.DEFAULT"/>
+        android:theme="@style/Theme.CEEPiD" >
 
+        <service
+            android:name=".infra.notifications.NotificationService"
+            android:enabled="true"
+            android:exported="false"
+            android:isolatedProcess="true"
+            android:process=":notificationService" >
+            <intent-filter>
+                <action android:name="com.ceep.id.NotificationService" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
 
@@ -58,7 +61,7 @@
             android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity
             android:name=".ui.MainActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

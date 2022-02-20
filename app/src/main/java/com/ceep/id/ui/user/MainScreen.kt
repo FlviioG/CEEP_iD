@@ -3,8 +3,6 @@ package com.ceep.id.ui.user
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -29,20 +27,15 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.graphics.drawable.toBitmap
 import com.bumptech.glide.Glide
 import com.ceep.id.R
-import com.ceep.id.infra.NotificationService
 import com.ceep.id.infra.Permissao
 import com.ceep.id.infra.SecurityPreferences
-import com.ceep.id.infra.Usuario
 import com.ceep.id.infra.auth.FirebaseConfig
-import com.ceep.id.ui.MainActivity
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -66,15 +59,14 @@ class MainScreen : AppCompatActivity() {
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.INTERNET
     )
-
-    private lateinit var mSecurityPreferences: SecurityPreferences
+    private var conection: Int? = null
     private var usuarioRef: DatabaseReference? = null
     private var storageReference: StorageReference? = null
     private lateinit var idUsuario: String
     private lateinit var photoUsuario: Uri
     private lateinit var nomeUsuario: String
     private lateinit var turmaUsuario: String
-    private var conection: Int? = null
+    private lateinit var mSecurityPreferences: SecurityPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,7 +97,6 @@ class MainScreen : AppCompatActivity() {
         val statusText = findViewById<TextView>(R.id.status_text)
         val buttonPic = findViewById<FloatingActionButton>(R.id.button_photo)
         val profilePic = findViewById<ImageView>(R.id.profile_pic)
-        val buttonPerfil = findViewById<ImageView>(R.id.button_perfil)
         val textName = findViewById<TextView>(R.id.textNome)
         val textTurma = findViewById<TextView>(R.id.textTurma)
         val buttonRefresh = findViewById<ImageButton>(R.id.refresh_button)
@@ -119,9 +110,6 @@ class MainScreen : AppCompatActivity() {
 
         buttonPic.setOnClickListener {
             openGalleryForImage()
-        }
-        buttonPerfil.setOnClickListener {
-            Usuario().liberar(idUsuario)
         }
         profilePic.setOnClickListener {
             startActivity(Intent(this, ViewPictureActivity::class.java))
@@ -139,15 +127,12 @@ class MainScreen : AppCompatActivity() {
                 getData(textName, textTurma, profilePic, statusText)
             }
         }
+
     }
 
     override fun onBackPressed() {
-        this.finishAffinity()
-    }
 
-    override fun onStop() {
-        startService(Intent(this, NotificationService::class.java))
-        super.onStop()
+        this.finishAffinity()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -168,8 +153,11 @@ class MainScreen : AppCompatActivity() {
         if (resultCode == RESULT_OK && requestCode == CROP_IMAGE_REQUEST) {
             val profilePic = findViewById<ImageView>(R.id.profile_pic)
             profilePic.visibility = View.INVISIBLE
-            findViewById<ProgressBar>(R.id.progress).visibility = View.VISIBLE
-            val image = mSecurityPreferences.getBitmap("fotoPerfil")!!
+            val photoButton = findViewById<FloatingActionButton>(R.id.button_photo)
+            photoButton.visibility = View.INVISIBLE
+            val progressBar = findViewById<ProgressBar>(R.id.progress)
+            progressBar.visibility = View.VISIBLE
+            val image = mSecurityPreferences.getBitmap("picToReview")!!
 
             val imageP = InputImage.fromBitmap(image, 0)
             val options = FaceDetectorOptions.Builder()
@@ -190,8 +178,10 @@ class MainScreen : AppCompatActivity() {
                             "Escolha uma imagem nitida que contenha o seu rosto.",
                             Toast.LENGTH_LONG
                         ).show()
-                        findViewById<ProgressBar>(R.id.progress).visibility = View.GONE
+                        progressBar.visibility = View.GONE
+                        photoButton.visibility = View.VISIBLE
                         profilePic.visibility = View.VISIBLE
+                        mSecurityPreferences.remove("picToReview")
                     }
                     1 -> {
                         ///MediaStore.Images.Media.getBitmap(this.contentResolver, data?.data)
@@ -211,8 +201,10 @@ class MainScreen : AppCompatActivity() {
                                 this@MainScreen,
                                 "Ocorreu um erro aao fazer o upload da imagem.", Toast.LENGTH_SHORT
                             ).show()
+                            progressBar.visibility = View.GONE
+                            photoButton.visibility = View.VISIBLE
                             profilePic.visibility = View.VISIBLE
-                            findViewById<ProgressBar>(R.id.progress).visibility = View.GONE
+                            mSecurityPreferences.remove("picToReview")
                         }.addOnSuccessListener {
                             val roundDrawable =
                                 RoundedBitmapDrawableFactory.create(resources, image)
@@ -224,8 +216,10 @@ class MainScreen : AppCompatActivity() {
                                 "Imagem salva.", Toast.LENGTH_SHORT
                             ).show()
                             mSecurityPreferences.storeBitmap("fotoPerfil", image)
-                            findViewById<ProgressBar>(R.id.progress).visibility = View.GONE
+                            progressBar.visibility = View.GONE
+                            photoButton.visibility = View.VISIBLE
                             profilePic.visibility = View.VISIBLE
+                            mSecurityPreferences.remove("picToReview")
                         }
                     }
                     else -> {
@@ -234,15 +228,19 @@ class MainScreen : AppCompatActivity() {
                             "Escolha uma imagem em que voce esteja sozinho.",
                             Toast.LENGTH_LONG
                         ).show()
-                        findViewById<ProgressBar>(R.id.progress).visibility = View.GONE
+                        progressBar.visibility = View.GONE
+                        photoButton.visibility = View.VISIBLE
+                        profilePic.visibility = View.VISIBLE
+                        mSecurityPreferences.remove("picToReview")
                     }
                 }
 
             }.addOnFailureListener {
                 Toast.makeText(this, "Erro", Toast.LENGTH_LONG).show()
+                profilePic.visibility = View.GONE
+                photoButton.visibility = View.VISIBLE
                 profilePic.visibility = View.VISIBLE
-                findViewById<ProgressBar>(R.id.progress).visibility = View.INVISIBLE
-                profilePic.visibility = View.VISIBLE
+                mSecurityPreferences.remove("picToReview")
             }
         }
     }
@@ -342,23 +340,6 @@ class MainScreen : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val post = snapshot.value
 
-                val contentIntent = PendingIntent.getActivity(
-                    this@MainScreen,
-                    0,
-                    Intent(this@MainScreen, MainActivity::class.java),
-                    FLAG_IMMUTABLE
-                )
-
-                val CHANNEL_ID = "default_id"
-                val builder = NotificationCompat.Builder(this@MainScreen, CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("Situação:")
-                    .setContentText("Liberado!")
-                    .setPriority(NotificationCompat.PRIORITY_MAX)
-                    .setDefaults(NotificationCompat.DEFAULT_ALL)
-                    .setContentIntent(contentIntent)
-                    .setAutoCancel(true)
-
                 if (post == true) {
                     findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
                         ContextCompat.getDrawable(
@@ -370,11 +351,11 @@ class MainScreen : AppCompatActivity() {
                     val hour = date.get(Calendar.HOUR_OF_DAY)
                     val minute = date.get(Calendar.MINUTE)
 
-                    statusText.text = "Liberado. Atualizado às $hour:$minute."
-
-                    with(NotificationManagerCompat.from(this@MainScreen)) {
-                        // notificationId is a unique int for each notification that you must define
-                        notify(1, builder.build())
+                    when {
+                        hour <= 9 && minute > 9 -> statusText.text = "Liberado. Atualizado às 0$hour:$minute."
+                        hour > 9 && minute <= 9 -> statusText.text = "Liberado. Atualizado às $hour:0$minute."
+                        hour <= 9 && minute <= 9 -> statusText.text = "Liberado. Atualizado às 0$hour:0$minute."
+                        else -> statusText.text = "Liberado. Atualizado às $hour:$minute."
                     }
                 } else if (post == null || post == false) {
                     findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
@@ -383,10 +364,6 @@ class MainScreen : AppCompatActivity() {
                         )
                     )
                     statusText.text = "Em aula/Fora do horario de aula"
-                    with(NotificationManagerCompat.from(this@MainScreen)) {
-                        // notificationId is a unique int for each notification that you must define
-                        cancel(1)
-                    }
                 }
             }
 
@@ -503,10 +480,10 @@ class MainScreen : AppCompatActivity() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Sitaçao"
+            val name = "Situaçao"
             val descriptionText = "Situaçao do aluno"
             val CHANNEL_ID = "default_id"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
             }
@@ -517,15 +494,3 @@ class MainScreen : AppCompatActivity() {
         }
     }
 }
-
-///cropView.setBitmap(image)
-//    cropView.addOnCropListener(object : OnCropListener {
-//        override fun onFailure(e: Exception) {
-//            Toast.makeText(this@MainScreen, "Erro ao carregar imagem.", Toast.LENGTH_SHORT).show()
-//        }
-//
-//        override fun onSuccess(bitmap: Bitmap) {
-//            cropView.isOffFrame()
-//            cropView.crop()
-//
-//        }

@@ -47,7 +47,7 @@ class EditPictureActivity : AppCompatActivity() {
         }
 
         buttonSave.setOnClickListener {
-            mSecurityPreferences.storeBitmap("fotoPerfil", cropImageView.croppedImage)
+            mSecurityPreferences.storeBitmap("picToReview", cropImageView.croppedImage)
             val returnIntent = Intent()
             setResult(Activity.RESULT_OK, returnIntent)
             mSecurityPreferences.remove("picToCrop")

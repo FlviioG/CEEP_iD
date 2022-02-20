@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "id-ceep"
-  }
+    "default": "id-ceep",
+    "firebase serve -p 8081": "id-ceep",
+    "staging": "id-ceep"
+  },
+  "targets": {}
 }

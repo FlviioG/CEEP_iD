@@ -2,8 +2,6 @@ package com.ceep.id.ui
 
 
 import android.app.KeyguardManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -29,18 +27,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.internal.measurement.zzee
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.ktx.messaging
 
 
 class MainActivity : AppCompatActivity() {
@@ -292,6 +284,7 @@ class MainActivity : AppCompatActivity() {
                             findViewById<EditText>(R.id.editNome).isEnabled = false
                             findViewById<Spinner>(R.id.editSala).visibility = View.VISIBLE
                             findViewById<Spinner>(R.id.editAno).visibility = View.VISIBLE
+                            findViewById<TextView>(R.id.textCadastro).visibility = View.VISIBLE
                             spinner.visibility = View.VISIBLE
                             findViewById<SignInButton>(R.id.sign_in_button).visibility =
                                 View.INVISIBLE
