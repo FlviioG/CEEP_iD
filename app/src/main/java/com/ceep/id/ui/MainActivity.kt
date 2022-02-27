@@ -17,6 +17,8 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.ceep.id.R
+import com.ceep.id.infra.Constants.DATA.BASIC_INFORMATIONS
+import com.ceep.id.infra.Constants.DATA.USER_ID
 import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.auth.FirebaseConfig
 import com.ceep.id.ui.admin.MainScreenAdmin
@@ -70,8 +72,6 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseConfig.getFirebaseAuth()
         usuarioRef = FirebaseConfig.getFirabaseDatabase()
 
-
-
         val editTurma = findViewById<Spinner>(R.id.editTurma)
         val buttonContinuar = findViewById<Button>(R.id.button_continuar)
         val signInButton = findViewById<SignInButton>(R.id.sign_in_button)
@@ -80,6 +80,7 @@ class MainActivity : AppCompatActivity() {
         signInButton.setOnClickListener {
             signIn()
         }
+
         buttonContinuar.setOnClickListener {
             val idU = GoogleSignIn.getLastSignedInAccount(this)?.id
             val nome = usuarioRef!!.child("usuarios").child(idU!!).child("nome")
@@ -98,8 +99,8 @@ class MainActivity : AppCompatActivity() {
                 sala.setValue(salaSel.selectedItem.toString())
                 liberado.setValue(false)
 
-                mSecurityPreferences.storeString("idU", idU.toString())
-                mSecurityPreferences.storeInt("basicInformations", 1)
+                mSecurityPreferences.storeString(USER_ID, idU.toString())
+                mSecurityPreferences.storeInt(BASIC_INFORMATIONS, 1)
                 updateUI()
             } else {
                 Toast.makeText(this, "Preencha todos os campos primeiro.", Toast.LENGTH_LONG).show()
@@ -134,7 +135,7 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-            && mSecurityPreferences.getInt("basicInformations") == 1
+            && mSecurityPreferences.getInt(BASIC_INFORMATIONS) == 1
         ) {
             checkBiometricSupport()
 
@@ -167,7 +168,7 @@ class MainActivity : AppCompatActivity() {
                     "Cancelar",
                     this.mainExecutor
                 ) { _, _ ->
-                    notifyUser("Processo cancelado.")
+                    notifyUser("Processo cancelado")
                     this.finishAffinity()
                 }.build()
 
@@ -188,7 +189,7 @@ class MainActivity : AppCompatActivity() {
     private fun getCancellationSignal(): CancellationSignal {
         cancellationSignal = CancellationSignal()
         cancellationSignal?.setOnCancelListener {
-            notifyUser("Authentication was Cancelled by the user")
+            notifyUser("Autenticação cancelada pelo usuário")
         }
         return cancellationSignal as CancellationSignal
     }
@@ -197,7 +198,7 @@ class MainActivity : AppCompatActivity() {
     private fun checkBiometricSupport(): Boolean {
         val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
         if (!keyguardManager.isDeviceSecure) {
-            notifyUser("Fingerprint authentication has not been enabled in settings")
+            notifyUser("O leitor biométrico ainda não foi configurado")
             return false
         }
         if (ActivityCompat.checkSelfPermission(
@@ -205,7 +206,7 @@ class MainActivity : AppCompatActivity() {
                 android.Manifest.permission.USE_BIOMETRIC
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            notifyUser("Fingerprint Authentication Permission is not enabled")
+            notifyUser("Não há permissão para acessar o leitor biométrico")
             return false
         }
         return if (packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)) {
@@ -224,7 +225,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUI() {
 
-        val idU = mSecurityPreferences.getString("idU")
+        val idU = mSecurityPreferences.getString(USER_ID)
 
         usuarioRef?.child("usuarios/${idU}/admin")?.get()?.addOnSuccessListener {
             if (it.value == true) {
@@ -232,7 +233,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        if (idU != "" && mSecurityPreferences.getInt("basicInformations") == 1) {
+        if (idU != "" && mSecurityPreferences.getInt(BASIC_INFORMATIONS) == 1) {
             startActivity(Intent(this, MainScreen::class.java))
         }
     }
@@ -249,7 +250,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
                 firebaseAuthWithGoogle(account.idToken!!)
                 mSecurityPreferences.storeString(
-                    "idU",
+                    USER_ID,
                     GoogleSignIn.getLastSignedInAccount(this)?.id.toString()
                 )
             } catch (e: ApiException) {
@@ -271,30 +272,35 @@ class MainActivity : AppCompatActivity() {
                     usuarioRef?.child("usuarios/${idU}/turma")?.get()?.addOnSuccessListener {
 
                         val snap = it.value
+                        val spinner = findViewById<Spinner>(R.id.editTurma)
+                        val editNome = findViewById<EditText>(R.id.editNome)
+                        val continuarBt = findViewById<Button>(R.id.button_continuar)
+                        val editSala = findViewById<Spinner>(R.id.editSala)
+                        val editAno = findViewById<Spinner>(R.id.editAno)
+                        val textCadastro = findViewById<TextView>(R.id.textCadastro)
+                        val signInBt = findViewById<SignInButton>(R.id.sign_in_button)
 
                         if (snap != null) {
                             mSecurityPreferences.storeInt("basicInformations", 1)
                             updateUI()
                         } else {
-                            val spinner = findViewById<Spinner>(R.id.editTurma)
-
-                            findViewById<Button>(R.id.button_continuar).visibility =
-                                View.VISIBLE
-                            findViewById<EditText>(R.id.editNome).visibility = View.VISIBLE
-                            findViewById<EditText>(R.id.editNome).isEnabled = false
-                            findViewById<Spinner>(R.id.editSala).visibility = View.VISIBLE
-                            findViewById<Spinner>(R.id.editAno).visibility = View.VISIBLE
-                            findViewById<TextView>(R.id.textCadastro).visibility = View.VISIBLE
+                            continuarBt.visibility = View.VISIBLE
+                            editNome.visibility = View.VISIBLE
+                            editNome.isEnabled = false
+                            editNome.setText(auth?.currentUser?.displayName)
+                            editSala.visibility = View.VISIBLE
+                            editAno.visibility = View.VISIBLE
+                            textCadastro.visibility = View.VISIBLE
                             spinner.visibility = View.VISIBLE
-                            findViewById<SignInButton>(R.id.sign_in_button).visibility =
-                                View.INVISIBLE
-
-                            findViewById<EditText>(R.id.editNome).setText(auth?.currentUser?.displayName)
+                            signInBt.visibility = View.INVISIBLE
                         }
                     }
                 } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential:failure", task.exception)
+                    Toast.makeText(
+                        this,
+                        "Houve um problema com o login, tente novamente",
+                        Toast.LENGTH_LONG
+                    ).show()
                     updateUI()
                 }
             }
@@ -314,42 +320,61 @@ class MainActivity : AppCompatActivity() {
 
         val ano = findViewById<Spinner>(R.id.editAno).selectedItemId.toInt()
         val spinner = findViewById<Spinner>(R.id.editSala)
+        val buttonContinuar = findViewById<Button>(R.id.button_continuar)
 
         when {
             p2 == 0 || ano == 0 -> {
+                spinner.isEnabled = false
+                buttonContinuar.isEnabled = false
                 populateSpinner(R.array.Selecionar, spinner)
             }
             p2 == 1 && ano == 1 -> {
+                spinner.isEnabled = true
+                buttonContinuar.isEnabled = true
                 populateSpinner(R.array.Salas_ADM_1, spinner)
             }
             p2 == 1 && ano == 2 -> {
+                spinner.isEnabled = true
+                buttonContinuar.isEnabled = true
                 populateSpinner(R.array.Salas_ADM_2, spinner)
             }
             p2 == 1 && ano == 3 -> {
+                spinner.isEnabled = true
+                buttonContinuar.isEnabled = true
                 populateSpinner(R.array.Salas_ADM_3, spinner)
             }
             p2 == 2 && ano == 1 -> {
+                spinner.isEnabled = true
+                buttonContinuar.isEnabled = true
                 populateSpinner(R.array.Salas_LOG_1, spinner)
             }
             p2 == 2 && ano == 2 -> {
+                spinner.isEnabled = true
+                buttonContinuar.isEnabled = true
                 populateSpinner(R.array.Salas_LOG_2, spinner)
             }
             p2 == 2 && ano == 3 -> {
+                spinner.isEnabled = true
+                buttonContinuar.isEnabled = true
                 populateSpinner(R.array.Salas_LOG_3, spinner)
             }
             p2 == 3 && ano == 1 -> {
+                spinner.isEnabled = true
+                buttonContinuar.isEnabled = true
                 populateSpinner(R.array.Salas_MAM_1, spinner)
             }
             p2 == 3 && ano == 2 -> {
+                spinner.isEnabled = true
+                buttonContinuar.isEnabled = true
                 populateSpinner(R.array.Salas_MAM_2, spinner)
             }
             p2 == 3 && ano == 3 -> {
-                populateSpinner(R.array.Salas_MAM_3, spinner)
+                spinner.isEnabled = false
+                buttonContinuar.isEnabled = false
+                populateSpinner(R.array.Selecionar, spinner)
             }
         }
     }
-
-
 
     companion object {
         private const val TAG = "GoogleActivity"

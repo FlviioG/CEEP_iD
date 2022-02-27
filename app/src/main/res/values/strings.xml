@@ -37,31 +37,35 @@
     </string-array>
     <string-array name="Salas_LOG_3">
         <item>3 LOG M1</item>
+        <item>3 LOG M2</item>
         <item>3 LOG V1</item>
+        <item>3 LOG V2</item>
+        <item>3 LOG V3</item>
+        <item>3 LOG V4</item>
     </string-array>
     <string-array name="Salas_ADM_1">
         <item>1 ADM M1</item>
         <item>1 ADM M2</item>
         <item>1 ADM M3</item>
+        <item>1 ADM M4</item>
         <item>1 ADM V1</item>
         <item>1 ADM V2</item>
     </string-array>
     <string-array name="Salas_ADM_2">
         <item>2 ADM M1</item>
         <item>2 ADM V1</item>
-        <item>2 ADM V2</item>
     </string-array>
     <string-array name="Salas_ADM_3">
         <item>3 ADM M1</item>
         <item>3 ADM V1</item>
+        <item>3 ADM V2</item>
+        <item>3 ADM V3</item>
+        <item>3 ADM V4</item>
     </string-array>
     <string-array name="Salas_MAM_1">
         <item>1 MAM M1</item>
     </string-array>
     <string-array name="Salas_MAM_2">
         <item>2 MAM M1</item>
-    </string-array>
-    <string-array name="Salas_MAM_3">
-        <item>3 MAM M1</item>
     </string-array>
 </resources>

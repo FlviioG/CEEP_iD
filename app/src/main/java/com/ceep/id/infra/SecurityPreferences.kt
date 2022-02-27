@@ -7,7 +7,7 @@ import android.util.Base64
 import java.io.ByteArrayOutputStream
 
 class SecurityPreferences(context: Context) {
-    private val mSharedPreferences = context.getSharedPreferences("CEEP_id", Context.MODE_PRIVATE)
+    private val mSharedPreferences = context.getSharedPreferences("CEEP_iD", Context.MODE_PRIVATE)
 
 
     fun storeString(key: String, value: String) {

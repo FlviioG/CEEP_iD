@@ -13,6 +13,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ceep.id.R
+import com.ceep.id.infra.Constants.DATA.USER_ID
 import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.Usuario
 import com.ceep.id.infra.auth.FirebaseConfig
@@ -42,7 +43,7 @@ class MainScreenAdmin : AppCompatActivity() {
 
         usuarioRef = FirebaseConfig.getFirabaseDatabase()
         mSecurityPreferences = SecurityPreferences(this)
-        idU = mSecurityPreferences.getString("idU")
+        idU = mSecurityPreferences.getString(USER_ID)
 
         recyclerAlunos = findViewById(R.id.recyclerAlunos)
         referenciaAlunos = FirebaseConfig.getFirabaseDatabase()?.child("usuarios")
@@ -244,7 +245,7 @@ class MainScreenAdmin : AppCompatActivity() {
                 populateSpinner(R.array.Salas_MAM_2, spinner)
             }
             p2 == 3 && ano == 3 -> {
-                populateSpinner(R.array.Salas_MAM_3, spinner)
+                populateSpinner(R.array.Selecionar, spinner)
             }
         }
     }

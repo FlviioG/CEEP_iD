@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "173798830369",
+    "firebase_url": "https://id-ceep-default-rtdb.firebaseio.com",
+    "project_id": "id-ceep",
+    "storage_bucket": "id-ceep.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:173798830369:android:a259808c9d7e8a3ceb8e60",
+        "android_client_info": {
+          "package_name": "com.ceep.id"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "173798830369-97gj04odqqs2ensmlatvbnkc2eqcrt36.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ceep.id",
+            "certificate_hash": "e56f814b192b04ab5cff5ab51e065ec66fb4eab1"
+          }
+        },
+        {
+          "client_id": "173798830369-t0khs9p2iv5l1a5ibpjr6cap8t8doo4d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvPqFmDxi_NDaEwgp0s8PcGq2WaK3n6jM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "173798830369-t0khs9p2iv5l1a5ibpjr6cap8t8doo4d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-6136253738426934~9461249019"
+    }
+  ],
+  "configuration_version": "1"
+}

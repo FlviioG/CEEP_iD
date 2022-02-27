@@ -13,7 +13,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginStart="65dp"
-            android:src="@drawable/fingerprint"
+            app:srcCompat="@drawable/fingerprint"
             app:layout_constraintBottom_toBottomOf="@id/imageView"
             app:layout_constraintStart_toStartOf="@id/imageView"
             app:layout_constraintTop_toTopOf="@id/imageView" />

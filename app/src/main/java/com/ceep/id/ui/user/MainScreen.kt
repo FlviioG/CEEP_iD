@@ -1,6 +1,5 @@
 package com.ceep.id.ui.user
 
-import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -17,22 +16,33 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
-import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.widget.NestedScrollView
 import com.bumptech.glide.Glide
 import com.ceep.id.R
+import com.ceep.id.infra.Constants.DATA.CHANNEL_ID
+import com.ceep.id.infra.Constants.DATA.PIC_PERFIL
+import com.ceep.id.infra.Constants.DATA.PIC_TO_CROP
+import com.ceep.id.infra.Constants.DATA.PIC_TO_REVIEW
+import com.ceep.id.infra.Constants.DATA.USER_ID
+import com.ceep.id.infra.Constants.REQUESTS.CAMERA_REQUEST
+import com.ceep.id.infra.Constants.REQUESTS.CROP_IMAGE_REQUEST
+import com.ceep.id.infra.Constants.REQUESTS.PICK_IMAGE_REQUEST
 import com.ceep.id.infra.Permissao
 import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.auth.FirebaseConfig
@@ -50,23 +60,23 @@ import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MainScreen : AppCompatActivity() {
 
-    private val permissoesNecessarias = arrayOf(
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.INTERNET
-    )
     private var conection: Int? = null
     private var usuarioRef: DatabaseReference? = null
     private var storageReference: StorageReference? = null
+    private lateinit var currentPhotoPath: String
     private lateinit var idUsuario: String
     private lateinit var photoUsuario: Uri
     private lateinit var nomeUsuario: String
     private lateinit var turmaUsuario: String
+    private lateinit var salaUsuario: String
     private lateinit var mSecurityPreferences: SecurityPreferences
+    private lateinit var takePictureIntent: ActivityResultLauncher<Uri>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,12 +84,11 @@ class MainScreen : AppCompatActivity() {
 
         createNotificationChannel()
 
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        )
+        ///window.setFlags(
+        //  WindowManager.LayoutParams.FLAG_SECURE,
+        //  WindowManager.LayoutParams.FLAG_SECURE
+        //)
 
-        Permissao.validarPermissoes(permissoesNecessarias, this, 1)
         mSecurityPreferences = SecurityPreferences(this)
         storageReference = FirebaseConfig.getFirebaseStorage()
         usuarioRef = FirebaseConfig.getFirabaseDatabase()
@@ -87,12 +96,11 @@ class MainScreen : AppCompatActivity() {
         if (acct != null) {
             idUsuario = acct.id!!
             photoUsuario = acct.photoUrl!!
-
         }
         ///"ca-app-pub-6136253738426934/1523049245"
         val adView = findViewById<AdView>(R.id.ad)
         adView.loadAd(AdRequest.Builder().build())
-        mSecurityPreferences.storeString("idU", acct?.id.toString())
+        mSecurityPreferences.storeString(USER_ID, acct?.id.toString())
 
         val statusText = findViewById<TextView>(R.id.status_text)
         val buttonPic = findViewById<FloatingActionButton>(R.id.button_photo)
@@ -100,6 +108,9 @@ class MainScreen : AppCompatActivity() {
         val textName = findViewById<TextView>(R.id.textNome)
         val textTurma = findViewById<TextView>(R.id.textTurma)
         val buttonRefresh = findViewById<ImageButton>(R.id.refresh_button)
+        val cameraBut = findViewById<TextView>(R.id.cameraBut)
+        val galeriaBut = findViewById<TextView>(R.id.galeriaBut)
+        val cardView = findViewById<CardView>(R.id.cardView)
 
         theme()
 
@@ -108,8 +119,58 @@ class MainScreen : AppCompatActivity() {
             getData(textName, textTurma, profilePic, statusText)
         }
 
+        takePictureIntent =
+            registerForActivityResult(ActivityResultContracts.TakePicture()) { sucess: Boolean ->
+                if (sucess) {
+                    val image = BitmapFactory.decodeFile(currentPhotoPath)
+                    mSecurityPreferences.storeBitmap(PIC_TO_CROP, image)
+                    val photoCropIntent = Intent(
+                        this, EditPictureActivity::class.java
+                    )
+                    startActivityForResult(photoCropIntent, 200)
+                }
+            }
+
         buttonPic.setOnClickListener {
+            if (cardView.visibility == View.VISIBLE) {
+                cardView.visibility = View.GONE
+            } else {
+                cardView.visibility = View.VISIBLE
+            }
+        }
+        cameraBut.setOnClickListener {
+
+            if (Permissao.validarPermissoes(this, 1)) {
+                val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                cameraIntent.also { takePictureIntent ->
+                    takePictureIntent.resolveActivity(packageManager)?.also {
+
+                        val file = try {
+                            createImageFile()
+                        } catch (ex: IOException) {
+                            null
+                        }
+                        file.also {
+                            val photoURI: Uri = FileProvider.getUriForFile(
+                                this,
+                                "com.ceep.id.fileprovider",
+                                it!!
+                            )
+                            takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                            startActivityForResult(takePictureIntent, CAMERA_REQUEST)
+                        }
+
+                    }
+                }
+                cardView.visibility = View.GONE
+            } else {
+                Toast.makeText(this, "Permita acesso a câmera primeiro.", Toast.LENGTH_LONG).show()
+            }
+        }
+        galeriaBut.setOnClickListener {
             openGalleryForImage()
+            cardView.visibility = View.GONE
         }
         profilePic.setOnClickListener {
             startActivity(Intent(this, ViewPictureActivity::class.java))
@@ -125,29 +186,38 @@ class MainScreen : AppCompatActivity() {
             conection = checkConection()
             if (conection == 0 || conection == 2) {
                 getData(textName, textTurma, profilePic, statusText)
+                adView.loadAd(AdRequest.Builder().build())
             }
         }
 
     }
 
     override fun onBackPressed() {
-
         this.finishAffinity()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        val PICK_IMAGE_REQUEST = 100
-        val CROP_IMAGE_REQUEST = 200
 
-        if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_REQUEST) {
-            val image = MediaStore.Images.Media.getBitmap(contentResolver, data?.data)
-            mSecurityPreferences.storeBitmap("picToCrop", image)
+        if (resultCode == RESULT_OK && requestCode == CAMERA_REQUEST) {
+            val image = BitmapFactory.decodeFile(currentPhotoPath)
+
+            mSecurityPreferences.storeBitmap(PIC_TO_CROP, image)
             val photoCropIntent = Intent(
                 this, EditPictureActivity::class.java
             )
             startActivityForResult(photoCropIntent, CROP_IMAGE_REQUEST)
+        }
 
+        if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_REQUEST) {
+
+            val image = MediaStore.Images.Media.getBitmap(contentResolver, data?.data)
+
+            mSecurityPreferences.storeBitmap(PIC_TO_CROP, image)
+            val photoCropIntent = Intent(
+                this, EditPictureActivity::class.java
+            )
+            startActivityForResult(photoCropIntent, CROP_IMAGE_REQUEST)
         }
 
         if (resultCode == RESULT_OK && requestCode == CROP_IMAGE_REQUEST) {
@@ -157,7 +227,7 @@ class MainScreen : AppCompatActivity() {
             photoButton.visibility = View.INVISIBLE
             val progressBar = findViewById<ProgressBar>(R.id.progress)
             progressBar.visibility = View.VISIBLE
-            val image = mSecurityPreferences.getBitmap("picToReview")!!
+            val image = mSecurityPreferences.getBitmap(PIC_TO_REVIEW)!!
 
             val imageP = InputImage.fromBitmap(image, 0)
             val options = FaceDetectorOptions.Builder()
@@ -181,7 +251,7 @@ class MainScreen : AppCompatActivity() {
                         progressBar.visibility = View.GONE
                         photoButton.visibility = View.VISIBLE
                         profilePic.visibility = View.VISIBLE
-                        mSecurityPreferences.remove("picToReview")
+                        mSecurityPreferences.remove(PIC_TO_REVIEW)
                     }
                     1 -> {
                         ///MediaStore.Images.Media.getBitmap(this.contentResolver, data?.data)
@@ -204,7 +274,7 @@ class MainScreen : AppCompatActivity() {
                             progressBar.visibility = View.GONE
                             photoButton.visibility = View.VISIBLE
                             profilePic.visibility = View.VISIBLE
-                            mSecurityPreferences.remove("picToReview")
+                            mSecurityPreferences.remove(PIC_TO_REVIEW)
                         }.addOnSuccessListener {
                             val roundDrawable =
                                 RoundedBitmapDrawableFactory.create(resources, image)
@@ -215,11 +285,11 @@ class MainScreen : AppCompatActivity() {
                                 this@MainScreen,
                                 "Imagem salva.", Toast.LENGTH_SHORT
                             ).show()
-                            mSecurityPreferences.storeBitmap("fotoPerfil", image)
+                            mSecurityPreferences.storeBitmap(PIC_PERFIL, image)
                             progressBar.visibility = View.GONE
                             photoButton.visibility = View.VISIBLE
                             profilePic.visibility = View.VISIBLE
-                            mSecurityPreferences.remove("picToReview")
+                            mSecurityPreferences.remove(PIC_TO_REVIEW)
                         }
                     }
                     else -> {
@@ -231,7 +301,7 @@ class MainScreen : AppCompatActivity() {
                         progressBar.visibility = View.GONE
                         photoButton.visibility = View.VISIBLE
                         profilePic.visibility = View.VISIBLE
-                        mSecurityPreferences.remove("picToReview")
+                        mSecurityPreferences.remove(PIC_TO_REVIEW)
                     }
                 }
 
@@ -240,19 +310,19 @@ class MainScreen : AppCompatActivity() {
                 profilePic.visibility = View.GONE
                 photoButton.visibility = View.VISIBLE
                 profilePic.visibility = View.VISIBLE
-                mSecurityPreferences.remove("picToReview")
+                mSecurityPreferences.remove(PIC_TO_REVIEW)
             }
         }
     }
 
     private fun openGalleryForImage() {
-        val PICK_IMAGE_REQUEST = 100
-        val photoPickerIntent = Intent(
+        val galleryIntent = Intent(
             Intent.ACTION_PICK,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         )
-        photoPickerIntent.type = "image/*"
-        startActivityForResult(photoPickerIntent, PICK_IMAGE_REQUEST)
+        galleryIntent.type = "image/*"
+
+        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST)
     }
 
     private fun checkConection(): Int {
@@ -280,19 +350,21 @@ class MainScreen : AppCompatActivity() {
             nomeUsuario = it.value.toString()
             textName.text = nomeUsuario
         }
+
         ///Turma
         usuarioRef?.child("usuarios/${idUsuario}/turma")?.get()?.addOnSuccessListener { it ->
 
             turmaUsuario = it.value.toString()
 
             usuarioRef?.child("usuarios/${idUsuario}/sala")?.get()?.addOnSuccessListener {
-                textTurma.text = "$turmaUsuario - ${it.value.toString()}"
+
+                salaUsuario = it.value as String
+                val turmaFormatada = "$turmaUsuario - $salaUsuario"
+                textTurma.text = turmaFormatada
             }
-
-
         }
         ///Foto
-        if (mSecurityPreferences.getBitmap("fotoPerfil") == null) {
+        if (mSecurityPreferences.getBitmap(PIC_PERFIL) == null) {
             try {
                 val pathReference =
                     storageReference?.child("imagens/alunos/${idUsuario}/fotoPerfil.jpeg")
@@ -304,7 +376,7 @@ class MainScreen : AppCompatActivity() {
                         roundDrawable.cornerRadius = 49F
                         profilePic.setImageDrawable(roundDrawable)
                         mSecurityPreferences.storeBitmap(
-                            "fotoPerfil",
+                            PIC_PERFIL,
                             profilePic.drawable.toBitmap()
                         )
                     }?.addOnFailureListener {
@@ -318,7 +390,7 @@ class MainScreen : AppCompatActivity() {
                                 roundDrawable.cornerRadius = 49F
                                 profilePic.setImageDrawable(roundDrawable)
                                 mSecurityPreferences.storeBitmap(
-                                    "fotoPerfil",
+                                    PIC_PERFIL,
                                     profilePic.drawable.toBitmap()
                                 )
                             }, 5000)
@@ -328,7 +400,7 @@ class MainScreen : AppCompatActivity() {
 
             }
         } else {
-            val image = mSecurityPreferences.getBitmap("fotoPerfil")
+            val image = mSecurityPreferences.getBitmap(PIC_PERFIL)
             val roundDrawable = RoundedBitmapDrawableFactory.create(resources, image)
             roundDrawable.cornerRadius = 49F
             profilePic.setImageDrawable(roundDrawable)
@@ -352,9 +424,12 @@ class MainScreen : AppCompatActivity() {
                     val minute = date.get(Calendar.MINUTE)
 
                     when {
-                        hour <= 9 && minute > 9 -> statusText.text = "Liberado. Atualizado às 0$hour:$minute."
-                        hour > 9 && minute <= 9 -> statusText.text = "Liberado. Atualizado às $hour:0$minute."
-                        hour <= 9 && minute <= 9 -> statusText.text = "Liberado. Atualizado às 0$hour:0$minute."
+                        hour <= 9 && minute > 9 -> statusText.text =
+                            "Liberado. Atualizado às 0$hour:$minute."
+                        hour > 9 && minute <= 9 -> statusText.text =
+                            "Liberado. Atualizado às $hour:0$minute."
+                        hour <= 9 && minute <= 9 -> statusText.text =
+                            "Liberado. Atualizado às 0$hour:0$minute."
                         else -> statusText.text = "Liberado. Atualizado às $hour:$minute."
                     }
                 } else if (post == null || post == false) {
@@ -363,7 +438,47 @@ class MainScreen : AppCompatActivity() {
                             this@MainScreen, R.drawable.red_ball
                         )
                     )
-                    statusText.text = "Em aula/Fora do horario de aula"
+
+                    val date = Calendar.getInstance()
+                    val hour = date.get(Calendar.HOUR_OF_DAY)
+                    val minutes = date.get(Calendar.MINUTE)
+
+                    usuarioRef?.child("usuarios/${idUsuario}/sala")?.get()
+                        ?.addOnSuccessListener { it ->
+                            if (it.toString().contains('V')) {
+                                when (hour) {
+                                    in 13..17 -> {
+                                        statusText.text = "Em aula"
+                                    }
+                                    18 -> {
+                                        when (minutes) {
+                                            in 0..20 -> {
+                                                statusText.text = "Em aula"
+                                            }
+                                        }
+                                    }
+                                    else -> {
+                                        statusText.text = "Fora do horário de aula"
+                                    }
+                                }
+                            } else {
+                                when (hour) {
+                                    in 7..11 -> {
+                                        statusText.text = "Em aula"
+                                    }
+                                    12 -> {
+                                        when (minutes) {
+                                            in 0..20 -> {
+                                                statusText.text = "Em aula"
+                                            }
+                                        }
+                                    }
+                                    else -> {
+                                        statusText.text = "Fora do horário de aula"
+                                    }
+                                }
+                            }
+                        }
                 }
             }
 
@@ -389,15 +504,12 @@ class MainScreen : AppCompatActivity() {
         if (capabilities != null) {
             when {
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
                     return true
                 }
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
                     return true
                 }
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
                     return true
                 }
             }
@@ -407,13 +519,15 @@ class MainScreen : AppCompatActivity() {
 
     private fun theme() {
 
-        val backgroundView = findViewById<ScrollView>(R.id.background_scrollview)
+        val backgroundView = findViewById<NestedScrollView>(R.id.background_scrollview)
         val toolbar = findViewById<ImageView>(R.id.toolbar)
         val backgroundPic = findViewById<ImageView>(R.id.background_pic)
         val shapeStatus = findViewById<ImageView>(R.id.shape_status)
         val shapeNome = findViewById<ImageView>(R.id.shape_nome)
         val statusText = findViewById<TextView>(R.id.status_text)
         val buttonRefresh = findViewById<ImageButton>(R.id.refresh_button)
+        val cardView = findViewById<CardView>(R.id.cardView)
+        val linha = findViewById<View>(R.id.linhaCardView)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
@@ -424,6 +538,8 @@ class MainScreen : AppCompatActivity() {
                         R.drawable.main_toolbar_dark
                     )
                 )
+                cardView.setCardBackgroundColor(getColor(R.color.dark_blue))
+                linha.setBackgroundColor(getColor(R.color.background_dark))
                 buttonRefresh.setColorFilter(getColor(R.color.white))
                 backgroundPic.setImageDrawable(
                     AppCompatResources.getDrawable(
@@ -446,6 +562,8 @@ class MainScreen : AppCompatActivity() {
                 statusText.setTextColor(ResourcesCompat.getColor(resources, R.color.white, theme))
             } else {
                 backgroundView.setBackgroundColor(getColor(R.color.background_light))
+                cardView.setCardBackgroundColor(getColor(R.color.white))
+                linha.setBackgroundColor(getColor(R.color.background_light))
                 buttonRefresh.setColorFilter(getColor(R.color.black))
                 toolbar.setImageDrawable(
                     AppCompatResources.getDrawable(
@@ -482,7 +600,6 @@ class MainScreen : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Situaçao"
             val descriptionText = "Situaçao do aluno"
-            val CHANNEL_ID = "default_id"
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
@@ -491,6 +608,21 @@ class MainScreen : AppCompatActivity() {
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir: File? = applicationContext.cacheDir
+        return File.createTempFile(
+            "CEEPiD_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = absolutePath
         }
     }
 }

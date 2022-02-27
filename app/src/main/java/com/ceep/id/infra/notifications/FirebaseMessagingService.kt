@@ -28,8 +28,6 @@ import java.net.URL
 class MyFirebaseMessagingService : FirebaseMessagingService() {
     private var numMessages = 0
 
-    private val mSecuritySettings = SecurityPreferences(this)
-
     override fun onNewToken(p0: String) {
         super.onNewToken(p0)
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
@@ -41,7 +39,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             // Get new FCM registration token
             val token = task.result
 
-           mSecuritySettings.storeString("token", token)
+           SecurityPreferences(this).storeString("token", token)
             sendRegistrationToServer(token)
         })
     }

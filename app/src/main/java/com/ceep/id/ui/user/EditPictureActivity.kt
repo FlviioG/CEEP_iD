@@ -1,6 +1,5 @@
 package com.ceep.id.ui.user
 
-import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
@@ -8,6 +7,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.ceep.id.R
+import com.ceep.id.infra.Constants.DATA.PIC_TO_CROP
+import com.ceep.id.infra.Constants.DATA.PIC_TO_REVIEW
 import com.ceep.id.infra.SecurityPreferences
 import com.edmodo.cropper.CropImageView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -40,17 +41,17 @@ class EditPictureActivity : AppCompatActivity() {
             setFixedAspectRatio(true)
             setGuidelines(2)
         }
-        cropImageView.setImageBitmap(mSecurityPreferences.getBitmap("picToCrop"))
+        cropImageView.setImageBitmap(mSecurityPreferences.getBitmap(PIC_TO_CROP))
 
         buttonRotate.setOnClickListener {
             cropImageView.rotateImage(-90)
         }
 
         buttonSave.setOnClickListener {
-            mSecurityPreferences.storeBitmap("picToReview", cropImageView.croppedImage)
+            mSecurityPreferences.storeBitmap(PIC_TO_REVIEW, cropImageView.croppedImage)
             val returnIntent = Intent()
-            setResult(Activity.RESULT_OK, returnIntent)
-            mSecurityPreferences.remove("picToCrop")
+            setResult(RESULT_OK, returnIntent)
+            mSecurityPreferences.remove(PIC_TO_CROP)
             finish()
         }
 
@@ -58,7 +59,7 @@ class EditPictureActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         val returnIntent = Intent()
-        setResult(Activity.RESULT_CANCELED, returnIntent)
+        setResult(RESULT_CANCELED, returnIntent)
         finish()
     }
 }

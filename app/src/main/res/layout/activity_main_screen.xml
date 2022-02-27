@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/background_scrollview"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.ceep.id.ui.user.MainScreen">
@@ -26,7 +27,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/main_toolbar" />
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/refresh_button"
             android:layout_width="32dp"
             android:layout_height="32dp"
@@ -51,7 +52,54 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:srcCompat="@drawable/pic_background" />
 
-        <ImageView
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/white"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardElevation="8dp"
+            app:cardCornerRadius="16dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="@+id/button_photo"
+            app:layout_constraintTop_toBottomOf="@id/button_photo"
+            style="@style/Widget.Material3.CardView.Elevated">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/cameraBut"
+                    android:padding="16dp"
+                    android:textAlignment="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Capturar foto"
+                    />
+                <View
+                    android:id="@+id/linhaCardView"
+                    android:layout_width="match_parent"
+                    android:background="@color/browser_actions_bg_grey"
+                    android:layout_height="1dp"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/galeriaBut"
+                    android:padding="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:textAlignment="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Enviar da galeria"
+                    />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/profile_pic"
             android:layout_width="250dp"
             android:layout_height="250dp"
@@ -62,7 +110,7 @@
             app:layout_constraintStart_toStartOf="@id/background_pic"
             app:layout_constraintTop_toTopOf="@id/background_pic" />
 
-        <ProgressBar
+        <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progress"
             android:visibility="gone"
             android:layout_width="wrap_content"
@@ -105,7 +153,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/shape_nome"
-            app:srcCompat="@drawable/shape_status" />
+            app:srcCompat="@drawable/shape_nome" />
 
         <ImageView
             android:id="@+id/led_indicator"
@@ -117,7 +165,7 @@
             app:layout_constraintTop_toTopOf="@+id/shape_status"
             app:srcCompat="@drawable/green_ball" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/status_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -128,23 +176,26 @@
             android:textColor="#000000"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@+id/led_indicator"
-            app:layout_constraintStart_toEndOf="@+id/led_indicator"
+            app:layout_constraintEnd_toEndOf="@+id/shape_status"
+            app:layout_constraintStart_toStartOf="@+id/shape_status"
             app:layout_constraintTop_toTopOf="@+id/led_indicator" />
 
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textNome"
-            android:layout_width="wrap_content"
+            android:layout_width="340dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-black"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textSize="28sp"
+            android:textAlignment="center"
+            android:ellipsize="end"
             app:layout_constraintBottom_toTopOf="@id/textTurma"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/shape_nome"
+            app:layout_constraintStart_toStartOf="@id/shape_nome"
             app:layout_constraintTop_toTopOf="@id/shape_nome" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textTurma"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -174,7 +225,6 @@
                 android:id="@+id/button_perfil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 app:layout_constraintBottom_toTopOf="@+id/button_historico"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -205,5 +255,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-           </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Situação"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/status_text"
+            app:layout_constraintEnd_toEndOf="@+id/shape_status"
+            app:layout_constraintStart_toStartOf="@+id/shape_status"
+            app:layout_constraintTop_toBottomOf="@+id/shape_nome" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

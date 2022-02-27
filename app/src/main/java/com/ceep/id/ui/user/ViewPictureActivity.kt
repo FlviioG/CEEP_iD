@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.ceep.id.R
+import com.ceep.id.infra.Constants.DATA.PIC_PERFIL
 import com.ceep.id.infra.SecurityPreferences
 
 class ViewPictureActivity : AppCompatActivity() {
@@ -28,7 +29,7 @@ class ViewPictureActivity : AppCompatActivity() {
             }
         }
 
-        profilePic.setImageBitmap(mSecurityPreferences.getBitmap("fotoPerfil"))
+        profilePic.setImageBitmap(mSecurityPreferences.getBitmap(PIC_PERFIL))
 
         buttonVoltar.setOnClickListener {
             finish()

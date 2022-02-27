@@ -1,6 +1,6 @@
 package com.ceep.id.infra.auth
 
-import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 
 
-class GoogleSignInActivity : Activity() {
+class GoogleSignInActivity : AppCompatActivity() {
 
     // [START declare_auth]
     private var auth: FirebaseAuth? = null

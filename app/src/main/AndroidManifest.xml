@@ -5,13 +5,16 @@
 
     <dist:module dist:instant="true" />
 
+    <uses-feature android:name="android.hardware.camera.any"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_USER_DICTIONARY"/>
 
     <application
         android:allowBackup="true"
@@ -44,17 +47,6 @@
         <activity
             android:name=".ui.user.EditPictureActivity"
             android:exported="false" />
-
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-6136253738426934~9461249019" />
-        <meta-data
-            android:name="com.google.mlkit.vision.DEPENDENCIES"
-            android:value="face" />
-        <meta-data
-            android:name="firebase_performance_logcat_enabled"
-            android:value="true" />
-
         <activity
             android:name=".ui.user.MainScreen"
             android:exported="true"
@@ -68,6 +60,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.ceep.id.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
+        <meta-data
+        android:name="com.google.android.gms.ads.APPLICATION_ID"
+        android:value="ca-app-pub-6136253738426934~9461249019" />
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="face" />
+        <meta-data
+            android:name="firebase_performance_logcat_enabled"
+            android:value="true" />
     </application>
 
 </manifest>

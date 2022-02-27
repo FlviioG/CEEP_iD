@@ -24,13 +24,14 @@
         <entry key="app/src/main/res/layout/activity_edit_picture.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_lista_alunos.xml" value="0.41878172588832485" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/activity_main_screen.xml" value="0.3329969727547931" />
+        <entry key="app/src/main/res/layout/activity_main_screen.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_main_screen_admin.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.21" />
         <entry key="app/src/main/res/layout/activity_view_picture.xml" value="0.171875" />
         <entry key="app/src/main/res/layout/adapter_alunos.xml" value="0.5" />
         <entry key="app/src/main/res/layout/native_ad_layout.xml" value="0.25" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.15384615384615385" />
+        <entry key="app/src/main/res/xml/file_paths.xml" value="0.1" />
       </map>
     </option>
   </component>
