@@ -6,6 +6,8 @@
     <color name="black">#FF000000</color>
     <color name="trnsparent">#00000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="green">#8BC34A</color>
+    <color name="red">#E91E36</color>
     <color name="background_light">#EAEDFF</color>
     <color name="background_dark">#0B0F27</color>
 </resources>

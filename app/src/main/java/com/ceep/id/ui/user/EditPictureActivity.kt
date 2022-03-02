@@ -1,10 +1,7 @@
 package com.ceep.id.ui.user
 
 import android.content.Intent
-import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.ceep.id.R
 import com.ceep.id.infra.Constants.DATA.PIC_TO_CROP
@@ -26,15 +23,6 @@ class EditPictureActivity : AppCompatActivity() {
         val cropImageView = findViewById<CropImageView>(R.id.cropFoto)
         val buttonRotate = findViewById<FloatingActionButton>(R.id.buttonRt)
         val buttonSave = findViewById<FloatingActionButton>(R.id.buttonSv)
-        val background = findViewById<View>(R.id.background)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
-                background.setBackgroundColor(getColor(R.color.black))
-            } else {
-                background.setBackgroundColor(getColor(R.color.background_light))
-            }
-        }
 
         with(cropImageView) {
             setAspectRatio(1, 1)

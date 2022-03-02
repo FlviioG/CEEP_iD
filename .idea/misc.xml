@@ -3,11 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/background.xml" value="0.1805" />
         <entry key="app/src/main/res/drawable/background_login.xml" value="0.1875" />
         <entry key="app/src/main/res/drawable/edittext_dark.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/edittext_white.xml" value="0.1875" />
         <entry key="app/src/main/res/drawable/green_ball.xml" value="0.20897435897435898" />
         <entry key="app/src/main/res/drawable/historico_button.xml" value="0.20897435897435898" />
+        <entry key="app/src/main/res/drawable/ic_baseline_add_photo_alternate_24.xml" value="0.179" />
+        <entry key="app/src/main/res/drawable/ic_check.xml" value="0.179" />
         <entry key="app/src/main/res/drawable/login_button.xml" value="0.1875" />
         <entry key="app/src/main/res/drawable/logo_CAF.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/logo_caf.xml" value="0.25" />
@@ -21,13 +24,19 @@
         <entry key="app/src/main/res/drawable/shape_status.xml" value="0.20897435897435898" />
         <entry key="app/src/main/res/drawable/shape_status_dark.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/teste.xml" value="0.33" />
+        <entry key="app/src/main/res/layout-land-533x320/activity_main_screen.xml" value="1.5" />
+        <entry key="app/src/main/res/layout-land/activity_main_screen.xml" value="0.6583333333333333" />
+        <entry key="app/src/main/res/layout-sw300dp/activity_main_screen.xml" value="0.1410859341598974" />
+        <entry key="app/src/main/res/layout-sw320dp-land/activity_main_screen.xml" value="0.75" />
+        <entry key="app/src/main/res/layout-sw340dp-land/activity_main_screen.xml" value="0.3703125" />
+        <entry key="app/src/main/res/layout-sw340dp/activity_main_screen.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_edit_picture.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_lista_alunos.xml" value="0.41878172588832485" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/activity_main_screen.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.3" />
+        <entry key="app/src/main/res/layout/activity_main_screen.xml" value="0.57375" />
         <entry key="app/src/main/res/layout/activity_main_screen_admin.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.21" />
-        <entry key="app/src/main/res/layout/activity_view_picture.xml" value="0.171875" />
+        <entry key="app/src/main/res/layout/activity_view_picture.xml" value="0.2578125" />
         <entry key="app/src/main/res/layout/adapter_alunos.xml" value="0.5" />
         <entry key="app/src/main/res/layout/native_ad_layout.xml" value="0.25" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.15384615384615385" />
@@ -79,12 +88,5 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
-  </component>
-  <component name="VisualizationToolProject">
-    <option name="state">
-      <ProjectState>
-        <option name="scale" value="0.1" />
-      </ProjectState>
-    </option>
   </component>
 </project>

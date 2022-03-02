@@ -5,14 +5,13 @@
     android:id="@+id/zoom_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_blue"
+    style="@style/Theme.CEEPiD.DayNight.Background"
     tools:context=".ui.user.ViewPictureActivity">
 
     <ImageView
         android:id="@+id/zoom_pic"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:srcCompat="@drawable/rectangle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

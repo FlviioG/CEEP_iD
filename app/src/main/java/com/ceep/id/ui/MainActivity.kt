@@ -11,7 +11,9 @@ import android.os.Bundle
 import android.os.CancellationSignal
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -54,11 +56,6 @@ class MainActivity : AppCompatActivity() {
         val firebaseAppCheck = FirebaseAppCheck.getInstance()
         firebaseAppCheck.installAppCheckProviderFactory(
             SafetyNetAppCheckProviderFactory.getInstance()
-        )
-
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
 
         MobileAds.initialize(this) {}
@@ -139,22 +136,15 @@ class MainActivity : AppCompatActivity() {
         ) {
             checkBiometricSupport()
 
-            // create an authenticationCallback
             val authenticationCallback: BiometricPrompt.AuthenticationCallback =
                 object : BiometricPrompt.AuthenticationCallback() {
-                    // here we need to implement two methods
-                    // onAuthenticationError and onAuthenticationSucceeded
-                    // If the fingerprint is not recognized by the app it will call
-                    // onAuthenticationError and show a toast
+
                     override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
                         super.onAuthenticationError(errorCode, errString)
                         notifyUser("Erro de autenticação : $errString")
                         finish()
                     }
 
-                    // If the fingerprint is recognized by the app then it will call
-                    // onAuthenticationSucceeded and show a toast that Authentication has Succeed
-                    // Here you can also start a new activity after that
                     override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult?) {
                         super.onAuthenticationSucceeded(result)
                         updateUI()
@@ -172,18 +162,14 @@ class MainActivity : AppCompatActivity() {
                     this.finishAffinity()
                 }.build()
 
-            // start the authenticationCallback in mainExecutor
             biometricPrompt.authenticate(
                 getCancellationSignal(),
                 mainExecutor,
                 authenticationCallback
             )
-
-
         } else {
             updateUI()
         }
-
     }
 
     private fun getCancellationSignal(): CancellationSignal {
@@ -267,7 +253,7 @@ class MainActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
-                    val idU = mSecurityPreferences.getString("idU")
+                    val idU = mSecurityPreferences.getString(USER_ID)
 
                     usuarioRef?.child("usuarios/${idU}/turma")?.get()?.addOnSuccessListener {
 
@@ -281,7 +267,7 @@ class MainActivity : AppCompatActivity() {
                         val signInBt = findViewById<SignInButton>(R.id.sign_in_button)
 
                         if (snap != null) {
-                            mSecurityPreferences.storeInt("basicInformations", 1)
+                            mSecurityPreferences.storeInt(BASIC_INFORMATIONS, 1)
                             updateUI()
                         } else {
                             continuarBt.visibility = View.VISIBLE
@@ -319,61 +305,49 @@ class MainActivity : AppCompatActivity() {
     fun spinnerSelector(p2: Int) {
 
         val ano = findViewById<Spinner>(R.id.editAno).selectedItemId.toInt()
-        val spinner = findViewById<Spinner>(R.id.editSala)
-        val buttonContinuar = findViewById<Button>(R.id.button_continuar)
 
         when {
             p2 == 0 || ano == 0 -> {
-                spinner.isEnabled = false
-                buttonContinuar.isEnabled = false
-                populateSpinner(R.array.Selecionar, spinner)
+                pSpinner(false, R.array.Selecionar)
             }
             p2 == 1 && ano == 1 -> {
-                spinner.isEnabled = true
-                buttonContinuar.isEnabled = true
-                populateSpinner(R.array.Salas_ADM_1, spinner)
+                pSpinner(true, R.array.Salas_ADM_1)
             }
             p2 == 1 && ano == 2 -> {
-                spinner.isEnabled = true
-                buttonContinuar.isEnabled = true
-                populateSpinner(R.array.Salas_ADM_2, spinner)
+                pSpinner(true, R.array.Salas_ADM_2)
             }
             p2 == 1 && ano == 3 -> {
-                spinner.isEnabled = true
-                buttonContinuar.isEnabled = true
-                populateSpinner(R.array.Salas_ADM_3, spinner)
+                pSpinner(true, R.array.Salas_ADM_3)
             }
             p2 == 2 && ano == 1 -> {
-                spinner.isEnabled = true
-                buttonContinuar.isEnabled = true
-                populateSpinner(R.array.Salas_LOG_1, spinner)
+                pSpinner(true, R.array.Salas_LOG_1)
             }
             p2 == 2 && ano == 2 -> {
-                spinner.isEnabled = true
-                buttonContinuar.isEnabled = true
-                populateSpinner(R.array.Salas_LOG_2, spinner)
+                pSpinner(true, R.array.Salas_LOG_2)
             }
             p2 == 2 && ano == 3 -> {
-                spinner.isEnabled = true
-                buttonContinuar.isEnabled = true
-                populateSpinner(R.array.Salas_LOG_3, spinner)
+                pSpinner(true, R.array.Salas_LOG_3)
             }
             p2 == 3 && ano == 1 -> {
-                spinner.isEnabled = true
-                buttonContinuar.isEnabled = true
-                populateSpinner(R.array.Salas_MAM_1, spinner)
+                pSpinner(true, R.array.Salas_MAM_1)
             }
             p2 == 3 && ano == 2 -> {
-                spinner.isEnabled = true
-                buttonContinuar.isEnabled = true
-                populateSpinner(R.array.Salas_MAM_2, spinner)
+                pSpinner(true, R.array.Salas_MAM_2)
             }
             p2 == 3 && ano == 3 -> {
-                spinner.isEnabled = false
-                buttonContinuar.isEnabled = false
-                populateSpinner(R.array.Selecionar, spinner)
+                pSpinner(false, R.array.Selecionar)
             }
         }
+    }
+
+    private fun pSpinner(boolean: Boolean, array: Int) {
+
+        val spinner = findViewById<Spinner>(R.id.editSala)
+        val buttonContinuar = findViewById<Button>(R.id.button_continuar)
+
+        spinner.isEnabled = boolean
+        buttonContinuar.isEnabled = boolean
+        populateSpinner(array, spinner)
     }
 
     companion object {

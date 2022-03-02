@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
@@ -17,6 +18,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.view.View
+import android.view.WindowManager.LayoutParams.FLAG_SECURE
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
@@ -25,14 +27,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.widget.NestedScrollView
 import com.bumptech.glide.Glide
 import com.ceep.id.R
 import com.ceep.id.infra.Constants.DATA.CHANNEL_ID
@@ -82,12 +81,13 @@ class MainScreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_screen)
 
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
+
         createNotificationChannel()
 
-        ///window.setFlags(
-        //  WindowManager.LayoutParams.FLAG_SECURE,
-        //  WindowManager.LayoutParams.FLAG_SECURE
-        //)
+        with(window) {
+            setFlags(FLAG_SECURE, FLAG_SECURE)
+        }
 
         mSecurityPreferences = SecurityPreferences(this)
         storageReference = FirebaseConfig.getFirebaseStorage()
@@ -102,6 +102,7 @@ class MainScreen : AppCompatActivity() {
         adView.loadAd(AdRequest.Builder().build())
         mSecurityPreferences.storeString(USER_ID, acct?.id.toString())
 
+        val view = findViewById<View>(R.id.background_view)
         val statusText = findViewById<TextView>(R.id.status_text)
         val buttonPic = findViewById<FloatingActionButton>(R.id.button_photo)
         val profilePic = findViewById<ImageView>(R.id.profile_pic)
@@ -111,8 +112,6 @@ class MainScreen : AppCompatActivity() {
         val cameraBut = findViewById<TextView>(R.id.cameraBut)
         val galeriaBut = findViewById<TextView>(R.id.galeriaBut)
         val cardView = findViewById<CardView>(R.id.cardView)
-
-        theme()
 
         conection = checkConection()
         if (conection == 0 || conection == 2) {
@@ -165,7 +164,7 @@ class MainScreen : AppCompatActivity() {
                 }
                 cardView.visibility = View.GONE
             } else {
-                Toast.makeText(this, "Permita acesso a câmera primeiro.", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Permita acesso a câmera primeiro.", Toast.LENGTH_SHORT).show()
             }
         }
         galeriaBut.setOnClickListener {
@@ -189,7 +188,6 @@ class MainScreen : AppCompatActivity() {
                 adView.loadAd(AdRequest.Builder().build())
             }
         }
-
     }
 
     override fun onBackPressed() {
@@ -331,6 +329,10 @@ class MainScreen : AppCompatActivity() {
             if (isOnline) {
                 0
             } else {
+                findViewById<ImageView>(R.id.shape_status).backgroundTintList =
+                    resources.getColorStateList(R.color.red)
+                findViewById<TextView>(R.id.status_text).setTextColor(Color.WHITE)
+                findViewById<TextView>(R.id.textSituacao).setTextColor(resources.getColor(R.color.white))
                 findViewById<TextView>(R.id.status_text).text = "Sem conexão com a internet."
                 1
             }
@@ -411,13 +413,13 @@ class MainScreen : AppCompatActivity() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 val post = snapshot.value
+                val textSituacao = findViewById<TextView>(R.id.textSituacao)
 
                 if (post == true) {
-                    findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
-                        ContextCompat.getDrawable(
-                            this@MainScreen, R.drawable.green_ball
-                        )
-                    )
+                    findViewById<ImageView>(R.id.shape_status).backgroundTintList =
+                        resources.getColorStateList(R.color.green)
+                    statusText.setTextColor(Color.WHITE)
+                    textSituacao.setTextColor(Color.WHITE)
 
                     val date = Calendar.getInstance()
                     val hour = date.get(Calendar.HOUR_OF_DAY)
@@ -433,11 +435,21 @@ class MainScreen : AppCompatActivity() {
                         else -> statusText.text = "Liberado. Atualizado às $hour:$minute."
                     }
                 } else if (post == null || post == false) {
-                    findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
-                        ContextCompat.getDrawable(
-                            this@MainScreen, R.drawable.red_ball
-                        )
-                    )
+                    val nightMode =
+                        resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)
+
+                    if (nightMode == Configuration.UI_MODE_NIGHT_YES) {
+                        findViewById<ImageView>(R.id.shape_status).backgroundTintList =
+                            resources.getColorStateList(R.color.dark_blue)
+                        statusText.setTextColor(Color.WHITE)
+                        textSituacao.setTextColor(Color.WHITE)
+                    } else {
+                        findViewById<ImageView>(R.id.shape_status).backgroundTintList =
+                            resources.getColorStateList(R.color.white)
+                        statusText.setTextColor(Color.BLACK)
+                        textSituacao.setTextColor(Color.BLACK)
+                    }
+
 
                     val date = Calendar.getInstance()
                     val hour = date.get(Calendar.HOUR_OF_DAY)
@@ -483,11 +495,13 @@ class MainScreen : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                findViewById<ImageView>(R.id.led_indicator).setImageDrawable(
-                    ContextCompat.getDrawable(
-                        this@MainScreen, R.drawable.red_ball
-                    )
-                )
+
+                val textSituacao = findViewById<TextView>(R.id.textSituacao)
+
+                findViewById<ImageView>(R.id.shape_status).backgroundTintList =
+                    resources.getColorStateList(R.color.red)
+                statusText.setTextColor(Color.WHITE)
+                textSituacao.setTextColor(resources.getColor(R.color.white))
                 statusText.text = "Erro ao receber dados."
             }
 
@@ -517,86 +531,8 @@ class MainScreen : AppCompatActivity() {
         return false
     }
 
-    private fun theme() {
-
-        val backgroundView = findViewById<NestedScrollView>(R.id.background_scrollview)
-        val toolbar = findViewById<ImageView>(R.id.toolbar)
-        val backgroundPic = findViewById<ImageView>(R.id.background_pic)
-        val shapeStatus = findViewById<ImageView>(R.id.shape_status)
-        val shapeNome = findViewById<ImageView>(R.id.shape_nome)
-        val statusText = findViewById<TextView>(R.id.status_text)
-        val buttonRefresh = findViewById<ImageButton>(R.id.refresh_button)
-        val cardView = findViewById<CardView>(R.id.cardView)
-        val linha = findViewById<View>(R.id.linhaCardView)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
-                backgroundView.setBackgroundColor(getColor(R.color.background_dark))
-                toolbar.setImageDrawable(
-                    AppCompatResources.getDrawable(
-                        this,
-                        R.drawable.main_toolbar_dark
-                    )
-                )
-                cardView.setCardBackgroundColor(getColor(R.color.dark_blue))
-                linha.setBackgroundColor(getColor(R.color.background_dark))
-                buttonRefresh.setColorFilter(getColor(R.color.white))
-                backgroundPic.setImageDrawable(
-                    AppCompatResources.getDrawable(
-                        this,
-                        R.drawable.pic_background_dark
-                    )
-                )
-                shapeStatus.setImageDrawable(
-                    AppCompatResources.getDrawable(
-                        this,
-                        R.drawable.shape_status_dark
-                    )
-                )
-                shapeNome.setImageDrawable(
-                    AppCompatResources.getDrawable(
-                        this,
-                        R.drawable.shape_nome_dark
-                    )
-                )
-                statusText.setTextColor(ResourcesCompat.getColor(resources, R.color.white, theme))
-            } else {
-                backgroundView.setBackgroundColor(getColor(R.color.background_light))
-                cardView.setCardBackgroundColor(getColor(R.color.white))
-                linha.setBackgroundColor(getColor(R.color.background_light))
-                buttonRefresh.setColorFilter(getColor(R.color.black))
-                toolbar.setImageDrawable(
-                    AppCompatResources.getDrawable(
-                        this,
-                        R.drawable.main_toolbar
-                    )
-                )
-                backgroundPic.setImageDrawable(
-                    AppCompatResources.getDrawable(
-                        this,
-                        R.drawable.pic_background
-                    )
-                )
-                shapeStatus.setImageDrawable(
-                    AppCompatResources.getDrawable(
-                        this,
-                        R.drawable.shape_status
-                    )
-                )
-                shapeNome.setImageDrawable(
-                    AppCompatResources.getDrawable(
-                        this,
-                        R.drawable.shape_nome
-                    )
-                )
-                statusText.setTextColor(ResourcesCompat.getColor(resources, R.color.black, theme))
-            }
-        }
-    }
-
     private fun createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Situaçao"
             val descriptionText = "Situaçao do aluno"
@@ -604,7 +540,7 @@ class MainScreen : AppCompatActivity() {
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
             }
-            // Register the channel with the system
+
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
@@ -613,7 +549,6 @@ class MainScreen : AppCompatActivity() {
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
-        // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val storageDir: File? = applicationContext.cacheDir
         return File.createTempFile(
@@ -621,7 +556,6 @@ class MainScreen : AppCompatActivity() {
             ".jpg", /* suffix */
             storageDir /* directory */
         ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
             currentPhotoPath = absolutePath
         }
     }

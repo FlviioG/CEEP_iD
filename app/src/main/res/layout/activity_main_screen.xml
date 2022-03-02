@@ -1,271 +1,274 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/background_scrollview"
-    android:animateLayoutChanges="true"
+    android:id="@+id/background_view"
+    style="@style/Theme.CEEPiD.DayNight.Background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:keepScreenOn="true"
     tools:context="com.ceep.id.ui.user.MainScreen">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/background_view"
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/toolbar"
+        style="@style/Theme.CEEPiD.DayNight.Toolbar"
+        android:layout_width="wrap_content"
+        android:layout_height="49dp"
+        android:layout_marginTop="6dp"
+        android:paddingStart="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/background_pic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/refresh_button"
+        style="@style/Theme.CEEPiD.DayNight.RefreshButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:keepScreenOn="true">
+        android:background="#00000000"
+        android:src="@drawable/ic_baseline_refresh_24"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="@+id/background_pic"
+        app:layout_constraintStart_toStartOf="@+id/button_photo"
+        app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
-          <ImageView
-            android:id="@+id/toolbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:paddingStart="25dp"
-            android:paddingEnd="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/main_toolbar" />
+    <ImageView
+        android:id="@+id/background_pic"
+        style="@style/Theme.CEEPiD.DayNight.Shape"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/shape"
+        android:cropToPadding="true"
+        app:layout_constraintBottom_toTopOf="@+id/shape_nome"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/refresh_button"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="3dp"
-            android:background="#00000000"
-            android:src="@drawable/ic_baseline_refresh_24"
-            app:layout_constraintBottom_toBottomOf="@+id/toolbar"
-            app:layout_constraintEnd_toEndOf="@+id/background_pic"
-            app:layout_constraintStart_toEndOf="@+id/profile_pic"
-            app:layout_constraintTop_toTopOf="@+id/toolbar"
-            app:tint="@color/black" />
-
-        <ImageView
-            android:id="@+id/background_pic"
-            android:layout_width="380dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:srcCompat="@drawable/pic_background" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/white"
-            android:visibility="gone"
-            android:clickable="true"
-            android:focusable="true"
-            app:cardElevation="8dp"
-            app:cardCornerRadius="16dp"
-            android:layout_marginTop="4dp"
-            app:layout_constraintEnd_toEndOf="@+id/button_photo"
-            app:layout_constraintTop_toBottomOf="@id/button_photo"
-            style="@style/Widget.Material3.CardView.Elevated">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/cameraBut"
-                    android:padding="16dp"
-                    android:textAlignment="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Capturar foto"
-                    />
-                <View
-                    android:id="@+id/linhaCardView"
-                    android:layout_width="match_parent"
-                    android:background="@color/browser_actions_bg_grey"
-                    android:layout_height="1dp"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/galeriaBut"
-                    android:padding="16dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:textAlignment="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Enviar da galeria"
-                    />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/profile_pic"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_gravity="center"
-            android:scaleType="fitXY"
-            app:layout_constraintBottom_toBottomOf="@+id/background_pic"
-            app:layout_constraintEnd_toEndOf="@+id/background_pic"
-            app:layout_constraintStart_toStartOf="@id/background_pic"
-            app:layout_constraintTop_toTopOf="@id/background_pic" />
-
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/progress"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/profile_pic"
-            app:layout_constraintEnd_toEndOf="@id/profile_pic"
-            app:layout_constraintBottom_toBottomOf="@id/profile_pic"
-            app:layout_constraintTop_toTopOf="@id/profile_pic"/>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/button_photo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="-16dp"
-            android:layout_marginBottom="-16dp"
-            android:contentDescription="Alterar foto"
-            android:src="@drawable/ic_baseline_add_photo_alternate_24"
-            app:layout_constraintBottom_toBottomOf="@+id/profile_pic"
-            app:layout_constraintEnd_toEndOf="@+id/profile_pic" />
-
-        <ImageView
-            android:id="@+id/shape_nome"
-            android:layout_width="380dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-5dp"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/background_pic"
-            app:srcCompat="@drawable/shape_nome" />
-
-
-        <ImageView
-            android:id="@+id/shape_status"
-            android:layout_width="380dp"
-            android:layout_height="wrap_content"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/shape_nome"
-            app:srcCompat="@drawable/shape_nome" />
-
-        <ImageView
-            android:id="@+id/led_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="70dp"
-            app:layout_constraintStart_toStartOf="@+id/shape_status"
-            app:layout_constraintTop_toTopOf="@+id/shape_status"
-            app:srcCompat="@drawable/green_ball" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/status_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:fontFamily="sans-serif-light"
-            android:text="Liberado"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@+id/led_indicator"
-            app:layout_constraintEnd_toEndOf="@+id/shape_status"
-            app:layout_constraintStart_toStartOf="@+id/shape_status"
-            app:layout_constraintTop_toTopOf="@+id/led_indicator" />
-
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/textNome"
-            android:layout_width="340dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-black"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textSize="28sp"
-            android:textAlignment="center"
-            android:ellipsize="end"
-            app:layout_constraintBottom_toTopOf="@id/textTurma"
-            app:layout_constraintEnd_toEndOf="@id/shape_nome"
-            app:layout_constraintStart_toStartOf="@id/shape_nome"
-            app:layout_constraintTop_toTopOf="@id/shape_nome" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/textTurma"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-8dp"
-            android:fontFamily="sans-serif-black"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@id/shape_nome"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textNome" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        style="@style/Theme.CEEPiD.DayNight.CardView"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/button_photo"
+        app:layout_constraintTop_toBottomOf="@id/button_photo">
 
         <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="320dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/shape_status">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-
-            <ImageView
-                android:id="@+id/button_perfil"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/cameraBut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@+id/button_historico"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/shape_status"
-                app:srcCompat="@drawable/perfil_button" />
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="16dp"
+                android:text="Capturar foto"
+                android:textAlignment="center" />
 
-            <ImageView
-                android:id="@+id/button_historico"
+            <View
+                android:id="@+id/linhaCardView"
+                style="@style/Theme.CEEPiD.DayNight.Line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/galeriaBut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button_perfil"
-                app:srcCompat="@drawable/historico_button" />
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="16dp"
+                android:text="Enviar da galeria"
+                android:textAlignment="center" />
         </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/ad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:adSize="BANNER"
-            app:adUnitId="ca-app-pub-3940256099942544/6300978111"
-            android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@id/shape_status"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profile_pic"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_margin="12dp"
+        android:layout_marginEnd="12dp"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="@+id/background_pic"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@id/button_photo"
+        app:layout_constraintStart_toStartOf="@id/background_pic"
+        app:layout_constraintTop_toTopOf="@id/background_pic" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Situação"
-            android:textStyle="bold"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/status_text"
-            app:layout_constraintEnd_toEndOf="@+id/shape_status"
-            app:layout_constraintStart_toStartOf="@+id/shape_status"
-            app:layout_constraintTop_toBottomOf="@+id/shape_nome" />
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/profile_pic"
+        app:layout_constraintEnd_toEndOf="@id/profile_pic"
+        app:layout_constraintStart_toStartOf="@id/profile_pic"
+        app:layout_constraintTop_toTopOf="@id/profile_pic" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/button_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Alterar foto"
+        android:src="@drawable/ic_baseline_add_photo_alternate_24"
+        app:layout_constraintBottom_toBottomOf="@+id/background_pic"
+        app:layout_constraintEnd_toEndOf="@+id/background_pic"
+        app:layout_constraintStart_toEndOf="@id/profile_pic"
+        app:layout_constraintTop_toTopOf="@+id/background_pic" />
+
+    <ImageView
+        android:id="@+id/shape_nome"
+        style="@style/Theme.CEEPiD.DayNight.Shape"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="6dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/shape"
+        android:cropToPadding="true"
+        app:layout_constraintBottom_toTopOf="@+id/shape_status"
+        app:layout_constraintDimensionRatio="16:5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/background_pic" />
+
+    <ImageView
+        android:id="@+id/shape_status"
+        style="@style/Theme.CEEPiD.DayNight.Shape"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/shape"
+        android:cropToPadding="true"
+        app:layout_constraintBottom_toTopOf="@+id/ad"
+        app:layout_constraintDimensionRatio="16:5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shape_nome" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/status_text"
+        style="@style/Theme.CEEPiD.DayNight.Text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="middle"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="Liberado"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/shape_status"
+        app:layout_constraintEnd_toEndOf="@+id/shape_status"
+        app:layout_constraintStart_toStartOf="@+id/shape_status"
+        app:layout_constraintTop_toBottomOf="@id/textSituacao" />
+
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textNome"
+        style="@style/Theme.CEEPiD.DayNight.Text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="middle"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/textTurma"
+        app:layout_constraintEnd_toEndOf="@id/shape_nome"
+        app:layout_constraintStart_toStartOf="@id/shape_nome"
+        app:layout_constraintTop_toTopOf="@id/shape_nome" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textTurma"
+        style="@style/Theme.CEEPiD.DayNight.Text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="start"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/shape_nome"
+        app:layout_constraintEnd_toEndOf="@+id/shape_nome"
+        app:layout_constraintStart_toStartOf="@+id/shape_nome"
+        app:layout_constraintTop_toBottomOf="@id/textNome" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/ad"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:adSize="FULL_BANNER"
+        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textSituacao"
+        style="@style/Theme.CEEPiD.DayNight.Text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:text="Situação"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/status_text"
+        app:layout_constraintEnd_toEndOf="@+id/shape_status"
+        app:layout_constraintStart_toStartOf="@+id/shape_status"
+        app:layout_constraintTop_toTopOf="@+id/shape_status" />
+
+    <View
+        style="@style/Theme.CEEPiD.DayNight.Background"
+        android:layout_width="80dp"
+        android:layout_height="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/shape_nome"
+        app:layout_constraintEnd_toEndOf="@+id/shape_nome"
+        app:layout_constraintStart_toStartOf="@+id/shape_nome"
+        app:layout_constraintTop_toTopOf="@+id/shape_nome" />
+
+    <View
+        style="@style/Theme.CEEPiD.DayNight.Background"
+        android:layout_width="80dp"
+        android:layout_height="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/shape_status"
+        app:layout_constraintEnd_toEndOf="@+id/shape_status"
+        app:layout_constraintStart_toStartOf="@+id/shape_status"
+        app:layout_constraintTop_toTopOf="@+id/shape_status" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
