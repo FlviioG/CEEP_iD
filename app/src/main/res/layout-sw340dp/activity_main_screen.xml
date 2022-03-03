@@ -72,7 +72,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/cameraBut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp" />
 
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:id="@+id/galeriaBut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <com.google.android.material.imageview.ShapeableImageView
+    <ImageView
         android:id="@+id/profile_pic"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -124,7 +124,6 @@
 
 <com.google.android.material.floatingactionbutton.FloatingActionButton
     android:id="@+id/button_photo"
-    style="@style/ShapeAppearanceOverlay.Material3.FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="-6dp"
@@ -169,7 +168,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shape_nome" />
 
-    <com.google.android.material.textview.MaterialTextView
+    <TextView
         android:id="@+id/status_text"
         style="@style/Theme.CEEPiD.DayNight.Text"
         android:layout_width="0dp"
@@ -189,7 +188,7 @@
         app:layout_constraintTop_toBottomOf="@id/textSituacao" />
 
 
-    <com.google.android.material.textview.MaterialTextView
+    <TextView
         android:id="@+id/textNome"
         style="@style/Theme.CEEPiD.DayNight.Text"
         android:layout_width="0dp"
@@ -207,7 +206,7 @@
         app:layout_constraintStart_toStartOf="@id/shape_nome"
         app:layout_constraintTop_toTopOf="@id/shape_nome" />
 
-    <com.google.android.material.textview.MaterialTextView
+    <TextView
         android:id="@+id/textTurma"
         style="@style/Theme.CEEPiD.DayNight.Text"
         android:layout_width="0dp"
