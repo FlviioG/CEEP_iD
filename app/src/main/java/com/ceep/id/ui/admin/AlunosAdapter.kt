@@ -1,12 +1,15 @@
 package com.ceep.id.ui.admin
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.recyclerview.widget.RecyclerView
 import com.ceep.id.R
 import com.ceep.id.infra.Usuario
@@ -14,6 +17,7 @@ import com.ceep.id.infra.auth.FirebaseConfig
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import java.io.File
 
 class AlunosAdapter(private val alunos: List<Usuario>, private val context: Context, private val keys: List<String?>) :
 
@@ -62,6 +66,26 @@ class AlunosAdapter(private val alunos: List<Usuario>, private val context: Cont
 
         }
         postReference?.addValueEventListener(postListener)
+
+        var storageReference = FirebaseConfig.getFirebaseStorage()
+        try {
+            val pathReference =
+                storageReference?.child("imagens/alunos/${key}/fotoPerfil.jpeg")
+            val localFile = File(context.cacheDir,"image$position.jpg")
+            pathReference?.getFile(localFile)
+                ?.addOnSuccessListener {
+                    localFile.absolutePath
+                    val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                    val roundDrawable = RoundedBitmapDrawableFactory.create(
+                        context.resources, bitmap
+                    )
+                    roundDrawable.cornerRadius = 1440F
+                   holder.imageAluno.setImageDrawable(roundDrawable)
+                }
+        } catch (e: Exception) {
+            Toast.makeText(context, "erro", Toast.LENGTH_LONG).show()
+        }
+
     }
 
     override fun getItemCount(): Int {
@@ -71,6 +95,7 @@ class AlunosAdapter(private val alunos: List<Usuario>, private val context: Cont
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var nomeAluno: TextView = itemView.findViewById(R.id.textNomeAluno)
         var situacaoAluno: ImageView = itemView.findViewById(R.id.situacaoAluno)
+        var imageAluno: ImageView = itemView.findViewById(R.id.photoAluno)
 
     }
 }

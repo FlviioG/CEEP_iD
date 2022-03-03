@@ -1,6 +1,8 @@
 package com.ceep.id.ui.admin
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -13,14 +15,19 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ceep.id.R
+import com.ceep.id.infra.Constants.DATA.PIC_PERFIL
 import com.ceep.id.infra.Constants.DATA.USER_ID
 import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.Usuario
 import com.ceep.id.infra.auth.FirebaseConfig
+import com.ceep.id.ui.user.ViewPictureActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
 
 class MainScreenAdmin : AppCompatActivity() {
 
@@ -140,6 +147,7 @@ class MainScreenAdmin : AppCompatActivity() {
 
     override fun onBackPressed() {
         this.finishAffinity()
+        Usuario().deleteTempFiles(cacheDir)
     }
 
     private fun configuraRecyclerView() {
@@ -172,7 +180,10 @@ class MainScreenAdmin : AppCompatActivity() {
                     }
 
                     override fun onLongItemClick(view: View?, position: Int) {
-
+                        var photo: InputStream = FileInputStream(File(cacheDir, "image$position.jpg"))
+                        val bit = BitmapFactory.decodeStream(photo)
+                        mSecurityPreferences.storeBitmap(PIC_PERFIL, bit)
+                        startActivity(Intent(this@MainScreenAdmin, ViewPictureActivity::class.java))
                     }
                 })
         )
