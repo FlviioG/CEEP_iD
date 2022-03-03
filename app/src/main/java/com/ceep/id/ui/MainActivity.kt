@@ -335,7 +335,7 @@ class MainActivity : AppCompatActivity() {
                 pSpinner(true, R.array.Salas_MAM_2)
             }
             p2 == 3 && ano == 3 -> {
-                pSpinner(false, R.array.Selecionar)
+                pSpinner(false, R.array.Salas_MAM_3)
             }
         }
     }

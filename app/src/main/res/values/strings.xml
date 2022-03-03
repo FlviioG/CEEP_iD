@@ -68,4 +68,7 @@
     <string-array name="Salas_MAM_2">
         <item>2 MAM M1</item>
     </string-array>
+    <string-array name="Salas_MAM_3">
+        <item>3 MAM M1</item>
+    </string-array>
 </resources>

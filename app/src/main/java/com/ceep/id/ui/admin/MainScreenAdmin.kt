@@ -245,7 +245,7 @@ class MainScreenAdmin : AppCompatActivity() {
                 populateSpinner(R.array.Salas_MAM_2, spinner)
             }
             p2 == 3 && ano == 3 -> {
-                populateSpinner(R.array.Selecionar, spinner)
+                populateSpinner(R.array.Salas_MAM_3, spinner)
             }
         }
     }
