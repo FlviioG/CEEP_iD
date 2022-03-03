@@ -3,14 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="app/src/main/res/drawable/background.xml" value="0.1805" />
+        <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/layout-sw340dp/activity_main_screen.xml" value="0.196875" />
+        <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/layout/activity_main.xml" value="0.196875" />
+        <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/layout/activity_main_screen.xml" value="0.25" />
         <entry key="app/src/main/res/drawable/background_login.xml" value="0.1875" />
         <entry key="app/src/main/res/drawable/edittext_dark.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/edittext_white.xml" value="0.1875" />
         <entry key="app/src/main/res/drawable/green_ball.xml" value="0.20897435897435898" />
         <entry key="app/src/main/res/drawable/historico_button.xml" value="0.20897435897435898" />
-        <entry key="app/src/main/res/drawable/ic_baseline_add_photo_alternate_24.xml" value="0.179" />
-        <entry key="app/src/main/res/drawable/ic_check.xml" value="0.179" />
         <entry key="app/src/main/res/drawable/login_button.xml" value="0.1875" />
         <entry key="app/src/main/res/drawable/logo_CAF.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/logo_caf.xml" value="0.25" />
@@ -24,63 +24,11 @@
         <entry key="app/src/main/res/drawable/shape_status.xml" value="0.20897435897435898" />
         <entry key="app/src/main/res/drawable/shape_status_dark.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/teste.xml" value="0.33" />
-        <entry key="app/src/main/res/layout-land-533x320/activity_main_screen.xml" value="1.5" />
-        <entry key="app/src/main/res/layout-land/activity_main_screen.xml" value="0.6583333333333333" />
-        <entry key="app/src/main/res/layout-sw300dp/activity_main_screen.xml" value="0.1410859341598974" />
-        <entry key="app/src/main/res/layout-sw320dp-land/activity_main_screen.xml" value="0.75" />
-        <entry key="app/src/main/res/layout-sw340dp-land/activity_main_screen.xml" value="0.3703125" />
-        <entry key="app/src/main/res/layout-sw340dp/activity_main_screen.xml" value="0.5" />
-        <entry key="app/src/main/res/layout/activity_edit_picture.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/activity_lista_alunos.xml" value="0.41878172588832485" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.3" />
-        <entry key="app/src/main/res/layout/activity_main_screen.xml" value="0.57375" />
-        <entry key="app/src/main/res/layout/activity_main_screen_admin.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_main_screen.xml" value="0.25057121096725055" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.21" />
-        <entry key="app/src/main/res/layout/activity_view_picture.xml" value="0.2578125" />
-        <entry key="app/src/main/res/layout/adapter_alunos.xml" value="0.5" />
-        <entry key="app/src/main/res/layout/native_ad_layout.xml" value="0.25" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.15384615384615385" />
-        <entry key="app/src/main/res/xml/file_paths.xml" value="0.1" />
       </map>
-    </option>
-  </component>
-  <component name="NullableNotNullManager">
-    <option name="myDefaultNullable" value="androidx.annotation.Nullable" />
-    <option name="myDefaultNotNull" value="androidx.annotation.NonNull" />
-    <option name="myNullables">
-      <value>
-        <list size="12">
-          <item index="0" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.compatqual.NullableDecl" />
-          <item index="1" class="java.lang.String" itemvalue="org.jetbrains.annotations.Nullable" />
-          <item index="2" class="java.lang.String" itemvalue="androidx.annotation.Nullable" />
-          <item index="3" class="java.lang.String" itemvalue="org.eclipse.jdt.annotation.Nullable" />
-          <item index="4" class="java.lang.String" itemvalue="com.android.annotations.Nullable" />
-          <item index="5" class="java.lang.String" itemvalue="edu.umd.cs.findbugs.annotations.Nullable" />
-          <item index="6" class="java.lang.String" itemvalue="androidx.annotation.RecentlyNullable" />
-          <item index="7" class="java.lang.String" itemvalue="android.support.annotation.Nullable" />
-          <item index="8" class="java.lang.String" itemvalue="javax.annotation.CheckForNull" />
-          <item index="9" class="java.lang.String" itemvalue="javax.annotation.Nullable" />
-          <item index="10" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.qual.Nullable" />
-          <item index="11" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.compatqual.NullableType" />
-        </list>
-      </value>
-    </option>
-    <option name="myNotNulls">
-      <value>
-        <list size="11">
-          <item index="0" class="java.lang.String" itemvalue="androidx.annotation.RecentlyNonNull" />
-          <item index="1" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.qual.NonNull" />
-          <item index="2" class="java.lang.String" itemvalue="com.android.annotations.NonNull" />
-          <item index="3" class="java.lang.String" itemvalue="androidx.annotation.NonNull" />
-          <item index="4" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.compatqual.NonNullType" />
-          <item index="5" class="java.lang.String" itemvalue="edu.umd.cs.findbugs.annotations.NonNull" />
-          <item index="6" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.compatqual.NonNullDecl" />
-          <item index="7" class="java.lang.String" itemvalue="android.support.annotation.NonNull" />
-          <item index="8" class="java.lang.String" itemvalue="org.jetbrains.annotations.NotNull" />
-          <item index="9" class="java.lang.String" itemvalue="javax.annotation.Nonnull" />
-          <item index="10" class="java.lang.String" itemvalue="org.eclipse.jdt.annotation.NonNull" />
-        </list>
-      </value>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
@@ -88,5 +36,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.1" />
+      </ProjectState>
+    </option>
   </component>
 </project>

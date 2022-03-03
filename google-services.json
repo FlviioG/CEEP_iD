@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "173798830369-424lkdlf2v2ebqgqqqvnrkhp6q89oq5e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ceep.id",
+            "certificate_hash": "ec3ae6e4f94f0b324e504c86df62d5be2fdbf1b6"
+          }
+        },
+        {
           "client_id": "173798830369-97gj04odqqs2ensmlatvbnkc2eqcrt36.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -36,7 +44,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "173798830369-t0khs9p2iv5l1a5ibpjr6cap8t8doo4d.apps.googleusercontent.com",
+              "client_id": "173798830369-r9laos2ip5sp5sgfe5960mo7ph02ru7g.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
