@@ -6,14 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.biometrics.BiometricPrompt
+import android.hardware.fingerprint.FingerprintManager
 import android.os.Build
 import android.os.Bundle
 import android.os.CancellationSignal
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
-import android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -131,10 +129,9 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-            && mSecurityPreferences.getInt(BASIC_INFORMATIONS) == 1
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                    && mSecurityPreferences.getInt(BASIC_INFORMATIONS) == 1) && checkBiometricSupport()
         ) {
-            checkBiometricSupport()
 
             val authenticationCallback: BiometricPrompt.AuthenticationCallback =
                 object : BiometricPrompt.AuthenticationCallback() {
@@ -186,18 +183,22 @@ class MainActivity : AppCompatActivity() {
         if (!keyguardManager.isDeviceSecure) {
             notifyUser("O leitor biométrico ainda não foi configurado")
             return false
+        } else {
+            return if (ActivityCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.USE_BIOMETRIC
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                notifyUser("Não há permissão para acessar o leitor biométrico")
+                false
+            } else {
+                if (packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)) {
+                    val finger: FingerprintManager =
+                        getSystemService(FINGERPRINT_SERVICE) as FingerprintManager
+                    finger.hasEnrolledFingerprints()
+                } else false
+            }
         }
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.USE_BIOMETRIC
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            notifyUser("Não há permissão para acessar o leitor biométrico")
-            return false
-        }
-        return if (packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)) {
-            true
-        } else true
     }
 
     private fun notifyUser(message: String) {
@@ -335,7 +336,7 @@ class MainActivity : AppCompatActivity() {
                 pSpinner(true, R.array.Salas_MAM_2)
             }
             p2 == 3 && ano == 3 -> {
-                pSpinner(false, R.array.Salas_MAM_3)
+                pSpinner(true, R.array.Salas_MAM_3)
             }
         }
     }

@@ -96,6 +96,7 @@ class MainScreenAdmin : AppCompatActivity() {
         spinnerSala.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    Usuario().deleteTempFiles(cacheDir)
                     keyAlunos.clear()
                     keysSelecionadas.clear()
                     recyclerAlunos!!.setBackgroundColor(Color.TRANSPARENT)
@@ -136,6 +137,8 @@ class MainScreenAdmin : AppCompatActivity() {
             for (v in viewsAlunos) {
                 v.setBackgroundColor(Color.TRANSPARENT)
             }
+            keysSelecionadas.clear()
+            viewsAlunos.clear()
         }
     }
 

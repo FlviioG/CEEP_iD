@@ -10,8 +10,11 @@
     <Spinner
         android:id="@+id/spinnerTurma"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:entries="@array/turmas"
+        android:minHeight="48dp"
         app:layout_constraintBottom_toTopOf="@id/spinnerSala"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,9 +22,12 @@
 
     <Spinner
         android:id="@+id/spinnerAno"
-        android:entries="@array/Ano"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        android:entries="@array/Ano"
+        android:minHeight="48dp"
         app:layout_constraintBottom_toTopOf="@+id/spinnerTurma"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +36,10 @@
     <Spinner
         android:id="@+id/spinnerSala"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="24dp"
+        android:minHeight="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toTopOf="@+id/recyclerAlunos"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,8 +47,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerAlunos"
-        android:layout_width="350dp"
-        android:layout_height="400dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:padding="10dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@id/liberar_button"
@@ -51,9 +62,11 @@
         android:id="@+id/liberar_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
         android:text="Modificar situação"
-        app:layout_constraintTop_toBottomOf="@id/recyclerAlunos"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/recyclerAlunos" />
 </androidx.constraintlayout.widget.ConstraintLayout>
