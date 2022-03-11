@@ -42,6 +42,9 @@ import com.ceep.id.infra.Constants.DATA.USER_ID
 import com.ceep.id.infra.Constants.REQUESTS.CAMERA_REQUEST
 import com.ceep.id.infra.Constants.REQUESTS.CROP_IMAGE_REQUEST
 import com.ceep.id.infra.Constants.REQUESTS.PICK_IMAGE_REQUEST
+import com.ceep.id.infra.Constants.USER.NAME
+import com.ceep.id.infra.Constants.USER.SALA
+import com.ceep.id.infra.Constants.USER.TURMA
 import com.ceep.id.infra.Permissao
 import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.Usuario
@@ -58,9 +61,8 @@ import com.google.firebase.storage.StorageReference
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.IOException
+import java.io.*
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -96,14 +98,12 @@ class MainScreen : AppCompatActivity() {
         val acct = GoogleSignIn.getLastSignedInAccount(this)
         if (acct != null) {
             idUsuario = acct.id!!
-            photoUsuario = acct.photoUrl!!
         }
         ///"ca-app-pub-6136253738426934/1523049245"
         val adView = findViewById<AdView>(R.id.ad)
         adView.loadAd(AdRequest.Builder().build())
         mSecurityPreferences.storeString(USER_ID, acct?.id.toString())
 
-        val view = findViewById<View>(R.id.background_view)
         val statusText = findViewById<TextView>(R.id.status_text)
         val buttonPic = findViewById<FloatingActionButton>(R.id.button_photo)
         val profilePic = findViewById<ImageView>(R.id.profile_pic)
@@ -349,65 +349,28 @@ class MainScreen : AppCompatActivity() {
         statusText: TextView
     ) {
         ///Nome
-        usuarioRef?.child("usuarios/${idUsuario}/nome")?.get()?.addOnSuccessListener {
-            nomeUsuario = it.value.toString()
-            textName.text = nomeUsuario
-        }
+        textName.text = mSecurityPreferences.getString(NAME)
+
 
         ///Turma
-        usuarioRef?.child("usuarios/${idUsuario}/turma")?.get()?.addOnSuccessListener { it ->
+        val turma = mSecurityPreferences.getString(TURMA)
+        val sala = mSecurityPreferences.getString(SALA)
+        val format = "$turma - $sala"
+        textTurma.text = format
 
-            turmaUsuario = it.value.toString()
-
-            usuarioRef?.child("usuarios/${idUsuario}/sala")?.get()?.addOnSuccessListener {
-
-                salaUsuario = it.value as String
-                val turmaFormatada = "$turmaUsuario - $salaUsuario"
-                textTurma.text = turmaFormatada
-            }
-        }
         ///Foto
-        if (mSecurityPreferences.getBitmap(PIC_PERFIL) == null) {
+        if (mSecurityPreferences.getBitmap(PIC_PERFIL) != null) {
             try {
-                val pathReference =
-                    storageReference?.child("imagens/alunos/${idUsuario}/fotoPerfil.jpeg")
-                val localFile: File = File.createTempFile("images", "jpg")
-                pathReference?.getFile(localFile)
-                    ?.addOnSuccessListener {
-                        val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-                        val roundDrawable = RoundedBitmapDrawableFactory.create(resources, bitmap)
-                        roundDrawable.cornerRadius = 49F
-                        profilePic.setImageDrawable(roundDrawable)
-                        mSecurityPreferences.storeBitmap(
-                            PIC_PERFIL,
-                            profilePic.drawable.toBitmap()
-                        )
-                    }?.addOnFailureListener {
-                        Glide.with(this).load(photoUsuario).into(profilePic)
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                            Handler.createAsync(Looper.getMainLooper()).postDelayed({
-                                val roundDrawable = RoundedBitmapDrawableFactory.create(
-                                    resources,
-                                    profilePic.drawable.toBitmap()
-                                )
-                                roundDrawable.cornerRadius = 49F
-                                profilePic.setImageDrawable(roundDrawable)
-                                mSecurityPreferences.storeBitmap(
-                                    PIC_PERFIL,
-                                    profilePic.drawable.toBitmap()
-                                )
-                            }, 5000)
-                        }
-                    }
-            } catch (e: Exception) {
-
+                val photo: InputStream = FileInputStream(File(cacheDir, "fotoPerfil.jpg"))
+                val bitmap = BitmapFactory.decodeStream(photo)
+                val roundDrawable = RoundedBitmapDrawableFactory.create(resources, bitmap)
+                roundDrawable.cornerRadius = 49F
+                profilePic.setImageDrawable(roundDrawable)
+            } catch (exc: Exception) {
+                Toast.makeText(this, "erro ao carregar a foto", Toast.LENGTH_LONG).show()
             }
-        } else {
-            val image = mSecurityPreferences.getBitmap(PIC_PERFIL)
-            val roundDrawable = RoundedBitmapDrawableFactory.create(resources, image)
-            roundDrawable.cornerRadius = 49F
-            profilePic.setImageDrawable(roundDrawable)
         }
+
         ///Status
         val postReference = usuarioRef?.child("usuarios/${idUsuario}/liberado")
         val postListener = object : ValueEventListener {
@@ -422,7 +385,7 @@ class MainScreen : AppCompatActivity() {
                     statusText.setTextColor(Color.WHITE)
                     textSituacao.setTextColor(Color.WHITE)
 
-                  statusText.text = "Liberado. Atualizado às ${Usuario().getHour()}."
+                    statusText.text = "Liberado. Atualizado às ${Usuario().getHour()}."
 
                 } else if (post == null || post == false) {
                     val nightMode =

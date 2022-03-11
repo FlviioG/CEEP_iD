@@ -2,30 +2,61 @@ package com.ceep.id.infra.auth
 
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import com.ceep.id.R
+import com.ceep.id.infra.Constants
+import com.ceep.id.infra.Constants.DATABASE.TERMO_B
+import com.ceep.id.infra.Constants.USER.NAME
+import com.ceep.id.infra.Constants.USER.SALA
+import com.ceep.id.infra.Constants.USER.TURMA
+import com.ceep.id.infra.SecurityPreferences
+import com.ceep.id.infra.Usuario
+import com.ceep.id.ui.MainActivity
+import com.ceep.id.ui.admin.MainScreenAdmin
 import com.ceep.id.ui.user.MainScreen
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.storage.StorageReference
+import java.io.File
 
 
 class GoogleSignInActivity : AppCompatActivity() {
 
     // [START declare_auth]
     private var auth: FirebaseAuth? = null
+    private lateinit var mSecurityPreferences: SecurityPreferences
+    private var usuarioRef: DatabaseReference? = null
+    private var storageReference: StorageReference? = null
     // [END declare_auth]
-
+    private lateinit var photoUsuario: Uri
     private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_sign_up)
+
+        storageReference = FirebaseConfig.getFirebaseStorage()
+        mSecurityPreferences = SecurityPreferences(this)
+        usuarioRef = FirebaseConfig.getFirabaseDatabase()
+
+        val editTurma = findViewById<Spinner>(R.id.editTurma)
+        val chkTermo = findViewById<CheckBox>(R.id.checkTermo)
+        val buttonContinuar = findViewById<Button>(R.id.button_continuar)
+        val editAno = findViewById<Spinner>(R.id.editAno)
+        val editNome = findViewById<TextView>(R.id.editNome)
 
         // [START config_signin]
         // Configure Google Sign In
@@ -42,74 +73,173 @@ class GoogleSignInActivity : AppCompatActivity() {
         // Initialize Firebase Auth
         auth = FirebaseConfig.getFirebaseAuth()
         // [END initialize_auth]
-    }
-
-    // [START on_start_check_user]
-    override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth?.currentUser
-        updateUI(currentUser)
-    }
-    // [END on_start_check_user]
-
-    // [START onactivityresult]
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                val account = task.getResult(ApiException::class.java)!!
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
-                firebaseAuthWithGoogle(account.idToken!!)
-            } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e)
-            }
+        val acct = GoogleSignIn.getLastSignedInAccount(this)
+        if (acct != null) {
+            photoUsuario = acct.photoUrl!!
         }
-    }
-    // [END onactivityresult]
 
-    // [START auth_with_google]
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth?.signInWithCredential(credential)
-            ?.addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential:success")
-                    val user = auth?.currentUser
-                    updateUI(user)
+        editNome.isEnabled = false
+        editNome.text = auth?.currentUser?.displayName
+
+        editTurma.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    spinnerSelector(p2)
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                }
+
+            }
+
+        editAno.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    spinnerSelector(editTurma.selectedItemId.toInt())
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                }
+
+            }
+
+        buttonContinuar.setOnClickListener {
+            val idU = GoogleSignIn.getLastSignedInAccount(this)?.id
+            val parent = usuarioRef!!.child("usuarios").child(idU!!)
+            val nome = parent.child("nome")
+            val turma = parent.child("turma")
+            val ano = parent.child("ano")
+            val sala = parent.child("sala")
+            val liberado = parent.child("liberado")
+            val booleanTermo = parent.child(TERMO_B)
+            val termo = parent.child(Constants.DATABASE.TERMO)
+
+            val nomeSel = editNome.text.toString()
+            val salaSel = findViewById<Spinner>(R.id.editSala)
+
+            if (editTurma.selectedItemId.toInt() != 0 && editAno.selectedItemId.toInt() != 0 && chkTermo.isChecked) {
+                nome.setValue(nomeSel)
+                ano.setValue(editAno.selectedItem.toString())
+                turma.setValue(editTurma.selectedItem.toString())
+                sala.setValue(salaSel.selectedItem.toString())
+                termo.setValue("Aceito em ${Usuario().getDay()}, ás ${Usuario().getHour()}.")
+                liberado.setValue(false)
+                booleanTermo.setValue(true)
+
+                mSecurityPreferences.storeString(Constants.DATA.USER_ID, idU.toString())
+                mSecurityPreferences.storeInt(Constants.DATA.BASIC_INFORMATIONS, 1)
+                mSecurityPreferences.storeString(NAME, nomeSel)
+                mSecurityPreferences.storeString(TURMA, editTurma.selectedItem.toString())
+                mSecurityPreferences.storeString(SALA, salaSel.selectedItem.toString())
+
+                ///Foto
+                if (mSecurityPreferences.getBitmap(Constants.DATA.PIC_PERFIL) == null) {
+                    try {
+                        val pathReference =
+                            storageReference?.child("imagens/alunos/${idU}/fotoPerfil.jpeg")
+                        val localFile = File(cacheDir, "fotoPerfil.jpg")
+                        pathReference?.getFile(localFile)
+                            ?.addOnSuccessListener {
+                                val bitmap =
+                                    BitmapFactory.decodeFile(localFile.absolutePath)
+                                mSecurityPreferences.storeBitmap(Constants.DATA.PIC_PERFIL, bitmap)
+                                updateUI()
+                            }?.addOnFailureListener {
+                                mSecurityPreferences.storeBitmap(
+                                    Constants.DATA.PIC_PERFIL,
+                                    MediaStore.Images.Media.getBitmap(
+                                        contentResolver,
+                                        photoUsuario
+                                    )
+                                )
+                                updateUI()
+                            }
+                        startActivity(Intent(this, MainScreen::class.java))
+                    } catch (e: Exception) {
+                        Toast.makeText(this, "erro", Toast.LENGTH_LONG).show()
+                    }
+                }
+            } else {
+                if (!chkTermo.isChecked) {
+                    Toast.makeText(this, "Aceite os termos de uso primeiro.", Toast.LENGTH_LONG)
+                        .show()
                 } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential:failure", task.exception)
-                    updateUI(null)
+                    Toast.makeText(this, "Preencha todos os campos primeiro.", Toast.LENGTH_LONG)
+                        .show()
                 }
             }
-    }
-    // [END auth_with_google]
+        }
 
-    // [START signin]
-    fun signIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
     }
-    // [END signin]
 
-    private fun updateUI(user: FirebaseUser?) {
-        if(user != null) {
-            Toast.makeText(this, "Voce entrou com sucesso.", Toast.LENGTH_SHORT).show()
+    private fun updateUI() {
+
+        val idU = mSecurityPreferences.getString(Constants.DATA.USER_ID)
+
+        if (idU != "" && mSecurityPreferences.getInt(Constants.DATA.BASIC_INFORMATIONS) == 1) {
             startActivity(Intent(this, MainScreen::class.java))
-        } else {
-            Toast.makeText(this, "Voce entrou com sucesso.", Toast.LENGTH_SHORT).show()
         }
     }
 
-    companion object {
-        private const val TAG = "GoogleActivity"
-        private const val RC_SIGN_IN = 9001
+    private fun populateSpinner(sala: Int, spinner: Spinner) {
+        val dataAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            this,
+            android.R.layout.simple_spinner_item, resources.getStringArray(sala)
+        )
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        spinner.adapter = dataAdapter
     }
+
+    fun spinnerSelector(p2: Int) {
+
+        val ano = findViewById<Spinner>(R.id.editAno).selectedItemId.toInt()
+
+        when {
+            p2 == 0 || ano == 0 -> {
+                pSpinner(false, R.array.Selecionar)
+            }
+            p2 == 1 && ano == 1 -> {
+                pSpinner(true, R.array.Salas_ADM_1)
+            }
+            p2 == 1 && ano == 2 -> {
+                pSpinner(true, R.array.Salas_ADM_2)
+            }
+            p2 == 1 && ano == 3 -> {
+                pSpinner(true, R.array.Salas_ADM_3)
+            }
+            p2 == 2 && ano == 1 -> {
+                pSpinner(true, R.array.Salas_LOG_1)
+            }
+            p2 == 2 && ano == 2 -> {
+                pSpinner(true, R.array.Salas_LOG_2)
+            }
+            p2 == 2 && ano == 3 -> {
+                pSpinner(true, R.array.Salas_LOG_3)
+            }
+            p2 == 3 && ano == 1 -> {
+                pSpinner(true, R.array.Salas_MAM_1)
+            }
+            p2 == 3 && ano == 2 -> {
+                pSpinner(true, R.array.Salas_MAM_2)
+            }
+            p2 == 3 && ano == 3 -> {
+                pSpinner(true, R.array.Salas_MAM_3)
+            }
+        }
+    }
+
+    private fun pSpinner(boolean: Boolean, array: Int) {
+
+        val spinner = findViewById<Spinner>(R.id.editSala)
+        val buttonContinuar = findViewById<Button>(R.id.button_continuar)
+
+        spinner.isEnabled = boolean
+        buttonContinuar.isEnabled = boolean
+        populateSpinner(array, spinner)
+    }
+
 }

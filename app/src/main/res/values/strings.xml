@@ -1,13 +1,6 @@
 <resources>
     <string name="app_name">CEEP iD</string>
-    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
-    <string name="default_notification_channel_name" translatable="true">Situação</string>
-
-    <string name="fcm_message">CEEP iD Status</string>
-    <string name="logistica">Técnico em Logística</string>
-    <string name="administracao">Técnico em Administração</string>
-    <string name="meio_ambiente">Técnico em Meio Ambiente</string>
-    <string name="termo">Declaro que li e aceito os <a href='https://pages.flycricket.io/ceep-id/terms.html'>termos de uso</a></string>
+    <string name="termo">Declaro que li e aceito os <a href='https://pages.flycricket.io/ceep-id/terms.html' >termos de uso.</a></string>
 
     <string-array name="turmas">
         <item>Selecione o curso…</item>
@@ -22,7 +15,7 @@
         <item>3º Ano</item>
     </string-array>
     <string-array name="Selecionar">
-        <item>Selecione ano e curso...</item>
+        <item>Selecione ano e curso…</item>
     </string-array>
     <string-array name="Salas_LOG_1">
         <item>1 LOG M1</item>

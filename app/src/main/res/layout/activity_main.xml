@@ -37,95 +37,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/imageView" />
 
-        <EditText
-            android:id="@+id/editNome"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Digite seu nome..."
-            android:inputType="none"
-            android:textAlignment="center"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textCadastro" />
-
-        <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/editTurma"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:entries="@array/turmas"
-            android:hint="Selecione sua turma..."
-            android:padding="12dp"
-            android:visibility="invisible"
-            app:layout_constraintTop_toBottomOf="@id/editAno"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-           />
-
-        <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/editAno"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:entries="@array/Ano"
-            android:hint="Selecione seu ano..."
-            android:padding="12dp"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editNome" />
-
-        <Spinner
-            android:id="@+id/editSala"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:descendantFocusability="beforeDescendants"
-            android:isScrollContainer="true"
-            android:hint="Selecione sua sala..."
-            android:padding="12dp"
-            android:visibility="invisible"
-            app:layout_constraintTop_toBottomOf="@id/editTurma"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-           />
-
-        <Button
-            android:id="@+id/button_continuar"
+        <ProgressBar
+            android:id="@+id/progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:text="Continuar"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/checkTermo" />
-
-        <TextView
-            android:id="@+id/textCadastro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Complete seu cadastro:"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imageView"
-            tools:layout_editor_absoluteY="238dp" />
-
-        <CheckBox
-            android:id="@+id/checkTermo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/termo"
-            android:visibility="invisible"
-            android:autoLink="web"
-            app:layout_constraintBottom_toTopOf="@+id/button_continuar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/sign_in_button" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

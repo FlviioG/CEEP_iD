@@ -17,4 +17,15 @@ class Constants : AppCompatActivity() {
         const val PIC_TO_REVIEW = "picToReview"
         const val PIC_PERFIL = "fotoPerfil"
     }
+
+    object USER {
+        const val NAME = "nome"
+        const val TURMA = "turma"
+        const val SALA = "sala"
+    }
+
+    object DATABASE {
+        const val TERMO_B = "termo aceito"
+        const val TERMO = "termo"
+    }
 }

@@ -22,21 +22,21 @@ import com.google.firebase.database.ValueEventListener
 class NotificationService : Service() {
 
     private lateinit var mSecurityPreferences: SecurityPreferences
-    var TAG = "NotificationService"
+    var tag = "NotificationService"
 
     override fun onBind(arg0: Intent?): IBinder? {
         return null
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.e(TAG, "onStartCommand")
+        Log.e(tag, "onStartCommand")
         mSecurityPreferences = SecurityPreferences(this)
         super.onStartCommand(intent, flags, startId)
         return START_STICKY
     }
 
     override fun onCreate() {
-        Log.e(TAG, "onCreate")
+        Log.e(tag, "onCreate")
         super.onCreate()
 
         val usuarioRef: DatabaseReference? = FirebaseConfig.getFirabaseDatabase()
@@ -54,9 +54,9 @@ class NotificationService : Service() {
                         Intent(this@NotificationService, MainActivity::class.java),
                         FLAG_IMMUTABLE
                     )
-                    val CHANNEL_ID = "default_id"
+                    val channelId = "default_id"
                     val builder =
-                        NotificationCompat.Builder(this@NotificationService, CHANNEL_ID)
+                        NotificationCompat.Builder(this@NotificationService, channelId)
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setContentTitle("Situação:")
                             .setContentText("Liberado!")
@@ -64,12 +64,12 @@ class NotificationService : Service() {
                             .setContentIntent(contentIntent)
                             .setAutoCancel(true)
 
-                        Log.e(TAG, "notify")
+                        Log.e(tag, "notify")
                         with(NotificationManagerCompat.from(this@NotificationService)) {
                             notify(1, builder.build())
                     }
                 } else {
-                    Log.e(TAG, "cancelNotify")
+                    Log.e(tag, "cancelNotify")
                     NotificationManagerCompat.from(this@NotificationService).cancel(1)
                 }
             }
@@ -83,7 +83,7 @@ class NotificationService : Service() {
     }
 
     override fun onDestroy() {
-        Log.e(TAG, "restarting...")
+        Log.e(tag, "restarting...")
         Intent(this, NotificationService::class.java).also {
             startService(it)
         }

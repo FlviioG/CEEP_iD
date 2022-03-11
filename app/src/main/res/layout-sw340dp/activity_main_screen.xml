@@ -83,7 +83,6 @@
                 android:textAlignment="center" />
 
             <View
-                android:id="@+id/linhaCardView"
                 style="@style/Theme.CEEPiD.DayNight.Line"
                 android:layout_width="match_parent"
                 android:layout_height="1dp" />

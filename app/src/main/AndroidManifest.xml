@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.ceep.id">
 
     <dist:module dist:instant="true" />
 
     <uses-feature android:name="android.hardware.camera.any"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,7 +16,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:debuggable="false"
+
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
         android:fullBackupContent="true"
@@ -22,7 +24,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CEEPiD.DayNight" >
+        android:theme="@style/Theme.CEEPiD.DayNight"
+        tools:targetApi="s">
 
         <service
             android:name=".infra.notifications.NotificationService"
@@ -39,6 +42,8 @@
         <activity
             android:name=".ui.admin.MainScreenAdmin"
             android:exported="false" />
+        <activity android:name=".infra.auth.GoogleSignInActivity"
+            android:exported="false"/>
         <activity
             android:name=".ui.user.ViewPictureActivity"
             android:exported="false" />

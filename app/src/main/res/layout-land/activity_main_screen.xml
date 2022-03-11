@@ -81,7 +81,6 @@
                 android:textAlignment="center" />
 
             <View
-                android:id="@+id/linhaCardView"
                 style="@style/Theme.CEEPiD.DayNight.Line"
                 android:layout_width="match_parent"
                 android:layout_height="1dp" />
@@ -169,7 +168,7 @@
         android:singleLine="true"
         android:text="Liberado"
         android:textAlignment="center"
-        android:textSize="10sp"
+        android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="@+id/shape_status"
         app:layout_constraintEnd_toEndOf="@+id/shape_status"
         app:layout_constraintStart_toStartOf="@+id/shape_status"
@@ -203,7 +202,7 @@
         android:gravity="center"
         android:singleLine="true"
         android:textAlignment="center"
-        android:textSize="10sp"
+        android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="@id/shape_nome"
         app:layout_constraintEnd_toEndOf="@+id/shape_nome"
         app:layout_constraintStart_toStartOf="@+id/shape_nome"
