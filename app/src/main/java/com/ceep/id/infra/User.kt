@@ -42,7 +42,13 @@ class Usuario {
 
     fun getDay(): String {
         val date = Calendar.getInstance()
-        return "${date.get(Calendar.DAY_OF_MONTH)}/${date.get(Calendar.MONTH)}/${date.get(Calendar.YEAR)}"
+        var month = date.get(Calendar.MONTH)
+        if (month in 1..11) {
+            month++
+        } else if (month == 12) {
+            month = 1
+        }
+        return "${date.get(Calendar.DAY_OF_MONTH)}/${month}/${date.get(Calendar.YEAR)}"
     }
 
     fun getHour (): String {

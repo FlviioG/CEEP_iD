@@ -6,7 +6,9 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.hardware.biometrics.BiometricPrompt
 import android.hardware.fingerprint.FingerprintManager
 import android.net.Uri
@@ -18,6 +20,8 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.graphics.BitmapCompat
+import com.bumptech.glide.Glide
 import com.ceep.id.R
 import com.ceep.id.infra.Constants
 import com.ceep.id.infra.Constants.DATA.BASIC_INFORMATIONS
@@ -48,13 +52,15 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.storage.StorageReference
 import java.io.File
+import java.net.URI
+import java.net.URL
 import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var idUsuario: String
-    private lateinit var photoUsuario: Uri
+    private lateinit var photoUsuario: URL
     private lateinit var mSecurityPreferences: SecurityPreferences
     private var auth: FirebaseAuth? = null
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -90,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         val acct = GoogleSignIn.getLastSignedInAccount(this)
         if (acct != null) {
             idUsuario = acct.id!!
-            photoUsuario = acct.photoUrl!!
+            photoUsuario = URL(acct.photoUrl.toString())
         }
 
         signInButton.setOnClickListener {
@@ -222,13 +228,15 @@ class MainActivity : AppCompatActivity() {
                                     mSecurityPreferences.storeBitmap(PIC_PERFIL, bitmap)
                                     startActivity(Intent(this, MainScreen::class.java))
                                 }?.addOnFailureListener {
-                                    mSecurityPreferences.storeBitmap(
-                                        PIC_PERFIL,
-                                        MediaStore.Images.Media.getBitmap(
-                                            contentResolver,
-                                            photoUsuario
+
+                                    val thread = Thread(Runnable {
+                                        mSecurityPreferences.storeBitmap(
+                                            PIC_PERFIL,
+                                            BitmapFactory.decodeStream(photoUsuario.openConnection().getInputStream())
+
                                         )
-                                    )
+                                    })
+                                    thread.start()
                                     startActivity(Intent(this, MainScreen::class.java))
                                 }
                         } catch (e: Exception) {

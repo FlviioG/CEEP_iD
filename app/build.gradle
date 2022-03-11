@@ -7,6 +7,7 @@ plugins {
 }
 
 android {
+
     compileSdk 31
 
     lintOptions {
@@ -17,7 +18,7 @@ android {
         applicationId "com.ceep.id"
         minSdk 21
         targetSdk 31
-        versionCode 18
+        versionCode 19
         versionName "1.2.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

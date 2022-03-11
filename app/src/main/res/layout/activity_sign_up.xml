@@ -88,7 +88,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkTermo" />
+        app:layout_constraintTop_toBottomOf="@+id/viewTermo" />
 
     <TextView
         android:id="@+id/textCadastro"
@@ -103,14 +103,58 @@
         app:layout_constraintTop_toBottomOf="@id/imageView"
         tools:layout_editor_absoluteY="238dp" />
 
-    <CheckBox
-        android:id="@+id/checkTermo"
+    <RelativeLayout
+        android:id="@+id/viewTermo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:autoLink="web"
-        android:text="@string/termo"
         app:layout_constraintBottom_toTopOf="@+id/button_continuar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editSala" />
+        app:layout_constraintTop_toBottomOf="@+id/editSala">
+
+        <CheckBox
+            android:id="@+id/checkTermo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/termo" />
+
+        <TextView
+            android:id="@+id/textTermo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/checkTermo"
+            android:autoLink="web"
+            android:paddingStart="3dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:text="@string/termo_de_uso" />
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/checkTermo"
+
+            android:paddingStart="34dp"
+            android:paddingBottom="14dp"
+            android:text="e a" />
+
+        <TextView
+            android:id="@+id/textPolitica"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/checkTermo"
+            android:layout_toEndOf="@+id/text"
+            android:autoLink="web"
+            android:paddingStart="4dp"
+            android:paddingBottom="14dp"
+            android:text="@string/politica_de_privacidade" />
+
+    </RelativeLayout>
+
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

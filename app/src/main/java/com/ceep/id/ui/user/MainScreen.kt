@@ -14,8 +14,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION_CODES.M
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_SECURE
@@ -30,9 +28,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.cardview.widget.CardView
 import androidx.core.content.FileProvider
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
-import androidx.core.graphics.drawable.toBitmap
-import com.bumptech.glide.Glide
 import com.ceep.id.R
 import com.ceep.id.infra.Constants.DATA.CHANNEL_ID
 import com.ceep.id.infra.Constants.DATA.PIC_PERFIL
@@ -73,10 +68,6 @@ class MainScreen : AppCompatActivity() {
     private var storageReference: StorageReference? = null
     private lateinit var currentPhotoPath: String
     private lateinit var idUsuario: String
-    private lateinit var photoUsuario: Uri
-    private lateinit var nomeUsuario: String
-    private lateinit var turmaUsuario: String
-    private lateinit var salaUsuario: String
     private lateinit var mSecurityPreferences: SecurityPreferences
     private lateinit var takePictureIntent: ActivityResultLauncher<Uri>
 
@@ -222,6 +213,8 @@ class MainScreen : AppCompatActivity() {
         if (resultCode == RESULT_OK && requestCode == CROP_IMAGE_REQUEST) {
             val profilePic = findViewById<ImageView>(R.id.profile_pic)
             profilePic.visibility = View.INVISIBLE
+            val profilePicView = findViewById<CardView>(R.id.profile_pic_view)
+            profilePicView.visibility = View.INVISIBLE
             val photoButton = findViewById<FloatingActionButton>(R.id.button_photo)
             photoButton.visibility = View.INVISIBLE
             val progressBar = findViewById<ProgressBar>(R.id.progress)
@@ -250,6 +243,7 @@ class MainScreen : AppCompatActivity() {
                         progressBar.visibility = View.GONE
                         photoButton.visibility = View.VISIBLE
                         profilePic.visibility = View.VISIBLE
+                        profilePicView.visibility = View.VISIBLE
                         mSecurityPreferences.remove(PIC_TO_REVIEW)
                     }
                     1 -> {
@@ -273,12 +267,11 @@ class MainScreen : AppCompatActivity() {
                             progressBar.visibility = View.GONE
                             photoButton.visibility = View.VISIBLE
                             profilePic.visibility = View.VISIBLE
+                            profilePicView.visibility = View.VISIBLE
                             mSecurityPreferences.remove(PIC_TO_REVIEW)
                         }.addOnSuccessListener {
-                            val roundDrawable =
-                                RoundedBitmapDrawableFactory.create(resources, image)
-                            roundDrawable.cornerRadius = 49F
-                            profilePic.setImageDrawable(roundDrawable)
+                            profilePic.setImageBitmap(image)
+                            profilePicView.visibility = View.VISIBLE
                             profilePic.visibility = View.VISIBLE
                             Toast.makeText(
                                 this@MainScreen,
@@ -288,6 +281,7 @@ class MainScreen : AppCompatActivity() {
                             progressBar.visibility = View.GONE
                             photoButton.visibility = View.VISIBLE
                             profilePic.visibility = View.VISIBLE
+                            profilePicView.visibility = View.VISIBLE
                             mSecurityPreferences.remove(PIC_TO_REVIEW)
                         }
                     }
@@ -300,6 +294,7 @@ class MainScreen : AppCompatActivity() {
                         progressBar.visibility = View.GONE
                         photoButton.visibility = View.VISIBLE
                         profilePic.visibility = View.VISIBLE
+                        profilePicView.visibility = View.VISIBLE
                         mSecurityPreferences.remove(PIC_TO_REVIEW)
                     }
                 }
@@ -309,6 +304,8 @@ class MainScreen : AppCompatActivity() {
                 profilePic.visibility = View.GONE
                 photoButton.visibility = View.VISIBLE
                 profilePic.visibility = View.VISIBLE
+                profilePicView.visibility = View.VISIBLE
+                profilePicView.visibility = View.VISIBLE
                 mSecurityPreferences.remove(PIC_TO_REVIEW)
             }
         }
@@ -351,7 +348,6 @@ class MainScreen : AppCompatActivity() {
         ///Nome
         textName.text = mSecurityPreferences.getString(NAME)
 
-
         ///Turma
         val turma = mSecurityPreferences.getString(TURMA)
         val sala = mSecurityPreferences.getString(SALA)
@@ -359,13 +355,14 @@ class MainScreen : AppCompatActivity() {
         textTurma.text = format
 
         ///Foto
-        if (mSecurityPreferences.getBitmap(PIC_PERFIL) != null) {
+        val foto = mSecurityPreferences.getBitmap(PIC_PERFIL)
+        if (foto != null) {
+            profilePic.setImageBitmap(foto)
+        } else {
             try {
                 val photo: InputStream = FileInputStream(File(cacheDir, "fotoPerfil.jpg"))
                 val bitmap = BitmapFactory.decodeStream(photo)
-                val roundDrawable = RoundedBitmapDrawableFactory.create(resources, bitmap)
-                roundDrawable.cornerRadius = 49F
-                profilePic.setImageDrawable(roundDrawable)
+                profilePic.setImageBitmap(bitmap)
             } catch (exc: Exception) {
                 Toast.makeText(this, "erro ao carregar a foto", Toast.LENGTH_LONG).show()
             }
@@ -487,8 +484,8 @@ class MainScreen : AppCompatActivity() {
     private fun createNotificationChannel() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Situaçao"
-            val descriptionText = "Situaçao do aluno"
+            val name = "Situação"
+            val descriptionText = "Situação do aluno"
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
@@ -502,7 +499,7 @@ class MainScreen : AppCompatActivity() {
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val timeStamp: String = SimpleDateFormat("ddMMyyyy_HHmmss").format(Date())
         val storageDir: File? = applicationContext.cacheDir
         return File.createTempFile(
             "CEEPiD_${timeStamp}_", /* prefix */

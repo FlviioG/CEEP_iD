@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.webkit.WebView
 import android.widget.*
 import com.ceep.id.R
 import com.ceep.id.infra.Constants
@@ -57,6 +58,8 @@ class GoogleSignInActivity : AppCompatActivity() {
         val buttonContinuar = findViewById<Button>(R.id.button_continuar)
         val editAno = findViewById<Spinner>(R.id.editAno)
         val editNome = findViewById<TextView>(R.id.editNome)
+        val termoText = findViewById<TextView>(R.id.textTermo)
+        val politicaText = findViewById<TextView>(R.id.textPolitica)
 
         // [START config_signin]
         // Configure Google Sign In
@@ -173,8 +176,27 @@ class GoogleSignInActivity : AppCompatActivity() {
             }
         }
 
+        termoText.setOnClickListener {
+           val webView = findViewById<WebView>(R.id.webView)
+            webView.visibility = View.VISIBLE
+            webView.loadUrl(getString(R.string.termo_url))
+        }
+        politicaText.setOnClickListener {
+            val webView = findViewById<WebView>(R.id.webView)
+            webView.visibility = View.VISIBLE
+            webView.loadUrl(getString(R.string.politica_url))
+        }
     }
 
+    override fun onBackPressed() {
+        val webView = findViewById<WebView>(R.id.webView)
+
+        if (webView.visibility == View.VISIBLE) {
+            webView.visibility = View.INVISIBLE
+        } else {
+            super.onBackPressed()
+        }
+    }
     private fun updateUI() {
 
         val idU = mSecurityPreferences.getString(Constants.DATA.USER_ID)
