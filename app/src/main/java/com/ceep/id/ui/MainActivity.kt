@@ -20,6 +20,7 @@ import com.ceep.id.R
 import com.ceep.id.infra.Constants.DATA.BASIC_INFORMATIONS
 import com.ceep.id.infra.Constants.DATA.USER_ID
 import com.ceep.id.infra.SecurityPreferences
+import com.ceep.id.infra.Usuario
 import com.ceep.id.infra.auth.FirebaseConfig
 import com.ceep.id.ui.admin.MainScreenAdmin
 import com.ceep.id.ui.user.MainScreen
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         usuarioRef = FirebaseConfig.getFirabaseDatabase()
 
         val editTurma = findViewById<Spinner>(R.id.editTurma)
+        val chkTermo = findViewById<CheckBox>(R.id.checkTermo)
         val buttonContinuar = findViewById<Button>(R.id.button_continuar)
         val signInButton = findViewById<SignInButton>(R.id.sign_in_button)
         val editAno = findViewById<Spinner>(R.id.editAno)
@@ -78,27 +80,36 @@ class MainActivity : AppCompatActivity() {
 
         buttonContinuar.setOnClickListener {
             val idU = GoogleSignIn.getLastSignedInAccount(this)?.id
-            val nome = usuarioRef!!.child("usuarios").child(idU!!).child("nome")
-            val turma = usuarioRef!!.child("usuarios").child(idU).child("turma")
-            val ano = usuarioRef!!.child("usuarios").child(idU).child("ano")
-            val sala = usuarioRef!!.child("usuarios").child(idU).child("sala")
-            val liberado = usuarioRef!!.child("usuarios").child(idU).child("liberado")
+            val parent = usuarioRef!!.child("usuarios").child(idU!!)
+            val nome = parent.child("nome")
+            val turma = parent.child("turma")
+            val ano = parent.child("ano")
+            val sala = parent.child("sala")
+            val liberado = parent.child("liberado")
+            val booleanTermo = parent.child("Termo aceito")
+            val termo = parent.child("termo")
 
             val nomeSel = findViewById<EditText>(R.id.editNome).text
             val salaSel = findViewById<Spinner>(R.id.editSala)
 
-            if (editTurma.selectedItemId.toInt() != 0 && editAno.selectedItemId.toInt() != 0) {
+            if (editTurma.selectedItemId.toInt() != 0 && editAno.selectedItemId.toInt() != 0 && chkTermo.isChecked) {
                 nome.setValue(nomeSel.toString())
                 ano.setValue(editAno.selectedItem.toString())
                 turma.setValue(editTurma.selectedItem.toString())
                 sala.setValue(salaSel.selectedItem.toString())
+                termo.setValue("Aceito em ${Usuario().getDay()}, ás ${Usuario().getHour()}.")
                 liberado.setValue(false)
+                booleanTermo.setValue(true)
 
                 mSecurityPreferences.storeString(USER_ID, idU.toString())
                 mSecurityPreferences.storeInt(BASIC_INFORMATIONS, 1)
                 updateUI()
             } else {
-                Toast.makeText(this, "Preencha todos os campos primeiro.", Toast.LENGTH_LONG).show()
+                if(!chkTermo.isChecked) {
+                    Toast.makeText(this, "Aceite os termos de uso primeiro.", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "Preencha todos os campos primeiro.", Toast.LENGTH_LONG).show()
+                }
             }
         }
         editTurma.onItemSelectedListener =
@@ -256,7 +267,7 @@ class MainActivity : AppCompatActivity() {
                     Log.d(TAG, "signInWithCredential:success")
                     val idU = mSecurityPreferences.getString(USER_ID)
 
-                    usuarioRef?.child("usuarios/${idU}/turma")?.get()?.addOnSuccessListener {
+                    usuarioRef?.child("usuarios/${idU}/Termo aceito")?.get()?.addOnSuccessListener {
 
                         val snap = it.value
                         val spinner = findViewById<Spinner>(R.id.editTurma)
@@ -266,11 +277,13 @@ class MainActivity : AppCompatActivity() {
                         val editAno = findViewById<Spinner>(R.id.editAno)
                         val textCadastro = findViewById<TextView>(R.id.textCadastro)
                         val signInBt = findViewById<SignInButton>(R.id.sign_in_button)
+                        val chkTermo = findViewById<CheckBox>(R.id.checkTermo)
 
-                        if (snap != null) {
+                        if (snap == true) {
                             mSecurityPreferences.storeInt(BASIC_INFORMATIONS, 1)
                             updateUI()
                         } else {
+                            chkTermo.visibility = View.VISIBLE
                             continuarBt.visibility = View.VISIBLE
                             editNome.visibility = View.VISIBLE
                             editNome.isEnabled = false

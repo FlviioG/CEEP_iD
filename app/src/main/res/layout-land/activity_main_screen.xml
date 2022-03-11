@@ -215,7 +215,7 @@
         android:layout_height="wrap_content"
         android:visibility="invisible"
         app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        app:adUnitId="ca-app-pub-6136253738426934/1523049245"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintEnd_toStartOf="@+id/refresh_button"
         app:layout_constraintStart_toStartOf="@+id/guideline3"

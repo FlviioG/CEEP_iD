@@ -15,19 +15,35 @@
       },
       "oauth_client": [
         {
-          "client_id": "173798830369-424lkdlf2v2ebqgqqqvnrkhp6q89oq5e.apps.googleusercontent.com",
+          "client_id": "173798830369-7kjm1taqjkorvva6k5qp3vanhgafdl0u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ceep.id",
+            "certificate_hash": "036dc48740835e4b40bb1f293fc7ef72447dd20a"
+          }
+        },
+        {
+          "client_id": "173798830369-7r24uhptioknjcp4dv77q5lmlrrmgfvv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ceep.id",
+            "certificate_hash": "2cbd7841b821e73a31ae68f654b4281b69fb6326"
+          }
+        },
+        {
+          "client_id": "173798830369-b62bcmr42s710kocu41on2i91o761vgm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ceep.id",
+            "certificate_hash": "6375e392fd7bdea70291315dc1747125c9b7b4ee"
+          }
+        },
+        {
+          "client_id": "173798830369-vfth2un0ksamr9ro4koi2ls2f1hc0dl2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ceep.id",
             "certificate_hash": "ec3ae6e4f94f0b324e504c86df62d5be2fdbf1b6"
-          }
-        },
-        {
-          "client_id": "173798830369-97gj04odqqs2ensmlatvbnkc2eqcrt36.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ceep.id",
-            "certificate_hash": "e56f814b192b04ab5cff5ab51e065ec66fb4eab1"
           }
         },
         {

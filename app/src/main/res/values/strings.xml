@@ -7,6 +7,7 @@
     <string name="logistica">Técnico em Logística</string>
     <string name="administracao">Técnico em Administração</string>
     <string name="meio_ambiente">Técnico em Meio Ambiente</string>
+    <string name="termo">Declaro que li e aceito os <a href='https://pages.flycricket.io/ceep-id/terms.html'>termos de uso</a></string>
 
     <string-array name="turmas">
         <item>Selecione o curso…</item>

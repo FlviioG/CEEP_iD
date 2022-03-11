@@ -44,6 +44,7 @@ import com.ceep.id.infra.Constants.REQUESTS.CROP_IMAGE_REQUEST
 import com.ceep.id.infra.Constants.REQUESTS.PICK_IMAGE_REQUEST
 import com.ceep.id.infra.Permissao
 import com.ceep.id.infra.SecurityPreferences
+import com.ceep.id.infra.Usuario
 import com.ceep.id.infra.auth.FirebaseConfig
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
@@ -421,19 +422,8 @@ class MainScreen : AppCompatActivity() {
                     statusText.setTextColor(Color.WHITE)
                     textSituacao.setTextColor(Color.WHITE)
 
-                    val date = Calendar.getInstance()
-                    val hour = date.get(Calendar.HOUR_OF_DAY)
-                    val minute = date.get(Calendar.MINUTE)
+                  statusText.text = "Liberado. Atualizado às ${Usuario().getHour()}."
 
-                    when {
-                        hour <= 9 && minute > 9 -> statusText.text =
-                            "Liberado. Atualizado às 0$hour:$minute."
-                        hour > 9 && minute <= 9 -> statusText.text =
-                            "Liberado. Atualizado às $hour:0$minute."
-                        hour <= 9 && minute <= 9 -> statusText.text =
-                            "Liberado. Atualizado às 0$hour:0$minute."
-                        else -> statusText.text = "Liberado. Atualizado às $hour:$minute."
-                    }
                 } else if (post == null || post == false) {
                     val nightMode =
                         resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)
