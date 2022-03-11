@@ -116,6 +116,7 @@
         android:id="@+id/profile_pic"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:src="@drawable/perfil_empty"
 
    />
     </androidx.cardview.widget.CardView>

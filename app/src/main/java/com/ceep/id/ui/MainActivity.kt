@@ -21,7 +21,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.BitmapCompat
-import com.bumptech.glide.Glide
 import com.ceep.id.R
 import com.ceep.id.infra.Constants
 import com.ceep.id.infra.Constants.DATA.BASIC_INFORMATIONS
@@ -228,15 +227,6 @@ class MainActivity : AppCompatActivity() {
                                     mSecurityPreferences.storeBitmap(PIC_PERFIL, bitmap)
                                     startActivity(Intent(this, MainScreen::class.java))
                                 }?.addOnFailureListener {
-
-                                    val thread = Thread(Runnable {
-                                        mSecurityPreferences.storeBitmap(
-                                            PIC_PERFIL,
-                                            BitmapFactory.decodeStream(photoUsuario.openConnection().getInputStream())
-
-                                        )
-                                    })
-                                    thread.start()
                                     startActivity(Intent(this, MainScreen::class.java))
                                 }
                         } catch (e: Exception) {

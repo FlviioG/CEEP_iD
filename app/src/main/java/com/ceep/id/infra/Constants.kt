@@ -16,6 +16,7 @@ class Constants : AppCompatActivity() {
         const val PIC_TO_CROP = "picToCrop"
         const val PIC_TO_REVIEW = "picToReview"
         const val PIC_PERFIL = "fotoPerfil"
+        const val FIRST_OPENING = "first_time"
     }
 
     object USER {
