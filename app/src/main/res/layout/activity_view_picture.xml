@@ -18,6 +18,7 @@
 
     <Button
         android:id="@+id/button_voltar"
+        style = "@style/Theme.CEEPiD.DayNight.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"

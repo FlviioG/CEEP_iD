@@ -30,6 +30,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.FileProvider
 import com.ceep.id.R
 import com.ceep.id.infra.Constants.DATA.CHANNEL_ID
+import com.ceep.id.infra.Constants.DATA.FIRST_OPENING
 import com.ceep.id.infra.Constants.DATA.PIC_PERFIL
 import com.ceep.id.infra.Constants.DATA.PIC_TO_CROP
 import com.ceep.id.infra.Constants.DATA.PIC_TO_REVIEW
@@ -56,8 +57,10 @@ import com.google.firebase.storage.StorageReference
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
+import com.skydoves.balloon.ArrowOrientation
+import com.skydoves.balloon.Balloon
+import com.skydoves.balloon.BalloonAnimation
 import java.io.*
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -108,6 +111,28 @@ class MainScreen : AppCompatActivity() {
         conection = checkConection()
         if (conection == 0 || conection == 2) {
             getData(textName, textTurma, profilePic, statusText)
+        }
+
+        if(mSecurityPreferences.getInt(FIRST_OPENING) == 0) {
+            mSecurityPreferences.storeInt(FIRST_OPENING, 1)
+            val balloon = Balloon.Builder(this)
+            with(balloon) {
+                setArrowSize(10)
+                setArrowOrientation(ArrowOrientation.TOP)
+                setIsVisibleArrow(true)
+                setArrowPosition(0.3f)
+                setWidthRatio(0.6f)
+                setHeight(65)
+                setText("Adicione uma foto.")
+                setTextSize(15f)
+                setAlpha(0.9f)
+                setCornerRadius(4f)
+                setTextColor(resources.getColor(R.color.background_dark))
+                setBackgroundColor(resources.getColor(R.color.rose))
+                setBalloonAnimation(BalloonAnimation.FADE)
+                setAutoDismissDuration(5000)
+                build()
+            }
         }
 
         takePictureIntent =
@@ -359,13 +384,7 @@ class MainScreen : AppCompatActivity() {
         if (foto != null) {
             profilePic.setImageBitmap(foto)
         } else {
-            try {
-                val photo: InputStream = FileInputStream(File(cacheDir, "fotoPerfil.jpg"))
-                val bitmap = BitmapFactory.decodeStream(photo)
-                profilePic.setImageBitmap(bitmap)
-            } catch (exc: Exception) {
-                Toast.makeText(this, "erro ao carregar a foto", Toast.LENGTH_LONG).show()
-            }
+            profilePic.setImageDrawable(getDrawable(R.drawable.perfil_empty))
         }
 
         ///Status
@@ -381,8 +400,8 @@ class MainScreen : AppCompatActivity() {
                         resources.getColorStateList(R.color.green)
                     statusText.setTextColor(Color.WHITE)
                     textSituacao.setTextColor(Color.WHITE)
-
-                    statusText.text = "Liberado. Atualizado às ${Usuario().getHour()}."
+                    val text = "Liberado. Atualizado às ${Usuario().getHour()}."
+                    statusText.text = text
 
                 } else if (post == null || post == false) {
                     val nightMode =
