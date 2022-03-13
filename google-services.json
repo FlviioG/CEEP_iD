@@ -23,19 +23,19 @@
           }
         },
         {
-          "client_id": "173798830369-7r24uhptioknjcp4dv77q5lmlrrmgfvv.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ceep.id",
-            "certificate_hash": "2cbd7841b821e73a31ae68f654b4281b69fb6326"
-          }
-        },
-        {
           "client_id": "173798830369-b62bcmr42s710kocu41on2i91o761vgm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ceep.id",
             "certificate_hash": "6375e392fd7bdea70291315dc1747125c9b7b4ee"
+          }
+        },
+        {
+          "client_id": "173798830369-v9g98vqus9ksg1pr54co9vbpvne3ugiv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ceep.id",
+            "certificate_hash": "2cbd7841b821e73a31ae68f654b4281b69fb6326"
           }
         },
         {

@@ -1,6 +1,8 @@
 package com.ceep.id.ui.user
 
 import android.os.Bundle
+import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
+import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,14 @@ class ViewPictureActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_picture)
 
+        with(window)
+        {
+            addFlags(FLAG_KEEP_SCREEN_ON)
+            attributes = attributes.also {
+                it.screenBrightness = BRIGHTNESS_OVERRIDE_FULL
+            }
+        }
+
         val mSecurityPreferences = SecurityPreferences(this)
         val profilePic = findViewById<ImageView>(R.id.zoom_pic)
         val buttonVoltar = findViewById<Button>(R.id.button_voltar)
@@ -20,8 +30,13 @@ class ViewPictureActivity : AppCompatActivity() {
         profilePic.setImageBitmap(mSecurityPreferences.getBitmap(PIC_PERFIL))
 
         buttonVoltar.setOnClickListener {
-            finish()
+            onBackPressed()
         }
 
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.to_down_1, R.anim.to_down_2)
     }
 }

@@ -11,7 +11,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.ceep.id.R
 import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.auth.FirebaseConfig
-import com.ceep.id.ui.MainActivity
+import com.ceep.id.ui.main.MainActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

@@ -1,47 +1,39 @@
-package com.ceep.id.infra.auth
+package com.ceep.id.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.widget.*
 import com.ceep.id.R
 import com.ceep.id.infra.Constants
+import com.ceep.id.infra.Constants.DATA.FIRST_OPENING
 import com.ceep.id.infra.Constants.DATABASE.TERMO_B
 import com.ceep.id.infra.Constants.USER.NAME
 import com.ceep.id.infra.Constants.USER.SALA
 import com.ceep.id.infra.Constants.USER.TURMA
 import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.Usuario
-import com.ceep.id.ui.MainActivity
-import com.ceep.id.ui.admin.MainScreenAdmin
-import com.ceep.id.ui.user.MainScreen
+import com.ceep.id.infra.auth.FirebaseConfig
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.SignInButton
-import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.storage.StorageReference
+import java.io.ByteArrayOutputStream
 import java.io.File
-
 
 class GoogleSignInActivity : AppCompatActivity() {
 
-    // [START declare_auth]
     private var auth: FirebaseAuth? = null
     private lateinit var mSecurityPreferences: SecurityPreferences
     private var usuarioRef: DatabaseReference? = null
     private var storageReference: StorageReference? = null
-    // [END declare_auth]
     private lateinit var photoUsuario: Uri
     private lateinit var googleSignInClient: GoogleSignInClient
 
@@ -61,21 +53,14 @@ class GoogleSignInActivity : AppCompatActivity() {
         val termoText = findViewById<TextView>(R.id.textTermo)
         val politicaText = findViewById<TextView>(R.id.textPolitica)
 
-        // [START config_signin]
-        // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
-        // [END config_signin]
-
-
-        // [START initialize_auth]
-        // Initialize Firebase Auth
         auth = FirebaseConfig.getFirebaseAuth()
-        // [END initialize_auth]
+
         val acct = GoogleSignIn.getLastSignedInAccount(this)
         if (acct != null) {
             photoUsuario = acct.photoUrl!!
@@ -139,31 +124,34 @@ class GoogleSignInActivity : AppCompatActivity() {
                 mSecurityPreferences.storeString(SALA, salaSel.selectedItem.toString())
 
                 ///Foto
-                if (mSecurityPreferences.getBitmap(Constants.DATA.PIC_PERFIL) == null) {
-                    try {
-                        val pathReference =
-                            storageReference?.child("imagens/alunos/${idU}/fotoPerfil.jpeg")
-                        val localFile = File(cacheDir, "fotoPerfil.jpg")
-                        pathReference?.getFile(localFile)
-                            ?.addOnSuccessListener {
-                                val bitmap =
-                                    BitmapFactory.decodeFile(localFile.absolutePath)
-                                mSecurityPreferences.storeBitmap(Constants.DATA.PIC_PERFIL, bitmap)
-                                updateUI()
-                            }?.addOnFailureListener {
-                                mSecurityPreferences.storeBitmap(
-                                    Constants.DATA.PIC_PERFIL,
-                                    MediaStore.Images.Media.getBitmap(
-                                        contentResolver,
-                                        photoUsuario
-                                    )
-                                )
-                                updateUI()
-                            }
-                        startActivity(Intent(this, MainScreen::class.java))
-                    } catch (e: Exception) {
-                        Toast.makeText(this, "erro", Toast.LENGTH_LONG).show()
-                    }
+                try {
+                    val pathReference =
+                        storageReference?.child("imagens/alunos/${idU}/fotoPerfil.jpeg")
+                    val localFile = File(cacheDir, "fotoPerfil.jpg")
+                    pathReference?.getFile(localFile)
+                        ?.addOnSuccessListener {
+                            val bitmap =
+                                BitmapFactory.decodeFile(localFile.absolutePath)
+                            mSecurityPreferences.storeBitmap(Constants.DATA.PIC_PERFIL, bitmap)
+                            startActivity(Intent(this, LoadingActivity::class.java))
+                            overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+                        }?.addOnFailureListener {
+                            val baos = ByteArrayOutputStream()
+                            val image =
+                                BitmapFactory.decodeResource(resources, R.drawable.perfil_empty)
+                            image.compress(Bitmap.CompressFormat.JPEG, 70, baos)
+                            val b = baos.toByteArray()
+                            val imagemRef = storageReference!!.child("imagens")
+                                .child("alunos").child(idU)
+                                .child("fotoPerfil.jpeg")
+                            imagemRef.putBytes(b)
+                            mSecurityPreferences.storeInt(FIRST_OPENING, 0)
+                            startActivity(Intent(this, LoadingActivity::class.java))
+                            overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+                        }
+
+                } catch (e: Exception) {
+                    Toast.makeText(this, "erro", Toast.LENGTH_LONG).show()
                 }
             } else {
                 if (!chkTermo.isChecked) {
@@ -177,7 +165,7 @@ class GoogleSignInActivity : AppCompatActivity() {
         }
 
         termoText.setOnClickListener {
-           val webView = findViewById<WebView>(R.id.webView)
+            val webView = findViewById<WebView>(R.id.webView)
             webView.visibility = View.VISIBLE
             webView.loadUrl(getString(R.string.termo_url))
         }
@@ -195,14 +183,6 @@ class GoogleSignInActivity : AppCompatActivity() {
             webView.visibility = View.INVISIBLE
         } else {
             super.onBackPressed()
-        }
-    }
-    private fun updateUI() {
-
-        val idU = mSecurityPreferences.getString(Constants.DATA.USER_ID)
-
-        if (idU != "" && mSecurityPreferences.getInt(Constants.DATA.BASIC_INFORMATIONS) == 1) {
-            startActivity(Intent(this, MainScreen::class.java))
         }
     }
 

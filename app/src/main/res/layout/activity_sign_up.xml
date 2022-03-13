@@ -6,7 +6,7 @@
     style="@style/Theme.CEEPiD.DayNight.Background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MainActivity">
+    tools:context=".ui.main.MainActivity">
 
 
     <ImageView
@@ -103,7 +103,7 @@
         app:layout_constraintTop_toBottomOf="@id/imageView"
         tools:layout_editor_absoluteY="238dp" />
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/viewTermo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -116,41 +116,54 @@
             android:id="@+id/checkTermo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/termo" />
+            android:text="@string/termo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textTermo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/checkTermo"
-            android:autoLink="web"
-            android:paddingStart="3dp"
-            android:paddingTop="14dp"
-            android:paddingBottom="14dp"
-            android:text="@string/termo_de_uso" />
-
-        <TextView
-            android:id="@+id/text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/checkTermo"
-
-            android:paddingStart="34dp"
-            android:paddingBottom="14dp"
-            android:text="e a" />
-
-        <TextView
-            android:id="@+id/textPolitica"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/checkTermo"
-            android:layout_toEndOf="@+id/text"
             android:autoLink="web"
             android:paddingStart="4dp"
-            android:paddingBottom="14dp"
-            android:text="@string/politica_de_privacidade" />
 
-    </RelativeLayout>
+            android:text="@string/termo_de_uso"
+            app:layout_constraintBottom_toBottomOf="@+id/checkTermo"
+            app:layout_constraintStart_toEndOf="@id/checkTermo"
+            app:layout_constraintTop_toTopOf="@+id/checkTermo" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/checkTermo">
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/checkTermo"
+                android:paddingBottom="14dp"
+                android:text="e a"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/textPolitica"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_toEndOf="@+id/text"
+                android:autoLink="web"
+                android:paddingStart="4dp"
+                android:paddingBottom="14dp"
+                android:text="@string/politica_de_privacidade"
+
+                app:layout_constraintStart_toEndOf="@id/text"
+                app:layout_constraintTop_toBottomOf="@id/checkTermo" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <WebView
         android:id="@+id/webView"

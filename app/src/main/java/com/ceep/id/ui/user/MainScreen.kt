@@ -1,5 +1,6 @@
 package com.ceep.id.ui.user
 
+import android.app.ActivityManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -12,10 +13,10 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
-import android.os.Build.VERSION_CODES.M
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.FLAG_SECURE
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
@@ -25,10 +26,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
 import androidx.core.content.FileProvider
 import com.ceep.id.R
+import com.ceep.id.infra.Constants
 import com.ceep.id.infra.Constants.DATA.CHANNEL_ID
 import com.ceep.id.infra.Constants.DATA.FIRST_OPENING
 import com.ceep.id.infra.Constants.DATA.PIC_PERFIL
@@ -38,9 +40,6 @@ import com.ceep.id.infra.Constants.DATA.USER_ID
 import com.ceep.id.infra.Constants.REQUESTS.CAMERA_REQUEST
 import com.ceep.id.infra.Constants.REQUESTS.CROP_IMAGE_REQUEST
 import com.ceep.id.infra.Constants.REQUESTS.PICK_IMAGE_REQUEST
-import com.ceep.id.infra.Constants.USER.NAME
-import com.ceep.id.infra.Constants.USER.SALA
-import com.ceep.id.infra.Constants.USER.TURMA
 import com.ceep.id.infra.Permissao
 import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.Usuario
@@ -57,10 +56,10 @@ import com.google.firebase.storage.StorageReference
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
-import com.skydoves.balloon.ArrowOrientation
-import com.skydoves.balloon.Balloon
-import com.skydoves.balloon.BalloonAnimation
-import java.io.*
+import com.skydoves.balloon.*
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -71,6 +70,7 @@ class MainScreen : AppCompatActivity() {
     private var storageReference: StorageReference? = null
     private lateinit var currentPhotoPath: String
     private lateinit var idUsuario: String
+    private lateinit var balloon: Balloon
     private lateinit var mSecurityPreferences: SecurityPreferences
     private lateinit var takePictureIntent: ActivityResultLauncher<Uri>
 
@@ -78,12 +78,14 @@ class MainScreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_screen)
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode())
-
         createNotificationChannel()
 
         with(window) {
             setFlags(FLAG_SECURE, FLAG_SECURE)
+            addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            attributes = attributes.also {
+                it.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+            }
         }
 
         mSecurityPreferences = SecurityPreferences(this)
@@ -98,11 +100,8 @@ class MainScreen : AppCompatActivity() {
         adView.loadAd(AdRequest.Builder().build())
         mSecurityPreferences.storeString(USER_ID, acct?.id.toString())
 
-        val statusText = findViewById<TextView>(R.id.status_text)
         val buttonPic = findViewById<FloatingActionButton>(R.id.button_photo)
         val profilePic = findViewById<ImageView>(R.id.profile_pic)
-        val textName = findViewById<TextView>(R.id.textNome)
-        val textTurma = findViewById<TextView>(R.id.textTurma)
         val buttonRefresh = findViewById<ImageButton>(R.id.refresh_button)
         val cameraBut = findViewById<TextView>(R.id.cameraBut)
         val galeriaBut = findViewById<TextView>(R.id.galeriaBut)
@@ -110,30 +109,27 @@ class MainScreen : AppCompatActivity() {
 
         conection = checkConection()
         if (conection == 0 || conection == 2) {
-            getData(textName, textTurma, profilePic, statusText)
+            update()
         }
 
-        if(mSecurityPreferences.getInt(FIRST_OPENING) == 0) {
-            mSecurityPreferences.storeInt(FIRST_OPENING, 1)
-            val balloon = Balloon.Builder(this)
-            with(balloon) {
-                setArrowSize(10)
-                setArrowOrientation(ArrowOrientation.TOP)
-                setIsVisibleArrow(true)
-                setArrowPosition(0.3f)
-                setWidthRatio(0.6f)
-                setHeight(65)
-                setText("Adicione uma foto.")
-                setTextSize(15f)
-                setAlpha(0.9f)
-                setCornerRadius(4f)
-                setTextColor(resources.getColor(R.color.background_dark))
-                setBackgroundColor(resources.getColor(R.color.rose))
-                setBalloonAnimation(BalloonAnimation.FADE)
-                setAutoDismissDuration(5000)
-                build()
-            }
-        }
+        balloon = Balloon.Builder(applicationContext)
+            .setArrowSize(10)
+            .setArrowOrientation(ArrowOrientation.TOP)
+            .setIsVisibleArrow(true)
+            .setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
+            .setArrowPosition(0.5f)
+            .setWidthRatio(0.4f)
+            .setWidth(BalloonSizeSpec.WRAP)
+            .setHeight(70)
+            .setMarginTop(6)
+            .setText("Adicione uma foto")
+            .setTextSize(15f)
+            .setCornerRadius(20f)
+            .setAutoDismissDuration(3500)
+            .setTextColor(resources.getColor(R.color.background_dark))
+            .setBackgroundColor(resources.getColor(R.color.rose))
+            .setBalloonAnimation(BalloonAnimation.OVERSHOOT)
+            .build()
 
         takePictureIntent =
             registerForActivityResult(ActivityResultContracts.TakePicture()) { sucess: Boolean ->
@@ -151,6 +147,10 @@ class MainScreen : AppCompatActivity() {
             if (cardView.visibility == View.VISIBLE) {
                 cardView.visibility = View.GONE
             } else {
+                if(mSecurityPreferences.getInt(FIRST_OPENING) == 0) {
+                    balloon.showAlignTop(buttonPic)
+                    mSecurityPreferences.storeInt(FIRST_OPENING, 1)
+                }
                 cardView.visibility = View.VISIBLE
             }
         }
@@ -189,7 +189,12 @@ class MainScreen : AppCompatActivity() {
             cardView.visibility = View.GONE
         }
         profilePic.setOnClickListener {
-            startActivity(Intent(this, ViewPictureActivity::class.java))
+            if (mSecurityPreferences.getBitmap(PIC_PERFIL) == null) {
+                balloon.showAlignTop(buttonPic)
+            } else {
+                startActivity(Intent(this, ViewPictureActivity::class.java))
+                overridePendingTransition(R.anim.to_up_1, R.anim.to_up_2)
+            }
         }
         buttonRefresh.setOnClickListener {
             val rotate = RotateAnimation(
@@ -201,7 +206,7 @@ class MainScreen : AppCompatActivity() {
             buttonRefresh.startAnimation(rotate)
             conection = checkConection()
             if (conection == 0 || conection == 2) {
-                getData(textName, textTurma, profilePic, statusText)
+                update(1)
                 adView.loadAd(AdRequest.Builder().build())
             }
         }
@@ -346,48 +351,57 @@ class MainScreen : AppCompatActivity() {
         startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST)
     }
 
-    private fun checkConection(): Int {
-        return if (Build.VERSION.SDK_INT >= M) {
-            val isOnline = isOnline(this@MainScreen)
-            if (isOnline) {
-                0
-            } else {
-                findViewById<ImageView>(R.id.shape_status).backgroundTintList =
-                    resources.getColorStateList(R.color.red)
-                findViewById<TextView>(R.id.status_text).setTextColor(Color.WHITE)
-                findViewById<TextView>(R.id.textSituacao).setTextColor(resources.getColor(R.color.white))
-                findViewById<TextView>(R.id.status_text).text = "Sem conexão com a internet."
-                1
-            }
-        } else {
-            2
-        }
+    private fun update(refresh: Int = 0) {
+        val statusText = findViewById<TextView>(R.id.status_text)
+        val profilePic = findViewById<ImageView>(R.id.profile_pic)
+        val textName = findViewById<TextView>(R.id.textNome)
+        val textTurma = findViewById<TextView>(R.id.textTurma)
+
+        getData(
+            textName,
+            textTurma,
+            profilePic,
+            statusText,
+            refresh
+        )
     }
 
     private fun getData(
         textName: TextView,
         textTurma: TextView,
         profilePic: ImageView,
-        statusText: TextView
+        statusText: TextView,
+        refreshCode: Int
     ) {
-        ///Nome
-        textName.text = mSecurityPreferences.getString(NAME)
 
-        ///Turma
-        val turma = mSecurityPreferences.getString(TURMA)
-        val sala = mSecurityPreferences.getString(SALA)
-        val format = "$turma - $sala"
-        textTurma.text = format
+        if (refreshCode == 0) {
+            ///Nome
+            textName.text = mSecurityPreferences.getString(Constants.USER.NAME)
 
-        ///Foto
-        val foto = mSecurityPreferences.getBitmap(PIC_PERFIL)
-        if (foto != null) {
-            profilePic.setImageBitmap(foto)
-        } else {
-            profilePic.setImageDrawable(getDrawable(R.drawable.perfil_empty))
+            ///Turma
+            val turma = mSecurityPreferences.getString(Constants.USER.TURMA)
+            val sala = mSecurityPreferences.getString(Constants.USER.SALA)
+            val format = "$turma - $sala"
+            textTurma.text = format
+
+            ///Foto
+            val foto = mSecurityPreferences.getBitmap(PIC_PERFIL)
+            if (foto != null) {
+                profilePic.setImageBitmap(foto)
+            } else {
+                profilePic.setImageDrawable(
+                    AppCompatResources.getDrawable(
+                        this,
+                        R.drawable.perfil_empty
+                    )
+                )
+            }
+        } else if (refreshCode == 1) {
+            retrieveData()
         }
 
         ///Status
+
         val postReference = usuarioRef?.child("usuarios/${idUsuario}/liberado")
         val postListener = object : ValueEventListener {
 
@@ -478,26 +492,62 @@ class MainScreen : AppCompatActivity() {
         postReference?.addValueEventListener(postListener)
     }
 
-    @RequiresApi(M)
-    fun isOnline(context: Context): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val capabilities =
-            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-        if (capabilities != null) {
-            when {
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
-                    return true
+    private fun retrieveData() {
+        val rD = Thread {
+            ///Nome
+            usuarioRef?.child("usuarios/${idUsuario}/nome")?.get()?.addOnSuccessListener { nome ->
+
+                if (nome.value == null) {
+                    val t = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+                    t.clearApplicationUserData()
                 }
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
-                    return true
-                }
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
-                    return true
-                }
+                mSecurityPreferences.storeString(Constants.USER.NAME, nome.value.toString())
+
+                ///Turma
+                usuarioRef?.child("usuarios/${idUsuario}/turma")?.get()
+                    ?.addOnSuccessListener { turma ->
+
+                        mSecurityPreferences.storeString(
+                            Constants.USER.TURMA,
+                            turma.value.toString()
+                        )
+
+                        //Sala
+                        usuarioRef?.child("usuarios/${idUsuario}/sala")?.get()
+                            ?.addOnSuccessListener { sala ->
+
+                                mSecurityPreferences.storeString(
+                                    Constants.USER.SALA,
+                                    sala.value.toString()
+                                )
+
+                                ///Foto
+                                try {
+                                    val pathReference =
+                                        storageReference?.child("imagens/alunos/${idUsuario}/fotoPerfil.jpeg")
+                                    val localFile = File(cacheDir, "fotoPerfil.jpg")
+                                    pathReference?.getFile(localFile)
+                                        ?.addOnSuccessListener {
+                                            val bitmap =
+                                                BitmapFactory.decodeFile(localFile.absolutePath)
+                                            mSecurityPreferences.storeBitmap(
+                                                PIC_PERFIL,
+                                                bitmap
+                                            )
+                                            update()
+                                        }?.addOnFailureListener {
+                                            mSecurityPreferences.remove(PIC_PERFIL)
+                                            mSecurityPreferences.storeInt(FIRST_OPENING, 0)
+                                            update()
+                                        }
+                                } catch (e: Exception) {
+                                    Toast.makeText(this, "erro", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                    }
             }
         }
-        return false
+        rD.start()
     }
 
     private fun createNotificationChannel() {
@@ -527,5 +577,45 @@ class MainScreen : AppCompatActivity() {
         ).apply {
             currentPhotoPath = absolutePath
         }
+    }
+
+    private fun checkConection(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val isOnline = isOnline(this)
+            if (isOnline) {
+                0
+            } else {
+                findViewById<ImageView>(R.id.shape_status).backgroundTintList =
+                    resources.getColorStateList(R.color.red)
+                findViewById<TextView>(R.id.status_text).setTextColor(Color.WHITE)
+                findViewById<TextView>(R.id.textSituacao).setTextColor(resources.getColor(R.color.white))
+                findViewById<TextView>(R.id.status_text).text = "Sem conexão com a internet."
+                1
+            }
+        } else {
+            2
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun isOnline(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                    return true
+                }
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                    return true
+                }
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                    return true
+                }
+            }
+        }
+        return false
     }
 }

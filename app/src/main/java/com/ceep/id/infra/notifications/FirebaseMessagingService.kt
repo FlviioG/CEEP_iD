@@ -16,7 +16,7 @@ import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.ceep.id.R
 import com.ceep.id.infra.SecurityPreferences
-import com.ceep.id.ui.MainActivity
+import com.ceep.id.ui.main.MainActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService

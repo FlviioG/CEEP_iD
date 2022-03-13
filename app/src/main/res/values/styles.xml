@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="http://schemas.android.com/tools">
+
     <style name="Theme.CEEPiD.DayNight.Shape" parent="Theme.CEEPiD.DayNight">
         <item name="backgroundTint">#FFFFFF</item>
     </style>

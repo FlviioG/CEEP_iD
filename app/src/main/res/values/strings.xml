@@ -1,10 +1,13 @@
 <resources>
     <string name="app_name">CEEP iD</string>
     <string name="termo">Declaro que li e aceito os</string>
-    <string name="termo_de_uso"><a href='https://pages.flycricket.io/ceep-id/terms.html' >termos de uso</a></string>
-    <string name="politica_de_privacidade"><a href='https://pages.flycricket.io/ceep-id/privacy.html' >politica de privacidade</a>.</string>
+    <string name="termo_de_uso"><a href='https://pages.flycricket.io/ceep-id/terms.html'>termos de uso</a></string>
+    <string name="politica_de_privacidade"><a href='https://pages.flycricket.io/ceep-id/privacy.html'>politica de privacidade</a>.</string>
     <string name="termo_url">https://pages.flycricket.io/ceep-id/terms.html</string>
     <string name="politica_url">https://pages.flycricket.io/ceep-id/privacy.html</string>
+    <string name="demorando_muito">Demorando muito?</string>
+    <string name="recarregar">Recarregar</string>
+    <string name="carregando_dados">Carregando dados...</string>
 
     <string-array name="turmas">
         <item>Selecione o curso…</item>

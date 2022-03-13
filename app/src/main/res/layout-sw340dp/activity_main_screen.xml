@@ -116,6 +116,7 @@
         android:id="@+id/profile_pic"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scaleType="centerCrop"
         android:src="@drawable/perfil_empty"
 
    />
@@ -279,5 +280,6 @@ android:visibility="visible"
         app:layout_constraintEnd_toEndOf="@+id/shape_status"
         app:layout_constraintStart_toStartOf="@+id/shape_status"
         app:layout_constraintTop_toTopOf="@+id/shape_status" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
