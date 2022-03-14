@@ -74,7 +74,6 @@ class MainActivity : AppCompatActivity() {
         signInButton.setOnClickListener {
             signIn()
         }
-
     }
 
     private fun notifyUser(message: String) {
@@ -128,12 +127,12 @@ class MainActivity : AppCompatActivity() {
                             finish()
                         }
                         BiometricPrompt.ERROR_NO_BIOMETRICS -> {
-                            notifyUser("Erro de autenticação: O dispositivo não possui biometria cadastrada.")
+                            notifyUser("O dispositivo não possui bloqueio, é recomendável configurar.")
                             startActivity(Intent(this@MainActivity, LoadingActivity::class.java))
                             overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
                         }
                         BiometricPrompt.ERROR_NO_DEVICE_CREDENTIAL -> {
-                            notifyUser("Erro de autenticação: O dispositivo não possui bloqueio.")
+                            notifyUser("O dispositivo não possui bloqueio, é recomendável configurar.")
                             startActivity(Intent(this@MainActivity, LoadingActivity::class.java))
                             overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
                         }
