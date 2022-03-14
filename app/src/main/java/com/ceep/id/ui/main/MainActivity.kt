@@ -66,12 +66,27 @@ class MainActivity : AppCompatActivity() {
         val acct = GoogleSignIn.getLastSignedInAccount(this)
         if (acct != null) {
             idUsuario = acct.id!!
+            if(mSecurityPreferences.getInt(BASIC_INFORMATIONS) == 1) {
+                unlock()
+            }
         }
 
         signInButton.setOnClickListener {
             signIn()
         }
 
+    }
+
+    private fun notifyUser(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun signIn() {
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+
+    private fun unlock() {
         //Biometria
         val biometricPrompt = BiometricPrompt(
             this,
@@ -86,30 +101,47 @@ class MainActivity : AppCompatActivity() {
                     when (errorCode) {
                         BiometricPrompt.ERROR_USER_CANCELED -> {
                             notifyUser("Erro de autenticação: Processo cancelado pelo usuário.")
+                            finish()
                         }
                         BiometricPrompt.ERROR_CANCELED -> {
                             notifyUser("Erro de autenticação: Autenticação cancelada.")
+                            finish()
                         }
                         BiometricPrompt.ERROR_LOCKOUT -> {
                             notifyUser("Erro de autenticação: Muitas tentativas de desbloqueio.")
+                            finish()
                         }
                         BiometricPrompt.ERROR_LOCKOUT_PERMANENT -> {
                             notifyUser("Erro de autenticação: Dispositivo bloqueado.")
+                            finish()
                         }
                         BiometricPrompt.ERROR_NEGATIVE_BUTTON -> {
                             notifyUser("Erro de autenticação: Processo cancelado pelo usuário.")
+                            finish()
                         }
                         BiometricPrompt.ERROR_NO_SPACE -> {
                             notifyUser("Erro de autenticação: Não há espaço suficiente no dispositivo.")
+                            finish()
                         }
                         BiometricPrompt.ERROR_TIMEOUT -> {
                             notifyUser("Erro de autenticação: Tempo limite excedido.")
+                            finish()
                         }
-                        else -> {
-                            notifyUser("Erro de autenticação.")
+                        BiometricPrompt.ERROR_NO_BIOMETRICS -> {
+                            notifyUser("Erro de autenticação: O dispositivo não possui biometria cadastrada.")
+                            startActivity(Intent(this@MainActivity, LoadingActivity::class.java))
+                            overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
                         }
+                        BiometricPrompt.ERROR_NO_DEVICE_CREDENTIAL -> {
+                            notifyUser("Erro de autenticação: O dispositivo não possui bloqueio.")
+                            startActivity(Intent(this@MainActivity, LoadingActivity::class.java))
+                            overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+                        }
+                     else -> {
+                        notifyUser("Erro de autenticação.")
+                         finish()
                     }
-                    finish()
+                    }
                 }
 
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
@@ -126,21 +158,7 @@ class MainActivity : AppCompatActivity() {
             .setConfirmationRequired(true)
             .build()
 
-        if (idUsuario !="") {
-            if(mSecurityPreferences.getInt(BASIC_INFORMATIONS) == 1) {
-                biometricPrompt.authenticate(promptInfo)
-            }
-        }
-
-    }
-
-    private fun notifyUser(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun signIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        biometricPrompt.authenticate(promptInfo)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
