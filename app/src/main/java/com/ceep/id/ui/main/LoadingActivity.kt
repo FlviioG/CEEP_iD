@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.view.animation.AlphaAnimation
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -36,9 +37,19 @@ class LoadingActivity : AppCompatActivity() {
         storageReference = FirebaseConfig.getFirebaseStorage()
         mSecurityPreferences = SecurityPreferences(this)
 
+        val refresh = findViewById<Button>(R.id.refresh_main_button)
         val acct = GoogleSignIn.getLastSignedInAccount(this)
+
         if (acct != null) {
             idUsuario = acct.id!!
+        }
+
+
+        refresh.setOnClickListener {
+            this.finish()
+            startActivity(Intent(this, LoadingActivity::class.java))
+            this.finishAffinity()
+            overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left)
         }
 
         updateUI()

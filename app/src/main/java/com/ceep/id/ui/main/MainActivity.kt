@@ -26,7 +26,10 @@ import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
+import com.google.firebase.appcheck.debug.internal.DebugAppCheckProvider
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
+import com.google.firebase.appcheck.safetynet.internal.SafetyNetAppCheckProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
@@ -38,13 +41,11 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var idUsuario: String
-    private lateinit var photoUsuario: URL
     private lateinit var mSecurityPreferences: SecurityPreferences
     private var auth: FirebaseAuth? = null
     private lateinit var googleSignInClient: GoogleSignInClient
     private var usuarioRef: DatabaseReference? = null
     private var cancellationSignal: CancellationSignal? = null
-    private var storageReference: StorageReference? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         firebaseAppCheck.installAppCheckProviderFactory(
             SafetyNetAppCheckProviderFactory.getInstance()
         )
+
         firebaseAppCheck.setTokenAutoRefreshEnabled(true)
 
         MobileAds.initialize(this) {}
@@ -67,28 +69,18 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseConfig.getFirebaseAuth()
         auth = FirebaseConfig.getFirebaseAuth()
         usuarioRef = FirebaseConfig.getFirabaseDatabase()
-        storageReference = FirebaseConfig.getFirebaseStorage()
         mSecurityPreferences = SecurityPreferences(this)
 
         val signInButton = findViewById<SignInButton>(R.id.sign_in_button)
-        val refresh = findViewById<Button>(R.id.refresh_main_button)
 
         val acct = GoogleSignIn.getLastSignedInAccount(this)
         if (acct != null) {
             idUsuario = acct.id!!
-            photoUsuario = URL(acct.photoUrl.toString())
         }
 
         signInButton.setOnClickListener {
             signIn()
         }
-
-        refresh.setOnClickListener {
-            this.finish()
-            startActivity(Intent(this, MainActivity::class.java))
-            this.finishAffinity()
-        }
-
     }
 
     override fun onStart() {
