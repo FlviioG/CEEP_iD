@@ -1,17 +1,14 @@
 package com.ceep.id.ui.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import com.ceep.id.R
 import com.ceep.id.infra.Constants
-import com.ceep.id.infra.Constants.DATA.FIRST_OPENING
+import com.ceep.id.infra.Constants.DATA.BASIC_INFORMATIONS
 import com.ceep.id.infra.Constants.DATABASE.TERMO_B
 import com.ceep.id.infra.Constants.USER.NAME
 import com.ceep.id.infra.Constants.USER.SALA
@@ -25,8 +22,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.storage.StorageReference
-import java.io.ByteArrayOutputStream
-import java.io.File
 
 class GoogleSignInActivity : AppCompatActivity() {
 
@@ -34,7 +29,6 @@ class GoogleSignInActivity : AppCompatActivity() {
     private lateinit var mSecurityPreferences: SecurityPreferences
     private var usuarioRef: DatabaseReference? = null
     private var storageReference: StorageReference? = null
-    private lateinit var photoUsuario: Uri
     private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +46,6 @@ class GoogleSignInActivity : AppCompatActivity() {
         val editNome = findViewById<TextView>(R.id.editNome)
         val termoText = findViewById<TextView>(R.id.textTermo)
         val politicaText = findViewById<TextView>(R.id.textPolitica)
-
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -60,12 +53,6 @@ class GoogleSignInActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = FirebaseConfig.getFirebaseAuth()
-
-        val acct = GoogleSignIn.getLastSignedInAccount(this)
-        if (acct != null) {
-            photoUsuario = acct.photoUrl!!
-        }
-
         editNome.isEnabled = false
         editNome.text = auth?.currentUser?.displayName
 
@@ -81,7 +68,6 @@ class GoogleSignInActivity : AppCompatActivity() {
                 }
 
             }
-
         editAno.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
@@ -93,7 +79,16 @@ class GoogleSignInActivity : AppCompatActivity() {
                 }
 
             }
-
+        termoText.setOnClickListener {
+            val webView = findViewById<WebView>(R.id.webView)
+            webView.visibility = View.VISIBLE
+            webView.loadUrl(getString(R.string.termo_url))
+        }
+        politicaText.setOnClickListener {
+            val webView = findViewById<WebView>(R.id.webView)
+            webView.visibility = View.VISIBLE
+            webView.loadUrl(getString(R.string.politica_url))
+        }
         buttonContinuar.setOnClickListener {
             val idU = GoogleSignIn.getLastSignedInAccount(this)?.id
             val parent = usuarioRef!!.child("usuarios").child(idU!!)
@@ -104,75 +99,41 @@ class GoogleSignInActivity : AppCompatActivity() {
             val liberado = parent.child("liberado")
             val booleanTermo = parent.child(TERMO_B)
             val termo = parent.child(Constants.DATABASE.TERMO)
-
             val nomeSel = editNome.text.toString()
             val salaSel = findViewById<Spinner>(R.id.editSala)
 
             if (editTurma.selectedItemId.toInt() != 0 && editAno.selectedItemId.toInt() != 0 && chkTermo.isChecked) {
-                nome.setValue(nomeSel)
-                ano.setValue(editAno.selectedItem.toString())
-                turma.setValue(editTurma.selectedItem.toString())
-                sala.setValue(salaSel.selectedItem.toString())
-                termo.setValue("Aceito em ${Usuario().getDay()}, ás ${Usuario().getHour()}.")
-                liberado.setValue(false)
-                booleanTermo.setValue(true)
 
-                mSecurityPreferences.storeString(Constants.DATA.USER_ID, idU.toString())
-                mSecurityPreferences.storeInt(Constants.DATA.BASIC_INFORMATIONS, 1)
-                mSecurityPreferences.storeString(NAME, nomeSel)
-                mSecurityPreferences.storeString(TURMA, editTurma.selectedItem.toString())
-                mSecurityPreferences.storeString(SALA, salaSel.selectedItem.toString())
-
-                ///Foto
+                //Gravando...
                 try {
-                    val pathReference =
-                        storageReference?.child("imagens/alunos/${idU}/fotoPerfil.jpeg")
-                    val localFile = File(cacheDir, "fotoPerfil.jpg")
-                    pathReference?.getFile(localFile)
-                        ?.addOnSuccessListener {
-                            val bitmap =
-                                BitmapFactory.decodeFile(localFile.absolutePath)
-                            mSecurityPreferences.storeBitmap(Constants.DATA.PIC_PERFIL, bitmap)
-                            startActivity(Intent(this, LoadingActivity::class.java))
-                            overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
-                        }?.addOnFailureListener {
-                            val baos = ByteArrayOutputStream()
-                            val image =
-                                BitmapFactory.decodeResource(resources, R.drawable.perfil_empty)
-                            image.compress(Bitmap.CompressFormat.JPEG, 70, baos)
-                            val b = baos.toByteArray()
-                            val imagemRef = storageReference!!.child("imagens")
-                                .child("alunos").child(idU)
-                                .child("fotoPerfil.jpeg")
-                            imagemRef.putBytes(b)
-                            mSecurityPreferences.storeInt(FIRST_OPENING, 0)
-                            startActivity(Intent(this, LoadingActivity::class.java))
-                            overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
-                        }
+                    //Dados no banco
+                    nome.setValue(nomeSel)
+                    ano.setValue(editAno.selectedItem.toString())
+                    turma.setValue(editTurma.selectedItem.toString())
+                    sala.setValue(salaSel.selectedItem.toString())
+                    termo.setValue("Aceito em ${Usuario().getDay()}, ás ${Usuario().getHour()}.")
+                    liberado.setValue(false)
+                    booleanTermo.setValue(true)
+
+                    //Dados no telefone
+                    mSecurityPreferences.storeString(Constants.DATA.USER_ID, idU.toString())
+                    mSecurityPreferences.storeString(NAME, nomeSel)
+                    mSecurityPreferences.storeString(TURMA, editTurma.selectedItem.toString())
+                    mSecurityPreferences.storeString(SALA, salaSel.selectedItem.toString())
+
+                    mSecurityPreferences.storeInt(BASIC_INFORMATIONS, 2)
+                    nextScreen()
 
                 } catch (e: Exception) {
-                    Toast.makeText(this, "erro", Toast.LENGTH_LONG).show()
+                   notifyUser("Houve um erro ao carregar os dados, verifique sua conexão.")
                 }
             } else {
                 if (!chkTermo.isChecked) {
-                    Toast.makeText(this, "Aceite os termos de uso primeiro.", Toast.LENGTH_LONG)
-                        .show()
+                    notifyUser("Aceite os termos de uso primeiro.")
                 } else {
-                    Toast.makeText(this, "Preencha todos os campos primeiro.", Toast.LENGTH_LONG)
-                        .show()
+                    notifyUser("Preencha todos os campos primeiro.")
                 }
             }
-        }
-
-        termoText.setOnClickListener {
-            val webView = findViewById<WebView>(R.id.webView)
-            webView.visibility = View.VISIBLE
-            webView.loadUrl(getString(R.string.termo_url))
-        }
-        politicaText.setOnClickListener {
-            val webView = findViewById<WebView>(R.id.webView)
-            webView.visibility = View.VISIBLE
-            webView.loadUrl(getString(R.string.politica_url))
         }
     }
 
@@ -244,4 +205,12 @@ class GoogleSignInActivity : AppCompatActivity() {
         populateSpinner(array, spinner)
     }
 
+    private fun notifyUser(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun nextScreen() {
+        startActivity(Intent(this, LoadingActivity::class.java))
+        overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+    }
 }

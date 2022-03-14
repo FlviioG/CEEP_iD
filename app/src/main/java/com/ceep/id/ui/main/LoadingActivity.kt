@@ -2,6 +2,7 @@ package com.ceep.id.ui.main
 
 import android.app.ActivityManager
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
@@ -14,17 +15,19 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.ceep.id.R
 import com.ceep.id.infra.Constants
+import com.ceep.id.infra.Constants.DATA.BASIC_INFORMATIONS
 import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.auth.FirebaseConfig
-import com.ceep.id.ui.admin.MainScreenAdmin
 import com.ceep.id.ui.user.MainScreen
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.storage.StorageReference
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 class LoadingActivity : AppCompatActivity() {
 
+    private lateinit var progressBar: ProgressBar
     private lateinit var mSecurityPreferences: SecurityPreferences
     private var usuarioRef: DatabaseReference? = null
     private var storageReference: StorageReference? = null
@@ -33,10 +36,11 @@ class LoadingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loading)
+
         usuarioRef = FirebaseConfig.getFirabaseDatabase()
         storageReference = FirebaseConfig.getFirebaseStorage()
         mSecurityPreferences = SecurityPreferences(this)
-
+        progressBar = findViewById(R.id.progress)
         val refresh = findViewById<Button>(R.id.refresh_main_button)
         val acct = GoogleSignIn.getLastSignedInAccount(this)
 
@@ -47,15 +51,14 @@ class LoadingActivity : AppCompatActivity() {
         refresh.setOnClickListener {
             this.finish()
             startActivity(Intent(this, LoadingActivity::class.java))
+            overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
             this.finishAffinity()
-            overridePendingTransition(R.anim.left_to_right, R.anim.right_to_left)
         }
 
         updateUI()
     }
 
     private fun updateUI() {
-        val progressBar = findViewById<ProgressBar>(R.id.progress)
 
         Handler().postDelayed({
             val view = findViewById<LinearLayout>(R.id.refresh_main_view)
@@ -63,29 +66,71 @@ class LoadingActivity : AppCompatActivity() {
             val animation = AlphaAnimation(0f, 1f)
             animation.duration = 800
             view.animation = animation
-        }, 3000)
+        }, 3500)
 
         val chooser = Thread {
             usuarioRef?.child("usuarios/${idUsuario}/admin")?.get()?.addOnSuccessListener {
                 progressBar.progress = 20
                 if (it.value == true) {
                     progressBar.progress = 100
-                    startActivity(Intent(this, MainScreenAdmin::class.java))
+                    nextScreen()
                 } else if (idUsuario != "") {
-                    if (mSecurityPreferences.getInt(Constants.DATA.BASIC_INFORMATIONS) == 1) {
-                        progressBar.progress = 100
-                        startActivity(Intent(this, MainScreen::class.java))
-                        overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
-                    } else {
-                        retrieveData()
+                    when (mSecurityPreferences.getInt(BASIC_INFORMATIONS)) {
+                        0 -> {
+                            retrieveData()
+                        }
+                        1 -> {
+                            progressBar.progress = 100
+                            nextScreen()
+                        }
+                        2 -> {
+                          sendData()
+                        }
                     }
                 }
             }?.addOnFailureListener {
                 updateUI()
-                notifyUser("Erro ao receber dados.")
+                notifyUser("Erro ao receber dados. Tentando novamente...")
             }
         }
         chooser.start()
+    }
+
+    private fun sendData() {
+
+        progressBar.progress = 50
+
+        //Carregando Foto
+        val pathReference =
+            storageReference?.child("imagens/alunos/${idUsuario}/fotoPerfil.jpeg")
+        val localFile = File(cacheDir, "fotoPerfil.jpg")
+        pathReference?.getFile(localFile)
+            ?.addOnSuccessListener {
+                val bitmap =
+                    BitmapFactory.decodeFile(localFile.absolutePath)
+
+                progressBar.progress = 100
+                mSecurityPreferences.storeBitmap(Constants.DATA.PIC_PERFIL, bitmap)
+                mSecurityPreferences.storeInt(BASIC_INFORMATIONS, 1)
+                nextScreen()
+            }?.addOnFailureListener {
+                progressBar.progress = 70
+                val baos = ByteArrayOutputStream()
+                val image =
+                    BitmapFactory.decodeResource(resources, R.drawable.perfil_empty)
+                image.compress(Bitmap.CompressFormat.JPEG, 70, baos)
+                val b = baos.toByteArray()
+                val imagemRef = storageReference!!.child("imagens")
+                    .child("alunos").child(idUsuario)
+                    .child("fotoPerfil.jpeg")
+                imagemRef.putBytes(b)
+
+                progressBar.progress = 100
+                mSecurityPreferences.storeInt(BASIC_INFORMATIONS, 1)
+                mSecurityPreferences.storeInt(Constants.DATA.FIRST_OPENING, 0)
+                nextScreen()
+            }
+
     }
 
     private fun retrieveData() {
@@ -138,21 +183,17 @@ class LoadingActivity : AppCompatActivity() {
                                                     bitmap
                                                 )
                                                 progressBar.progress = 80
-                                                updateUI()
-                                                startActivity(
-                                                    Intent(
-                                                        this,
-                                                        MainScreen::class.java
-                                                    )
-                                                )
-                                                overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+
                                                 mSecurityPreferences.storeInt(
-                                                    Constants.DATA.BASIC_INFORMATIONS,
+                                                    BASIC_INFORMATIONS,
                                                     1
                                                 )
+
+                                                nextScreen()
                                             }
                                     } catch (e: Exception) {
                                         notifyUser("Erro ao carregar dados, tentando novamente...")
+                                        updateUI()
                                     }
                                 }
 
@@ -164,5 +205,10 @@ class LoadingActivity : AppCompatActivity() {
 
     private fun notifyUser(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun nextScreen() {
+        startActivity(Intent(this, MainScreen::class.java))
+        overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
     }
 }

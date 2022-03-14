@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="http://schemas.android.com/tools">
     <style name="Theme.CEEPiD.DayNight.Shape" parent="Theme.CEEPiD.DayNight">
-        <item name="backgroundTint">#151A43</item>
+        <item name="backgroundTint">@color/night</item>
     </style>
 
     <style name="Theme.CEEPiD.DayNight.Background" parent="Theme.CEEPiD.DayNight">
@@ -22,7 +22,7 @@
         </item>
         <item name="cardElevation" ns1:ignore="PrivateResource">@dimen/m3_card_elevated_elevation</item>
         <item name="strokeWidth">0dp</item>
-        <item name="cardBackgroundColor">#282C57</item>
+        <item name="cardBackgroundColor">@color/nightless</item>
     </style>
 
     <style name="Theme.CEEPiD.DayNight.Line" parent="Theme.CEEPiD.DayNight">

@@ -1,6 +1,5 @@
 package com.ceep.id.ui.main
 
-
 import android.content.Intent
 import androidx.biometric.BiometricPrompt
 import android.os.Bundle
@@ -28,7 +27,6 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
 import java.util.*
 
-
 class MainActivity : AppCompatActivity() {
 
     private lateinit var idUsuario: String
@@ -41,29 +39,31 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //SafetyNet
         FirebaseApp.initializeApp(this)
         val firebaseAppCheck = FirebaseAppCheck.getInstance()
         firebaseAppCheck.installAppCheckProviderFactory(
             SafetyNetAppCheckProviderFactory.getInstance()
         )
-
         firebaseAppCheck.setTokenAutoRefreshEnabled(true)
 
+        //Ads
         MobileAds.initialize(this) {}
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .requestId()
             .build()
+
+        //Values
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = FirebaseConfig.getFirebaseAuth()
         auth = FirebaseConfig.getFirebaseAuth()
         usuarioRef = FirebaseConfig.getFirabaseDatabase()
         mSecurityPreferences = SecurityPreferences(this)
-
         val signInButton = findViewById<SignInButton>(R.id.sign_in_button)
-
         val acct = GoogleSignIn.getLastSignedInAccount(this)
+
         if (acct != null) {
             idUsuario = acct.id!!
             if(mSecurityPreferences.getInt(BASIC_INFORMATIONS) == 1) {
@@ -74,15 +74,6 @@ class MainActivity : AppCompatActivity() {
         signInButton.setOnClickListener {
             signIn()
         }
-    }
-
-    private fun notifyUser(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun signIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
     private fun unlock() {
@@ -128,25 +119,22 @@ class MainActivity : AppCompatActivity() {
                         }
                         BiometricPrompt.ERROR_NO_BIOMETRICS -> {
                             notifyUser("O dispositivo não possui bloqueio, é recomendável configurar.")
-                            startActivity(Intent(this@MainActivity, LoadingActivity::class.java))
-                            overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+                           nextScreen(1)
                         }
                         BiometricPrompt.ERROR_NO_DEVICE_CREDENTIAL -> {
                             notifyUser("O dispositivo não possui bloqueio, é recomendável configurar.")
-                            startActivity(Intent(this@MainActivity, LoadingActivity::class.java))
-                            overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+                           nextScreen(1)
                         }
-                     else -> {
-                        notifyUser("Erro de autenticação.")
-                         finish()
-                    }
+                        else -> {
+                            notifyUser("Erro de autenticação.")
+                            finish()
+                        }
                     }
                 }
 
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    startActivity(Intent(this@MainActivity, LoadingActivity::class.java))
-                    overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+                   nextScreen(1)
                 }
             })
 
@@ -158,6 +146,11 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         biometricPrompt.authenticate(promptInfo)
+    }
+
+    private fun signIn() {
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -194,11 +187,9 @@ class MainActivity : AppCompatActivity() {
                         val snap = it.value
 
                         if (snap == true) {
-                            startActivity(Intent(this, LoadingActivity::class.java))
-                            overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+                           nextScreen(1)
                         } else {
-                            startActivity(Intent(this, GoogleSignInActivity::class.java))
-                            overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+                           nextScreen(0)
                         }
                     }
                 } else {
@@ -207,10 +198,27 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    private fun nextScreen(screen: Int) {
+        when(screen) {
+            0 -> {
+                startActivity(Intent(this, GoogleSignInActivity::class.java))
+                overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+            }
+            1 -> {
+                startActivity(Intent(this, LoadingActivity::class.java))
+                overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+            }
+        }
+
+    }
+
+    private fun notifyUser(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
     companion object {
         private const val TAG = "GoogleActivity"
         private const val RC_SIGN_IN = 9001
     }
-
 }
 

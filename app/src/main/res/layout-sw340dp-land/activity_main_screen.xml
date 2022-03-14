@@ -29,7 +29,7 @@
         android:layout_height="32dp"
         android:layout_marginTop="3dp"
         android:background="#00000000"
-        android:src="@drawable/ic_baseline_refresh_24"
+        android:src="@drawable/ic_refresh"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintEnd_toEndOf="@+id/shape_nome"
         app:layout_constraintStart_toEndOf="@+id/ad"
@@ -134,7 +134,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="-32dp"
         android:contentDescription="Alterar foto"
-        android:src="@drawable/ic_baseline_add_photo_alternate_24"
+        android:src="@drawable/ic_add_photo"
         app:layout_constraintBottom_toBottomOf="@+id/profile_pic_view"
         app:layout_constraintEnd_toEndOf="@+id/profile_pic_view"
         app:layout_constraintTop_toTopOf="@+id/profile_pic_view" />

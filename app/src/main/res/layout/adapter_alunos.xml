@@ -30,5 +30,5 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="14dp"
-            app:srcCompat="@drawable/green_ball"/>
+            app:srcCompat="@drawable/ic_green_ball"/>
     </LinearLayout>

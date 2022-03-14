@@ -43,14 +43,14 @@ class AlunosAdapter(private val alunos: List<Usuario>, private val context: Cont
                 if (post == true) {
                   holder.situacaoAluno.setImageDrawable(
                         ContextCompat.getDrawable(
-                            context, R.drawable.green_ball
+                            context, R.drawable.ic_green_ball
                         )
                     )
 
                 } else if (post == null || post == false) {
                    holder.situacaoAluno.setImageDrawable(
                         ContextCompat.getDrawable(
-                            context, R.drawable.red_ball
+                            context, R.drawable.ic_red_ball
                         )
                     )
                 }
@@ -59,7 +59,7 @@ class AlunosAdapter(private val alunos: List<Usuario>, private val context: Cont
             override fun onCancelled(error: DatabaseError) {
                 holder.situacaoAluno.setImageDrawable(
                     ContextCompat.getDrawable(
-                        context,  R.drawable.red_ball
+                        context,  R.drawable.ic_red_ball
                     )
                 )
             }
