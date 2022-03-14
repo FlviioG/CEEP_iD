@@ -213,7 +213,7 @@ class MainScreen : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        this.finishAffinity()
+        finishAffinity()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

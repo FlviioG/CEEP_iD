@@ -1,17 +1,13 @@
 package com.ceep.id.ui.main
 
-import android.app.KeyguardManager
-import android.content.Context
+
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.hardware.biometrics.BiometricPrompt
-import android.hardware.fingerprint.FingerprintManager
-import android.os.*
+import androidx.biometric.BiometricPrompt
+import android.os.Bundle
 import android.util.Log
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.ceep.id.R
 import com.ceep.id.infra.Constants.DATA.BASIC_INFORMATIONS
 import com.ceep.id.infra.Constants.DATA.USER_ID
@@ -26,15 +22,10 @@ import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
-import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
-import com.google.firebase.appcheck.debug.internal.DebugAppCheckProvider
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
-import com.google.firebase.appcheck.safetynet.internal.SafetyNetAppCheckProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.storage.StorageReference
-import java.net.URL
 import java.util.*
 
 
@@ -45,7 +36,6 @@ class MainActivity : AppCompatActivity() {
     private var auth: FirebaseAuth? = null
     private lateinit var googleSignInClient: GoogleSignInClient
     private var usuarioRef: DatabaseReference? = null
-    private var cancellationSignal: CancellationSignal? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,89 +71,67 @@ class MainActivity : AppCompatActivity() {
         signInButton.setOnClickListener {
             signIn()
         }
-    }
 
-    override fun onStart() {
-        super.onStart()
+        //Biometria
+        val biometricPrompt = BiometricPrompt(
+            this,
+            ContextCompat.getMainExecutor(this),
+            object : BiometricPrompt.AuthenticationCallback() {
 
-        val biometricSupport = Thread {
-            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-                        && mSecurityPreferences.getInt(BASIC_INFORMATIONS) == 1) && checkBiometricSupport()
-            ) {
-
-                val authenticationCallback: BiometricPrompt.AuthenticationCallback =
-                    object : BiometricPrompt.AuthenticationCallback() {
-
-                        override fun onAuthenticationError(
-                            errorCode: Int,
-                            errString: CharSequence?
-                        ) {
-                            super.onAuthenticationError(errorCode, errString)
-                            notifyUser("Erro de autenticação : $errString")
-                            finish()
+                override fun onAuthenticationError(
+                    errorCode: Int,
+                    errString: CharSequence
+                ) {
+                    super.onAuthenticationError(errorCode, errString)
+                    when (errorCode) {
+                        BiometricPrompt.ERROR_USER_CANCELED -> {
+                            notifyUser("Erro de autenticação: Processo cancelado pelo usuário.")
                         }
-
-                        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult?) {
-                            super.onAuthenticationSucceeded(result)
-                            startActivity(Intent(this@MainActivity, LoadingActivity::class.java))
-                            overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+                        BiometricPrompt.ERROR_CANCELED -> {
+                            notifyUser("Erro de autenticação: Autenticação cancelada.")
+                        }
+                        BiometricPrompt.ERROR_LOCKOUT -> {
+                            notifyUser("Erro de autenticação: Muitas tentativas de desbloqueio.")
+                        }
+                        BiometricPrompt.ERROR_LOCKOUT_PERMANENT -> {
+                            notifyUser("Erro de autenticação: Dispositivo bloqueado.")
+                        }
+                        BiometricPrompt.ERROR_NEGATIVE_BUTTON -> {
+                            notifyUser("Erro de autenticação: Processo cancelado pelo usuário.")
+                        }
+                        BiometricPrompt.ERROR_NO_SPACE -> {
+                            notifyUser("Erro de autenticação: Não há espaço suficiente no dispositivo.")
+                        }
+                        BiometricPrompt.ERROR_TIMEOUT -> {
+                            notifyUser("Erro de autenticação: Tempo limite excedido.")
+                        }
+                        else -> {
+                            notifyUser("Erro de autenticação.")
                         }
                     }
+                    finish()
+                }
 
-                val biometricPrompt = BiometricPrompt.Builder(this)
-                    .setTitle("Verificaçao biometrica")
-                    .setSubtitle("Desbloqueie seu app")
-                    .setNegativeButton(
-                        "Cancelar",
-                        this.mainExecutor
-                    ) { _, _ ->
-                        notifyUser("Processo cancelado")
-                        this.finishAffinity()
-                    }.build()
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    startActivity(Intent(this@MainActivity, LoadingActivity::class.java))
+                    overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+                }
+            })
 
-                biometricPrompt.authenticate(
-                    getCancellationSignal(),
-                    mainExecutor,
-                    authenticationCallback
-                )
-            } else if (mSecurityPreferences.getInt(BASIC_INFORMATIONS) == 1) {
-                startActivity(Intent(this, LoadingActivity::class.java))
-                overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+        val promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Verificação biometrica")
+            .setSubtitle("Desbloqueie seu app para prosseguir")
+            .setDeviceCredentialAllowed(true)
+            .setConfirmationRequired(true)
+            .build()
+
+        if (idUsuario !="") {
+            if(mSecurityPreferences.getInt(BASIC_INFORMATIONS) == 1) {
+                biometricPrompt.authenticate(promptInfo)
             }
         }
-        biometricSupport.start()
-    }
 
-    private fun getCancellationSignal(): CancellationSignal {
-        cancellationSignal = CancellationSignal()
-        cancellationSignal?.setOnCancelListener {
-            notifyUser("Autenticação cancelada pelo usuário")
-        }
-        return cancellationSignal as CancellationSignal
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun checkBiometricSupport(): Boolean {
-        val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-        if (!keyguardManager.isDeviceSecure) {
-            notifyUser("O leitor biométrico ainda não foi configurado")
-            return false
-        } else {
-            return if (ActivityCompat.checkSelfPermission(
-                    this,
-                    android.Manifest.permission.USE_BIOMETRIC
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                notifyUser("Não há permissão para acessar o leitor biométrico")
-                false
-            } else {
-                if (packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)) {
-                    val finger: FingerprintManager =
-                        getSystemService(FINGERPRINT_SERVICE) as FingerprintManager
-                    finger.hasEnrolledFingerprints()
-                } else false
-            }
-        }
     }
 
     private fun notifyUser(message: String) {

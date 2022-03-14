@@ -44,7 +44,6 @@ class LoadingActivity : AppCompatActivity() {
             idUsuario = acct.id!!
         }
 
-
         refresh.setOnClickListener {
             this.finish()
             startActivity(Intent(this, LoadingActivity::class.java))
@@ -64,7 +63,7 @@ class LoadingActivity : AppCompatActivity() {
             val animation = AlphaAnimation(0f, 1f)
             animation.duration = 800
             view.animation = animation
-        }, 5000)
+        }, 3000)
 
         val chooser = Thread {
             usuarioRef?.child("usuarios/${idUsuario}/admin")?.get()?.addOnSuccessListener {
@@ -100,7 +99,7 @@ class LoadingActivity : AppCompatActivity() {
 
                     if (nome.value == null) {
                         val t = getSystemService(ACTIVITY_SERVICE) as ActivityManager
-                        notifyUser(  "Dados corrompidos. Limpando app...")
+                        notifyUser("Dados corrompidos. Limpando app...")
                         t.clearApplicationUserData()
                     }
                     mSecurityPreferences.storeString(Constants.USER.NAME, nome.value.toString())
@@ -153,7 +152,7 @@ class LoadingActivity : AppCompatActivity() {
                                                 )
                                             }
                                     } catch (e: Exception) {
-                                        notifyUser("Erro ao carregar dados")
+                                        notifyUser("Erro ao carregar dados, tentando novamente...")
                                     }
                                 }
 
