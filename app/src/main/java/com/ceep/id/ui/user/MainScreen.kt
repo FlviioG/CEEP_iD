@@ -84,7 +84,7 @@ class MainScreen : AppCompatActivity() {
         createNotificationChannel()
 
         with(window) {
-//            setFlags(FLAG_SECURE, FLAG_SECURE)
+            setFlags(FLAG_SECURE, FLAG_SECURE)
             addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             attributes = attributes.also {
                 it.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
