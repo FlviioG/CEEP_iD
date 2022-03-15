@@ -17,16 +17,18 @@
             app:layout_constraintBottom_toBottomOf="@id/imageView"
             app:layout_constraintStart_toStartOf="@id/imageView"
             app:layout_constraintTop_toTopOf="@id/imageView"
-            app:srcCompat="@drawable/fingerprint" />
+            app:srcCompat="@drawable/fingerprint"
+            android:contentDescription="TODO" />
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logo_caf" />
+            app:srcCompat="@drawable/logo_caf"
+            android:contentDescription="TODO" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"
@@ -39,7 +41,6 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
         <TextView
-            android:id="@+id/text_carregando"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/carregando_dados"

@@ -183,7 +183,7 @@ class MainScreenAdmin : AppCompatActivity() {
                     }
 
                     override fun onLongItemClick(view: View?, position: Int) {
-                        var photo: InputStream = FileInputStream(File(cacheDir, "image$position.jpg"))
+                        val photo: InputStream = FileInputStream(File(cacheDir, "image$position.jpg"))
                         val bit = BitmapFactory.decodeStream(photo)
                         mSecurityPreferences.storeBitmap(PIC_PERFIL, bit)
                         startActivity(Intent(this@MainScreenAdmin, ViewPictureActivity::class.java))

@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.widget.Button
@@ -18,6 +19,7 @@ import com.ceep.id.infra.Constants
 import com.ceep.id.infra.Constants.DATA.BASIC_INFORMATIONS
 import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.auth.FirebaseConfig
+import com.ceep.id.ui.admin.MainScreenAdmin
 import com.ceep.id.ui.user.MainScreen
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.database.DatabaseReference
@@ -60,7 +62,7 @@ class LoadingActivity : AppCompatActivity() {
 
     private fun updateUI() {
 
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             val view = findViewById<LinearLayout>(R.id.refresh_main_view)
             view.visibility = View.VISIBLE
             val animation = AlphaAnimation(0f, 1f)
@@ -73,7 +75,7 @@ class LoadingActivity : AppCompatActivity() {
                 progressBar.progress = 20
                 if (it.value == true) {
                     progressBar.progress = 100
-                    nextScreen()
+                    nextScreen(1)
                 } else if (idUsuario != "") {
                     when (mSecurityPreferences.getInt(BASIC_INFORMATIONS)) {
                         0 -> {
@@ -81,10 +83,10 @@ class LoadingActivity : AppCompatActivity() {
                         }
                         1 -> {
                             progressBar.progress = 100
-                            nextScreen()
+                            nextScreen(0)
                         }
                         2 -> {
-                          sendData()
+                            sendData()
                         }
                     }
                 }
@@ -112,7 +114,7 @@ class LoadingActivity : AppCompatActivity() {
                 progressBar.progress = 100
                 mSecurityPreferences.storeBitmap(Constants.DATA.PIC_PERFIL, bitmap)
                 mSecurityPreferences.storeInt(BASIC_INFORMATIONS, 1)
-                nextScreen()
+                nextScreen(0)
             }?.addOnFailureListener {
                 progressBar.progress = 70
                 val baos = ByteArrayOutputStream()
@@ -128,7 +130,7 @@ class LoadingActivity : AppCompatActivity() {
                 progressBar.progress = 100
                 mSecurityPreferences.storeInt(BASIC_INFORMATIONS, 1)
                 mSecurityPreferences.storeInt(Constants.DATA.FIRST_OPENING, 0)
-                nextScreen()
+                nextScreen(0)
             }
 
     }
@@ -189,7 +191,7 @@ class LoadingActivity : AppCompatActivity() {
                                                     1
                                                 )
 
-                                                nextScreen()
+                                                nextScreen(0)
                                             }
                                     } catch (e: Exception) {
                                         notifyUser("Erro ao carregar dados, tentando novamente...")
@@ -207,8 +209,17 @@ class LoadingActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun nextScreen() {
-        startActivity(Intent(this, MainScreen::class.java))
-        overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+    private fun nextScreen(screen: Int) {
+        when (screen) {
+            0 -> {
+                startActivity(Intent(this, MainScreen::class.java))
+                overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+            }
+            1 -> {
+                startActivity(Intent(this, MainScreenAdmin::class.java))
+                overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)
+            }
+        }
+
     }
 }

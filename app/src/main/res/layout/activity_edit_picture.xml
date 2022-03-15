@@ -25,7 +25,8 @@
         android:layout_marginBottom="30dp"
         app:layout_constraintEnd_toStartOf="@id/buttonSv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:contentDescription="Botão Girar" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonSv"
@@ -35,5 +36,6 @@
         android:layout_marginBottom="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/buttonRt"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:contentDescription="Botão Salvar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

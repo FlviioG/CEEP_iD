@@ -67,7 +67,7 @@ class AlunosAdapter(private val alunos: List<Usuario>, private val context: Cont
         }
         postReference?.addValueEventListener(postListener)
 
-        var storageReference = FirebaseConfig.getFirebaseStorage()
+        val storageReference = FirebaseConfig.getFirebaseStorage()
         try {
             val pathReference =
                 storageReference?.child("imagens/alunos/${key}/fotoPerfil.jpeg")

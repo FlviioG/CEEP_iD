@@ -5,7 +5,10 @@ import androidx.biometric.BiometricPrompt
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricManager.Authenticators
 import androidx.core.content.ContextCompat
 import com.ceep.id.R
 import com.ceep.id.infra.Constants.DATA.BASIC_INFORMATIONS
@@ -33,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mSecurityPreferences: SecurityPreferences
     private var auth: FirebaseAuth? = null
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var signIn: ActivityResultLauncher<Intent>
     private var usuarioRef: DatabaseReference? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,8 +75,26 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        signIn = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if(result.resultCode == RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    // Google Sign In was successful, authenticate with Firebase
+                    val account = task.getResult(ApiException::class.java)!!
+                    Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
+                    firebaseAuthWithGoogle(account.idToken!!)
+                    idUsuario = GoogleSignIn.getLastSignedInAccount(this)?.id.toString()
+                    mSecurityPreferences.storeString(USER_ID, idUsuario)
+                } catch (e: ApiException) {
+                    // Google Sign In failed, update UI appropriately
+                    Log.w(TAG, "O login do Google falhou.", e)
+                }
+            }
+        }
+
         signInButton.setOnClickListener {
-            signIn()
+            val signInIntent = googleSignInClient.signInIntent
+            signIn.launch(signInIntent)
         }
     }
 
@@ -141,36 +163,11 @@ class MainActivity : AppCompatActivity() {
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle("Verificação biometrica")
             .setSubtitle("Desbloqueie seu app para prosseguir")
-            .setDeviceCredentialAllowed(true)
+            .setAllowedAuthenticators(Authenticators.DEVICE_CREDENTIAL or Authenticators.BIOMETRIC_WEAK)
             .setConfirmationRequired(true)
             .build()
 
         biometricPrompt.authenticate(promptInfo)
-    }
-
-    private fun signIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                val account = task.getResult(ApiException::class.java)!!
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
-                firebaseAuthWithGoogle(account.idToken!!)
-                idUsuario = GoogleSignIn.getLastSignedInAccount(this)?.id.toString()
-                mSecurityPreferences.storeString(USER_ID, idUsuario)
-            } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "O login do Google falhou.", e)
-            }
-        }
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
@@ -218,7 +215,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "GoogleActivity"
-        private const val RC_SIGN_IN = 9001
     }
 }
 

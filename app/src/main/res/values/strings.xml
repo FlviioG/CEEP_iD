@@ -7,7 +7,13 @@
     <string name="politica_url">https://pages.flycricket.io/ceep-id/privacy.html</string>
     <string name="demorando_muito">Demorando muito?</string>
     <string name="recarregar">Recarregar</string>
-    <string name="carregando_dados">Carregando dados...</string>
+    <string name="carregando_dados">Carregando dados…</string>
+    <string name="alterar_foto">Alterar foto</string>
+    <string name="em_aula">Em aula</string>
+    <string name="fora_do_horario">Fora do horário de aula</string>
+    <string name="liberado">Liberado</string>
+    <string name="erro">Erro ao receber dados.</string>
+    <string name="internet">Sem conexão com a internet.</string>
 
     <string-array name="turmas">
         <item>Selecione o curso…</item>

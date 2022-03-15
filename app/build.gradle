@@ -18,11 +18,11 @@ android {
         applicationId "com.ceep.id"
         minSdk 21
         targetSdk 31
-        versionCode 25
-        versionName "1.5"
+        versionCode 26
+        versionName "1.5.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        targetSdkVersion 31
+        targetSdkVersion 32
         minSdkVersion 21
     }
 
@@ -44,41 +44,36 @@ android {
         includeInApk true
         includeInBundle true
     }
-    compileSdkVersion 31
+    compileSdkVersion 32
 }
 
 dependencies {
-
+    implementation 'com.google.android.material:material:1.6.0-alpha03'
     implementation 'com.google.android.gms:play-services-ads:20.6.0'
     implementation 'com.google.android.gms:play-services-auth:20.1.0'
     implementation 'com.google.android.gms:play-services-mlkit-face-detection:17.0.1'
+    implementation 'com.google.firebase:firebase-database:20.0.3'
+    implementation 'com.google.firebase:firebase-database-ktx:20.0.3'
+    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.0-beta04'
+    implementation 'com.google.firebase:firebase-appcheck-debug:16.0.0-beta04'
+    implementation 'com.google.firebase:firebase-auth:21.0.1'
+    implementation 'com.google.firebase:firebase-storage-ktx:20.0.0'
+    implementation 'com.google.firebase:firebase-messaging-ktx:23.0.0'
+    implementation 'com.google.firebase:firebase-messaging:23.0.0'
+    implementation 'com.google.firebase:firebase-perf-ktx:20.0.5'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.2.8'
+    implementation 'com.google.firebase:firebase-analytics-ktx:20.1.0'
+    implementation platform('com.google.firebase:firebase-bom:29.0.4')
+
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.biometric:biometric:1.2.0-alpha04'
-    implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
 
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
-    implementation platform('com.google.firebase:firebase-bom:29.0.4')
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-database:20.0.3'
-    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.0-beta04'
-    implementation 'com.google.firebase:firebase-appcheck-debug:16.0.0-beta04'
-    implementation 'com.google.firebase:firebase-auth:21.0.1'
-    implementation 'com.google.firebase:firebase-database-ktx:20.0.3'
-    implementation 'com.google.firebase:firebase-storage-ktx:20.0.0'
-    implementation 'com.google.firebase:firebase-perf-ktx:20.0.5'
-    implementation 'com.google.firebase:firebase-messaging-ktx:23.0.0'
-    implementation 'com.google.firebase:firebase-messaging:23.0.0'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.2.8'
-    implementation 'com.google.firebase:firebase-analytics-ktx:20.1.0'
-    implementation 'com.google.android.material:material:1.6.0-alpha03'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0-native-mt'
     implementation 'com.edmodo:cropper:1.0.1'
-    implementation platform('com.google.firebase:firebase-bom:29.0.4')
     implementation "com.github.skydoves:balloon:1.4.1"
 }

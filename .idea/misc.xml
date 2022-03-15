@@ -3,26 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/drawable/background.xml" value="0.1" />
-        <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/drawable/ic_baseline_add_photo_alternate_24.xml" value="0.1" />
-        <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/drawable/ic_baseline_refresh_24.xml" value="0.1" />
-        <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/drawable/logo_caf.xml" value="0.1" />
         <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/drawable/main_toolbar.xml" value="0.1" />
         <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/layout-land/activity_main_screen.xml" value="0.3539325842696629" />
         <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/layout-sw340dp-land/activity_main_screen.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/layout-sw340dp/activity_main_screen.xml" value="0.196875" />
-        <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/layout/activity_main.xml" value="0.196875" />
         <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/layout/activity_main_screen.xml" value="0.25" />
         <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/layout/activity_main_screen_admin.xml" value="0.1" />
         <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/layout/activity_view_picture.xml" value="0.18659420289855072" />
         <entry key="..\:/Users/Windows/StudioProjects/CEEP_iD/app/src/main/res/layout/adapter_alunos.xml" value="0.4318813716404078" />
+        <entry key="..\:/Users/flavi/StudioProjects/CEEP_iD/app/src/main/res/drawable/logo_caf.xml" value="0.121" />
         <entry key="..\:/Users/flavi/StudioProjects/CEEP_iD/app/src/main/res/layout-land/activity_main_screen.xml" value="0.449438202247191" />
         <entry key="..\:/Users/flavi/StudioProjects/CEEP_iD/app/src/main/res/layout-land/activity_sign_up.xml" value="0.4" />
         <entry key="..\:/Users/flavi/StudioProjects/CEEP_iD/app/src/main/res/layout-land/activity_view_picture.xml" value="0.43243243243243246" />
         <entry key="..\:/Users/flavi/StudioProjects/CEEP_iD/app/src/main/res/layout-sw340dp-land/activity_main_screen.xml" value="0.21164021164021163" />
         <entry key="..\:/Users/flavi/StudioProjects/CEEP_iD/app/src/main/res/layout-sw340dp/activity_main_screen.xml" value="0.23505434782608695" />
+        <entry key="..\:/Users/flavi/StudioProjects/CEEP_iD/app/src/main/res/layout/activity_edit_picture.xml" value="0.1" />
         <entry key="..\:/Users/flavi/StudioProjects/CEEP_iD/app/src/main/res/layout/activity_loading.xml" value="0.20521590423257802" />
-        <entry key="..\:/Users/flavi/StudioProjects/CEEP_iD/app/src/main/res/layout/activity_main.xml" value="0.536" />
+        <entry key="..\:/Users/flavi/StudioProjects/CEEP_iD/app/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="..\:/Users/flavi/StudioProjects/CEEP_iD/app/src/main/res/layout/activity_main_screen.xml" value="0.5148809523809523" />
         <entry key="..\:/Users/flavi/StudioProjects/CEEP_iD/app/src/main/res/layout/activity_sign_up.xml" value="0.4" />
         <entry key="..\:/Users/flavi/StudioProjects/CEEP_iD/app/src/main/res/layout/activity_view_picture.xml" value="0.20521590423257802" />

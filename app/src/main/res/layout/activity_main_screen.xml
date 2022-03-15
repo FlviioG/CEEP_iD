@@ -3,7 +3,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/background_view"
     style="@style/Theme.CEEPiD.DayNight.Background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,7 +21,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="CEEP iD Logo" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/refresh_button"
@@ -50,7 +50,8 @@
         app:layout_constraintBottom_toTopOf="@+id/shape_nome"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:contentDescription="TODO" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -116,7 +117,8 @@
         <ImageView
             android:id="@+id/profile_pic"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:contentDescription="TODO" />
     </androidx.cardview.widget.CardView>
     <ProgressBar
         android:id="@+id/progress"
@@ -132,7 +134,7 @@
         android:id="@+id/button_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Alterar foto"
+        android:contentDescription="@string/alterar_foto"
         android:layout_marginEnd="8dp"
         android:src="@drawable/ic_add_photo"
         app:layout_constraintBottom_toBottomOf="@+id/background_pic"
@@ -156,7 +158,8 @@
         app:layout_constraintDimensionRatio="16:5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/background_pic" />
+        app:layout_constraintTop_toBottomOf="@+id/background_pic"
+        android:contentDescription="TODO" />
 
     <ImageView
         android:id="@+id/shape_status"
@@ -173,7 +176,8 @@
         app:layout_constraintDimensionRatio="16:5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shape_nome" />
+        app:layout_constraintTop_toBottomOf="@id/shape_nome"
+        android:contentDescription="TODO" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/status_text"
