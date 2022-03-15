@@ -18,6 +18,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.view.WindowManager
+import android.view.WindowManager.LayoutParams.FLAG_SECURE
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
