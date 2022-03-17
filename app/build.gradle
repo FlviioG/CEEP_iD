@@ -45,6 +45,9 @@ android {
         includeInBundle true
     }
     compileSdkVersion 32
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {

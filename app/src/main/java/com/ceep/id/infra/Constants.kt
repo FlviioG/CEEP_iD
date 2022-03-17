@@ -7,6 +7,7 @@ class Constants : AppCompatActivity() {
         const val PICK_IMAGE_REQUEST = 100
         const val CROP_IMAGE_REQUEST = 200
         const val CAMERA_REQUEST = 300
+        const val WIDGET_BUTTON = "com.ceep.id.WIDGET_BUTTON"
     }
 
     object DATA {

@@ -21,7 +21,8 @@
         <item name="android:stateListAnimator" ns1:ignore="NewApi,PrivateResource">
             @animator/m3_card_elevated_state_list_anim
         </item>
-        <item name="cardElevation" ns1:ignore="PrivateResource">@dimen/m3_card_elevated_elevation</item>
+        <item name="cardElevation" ns1:ignore="PrivateResource">@dimen/m3_card_elevated_elevation
+        </item>
         <item name="strokeWidth">0dp</item>
         <item name="cardBackgroundColor">@color/white</item>
     </style>
@@ -33,7 +34,12 @@
     <style name="Theme.CEEPiD.DayNight.Text" parent="Theme.CEEPiD.DayNight">
         <item name="android:textColor">@color/black</item>
     </style>
+
     <style name="Theme.CEEPiD.DayNight.Button" parent="Theme.CEEPiD.DayNight">
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Theme.CEEPID.DayNight.Widget" parent="Theme.CEEPiD.DayNight">
+        <item name="android:backgroundTint">@color/background_light</item>
     </style>
 </resources>
