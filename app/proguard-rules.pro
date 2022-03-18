@@ -1,4 +1,7 @@
 -keep class androidx.appcompat.widget.** {*;}
+-keep class com.google.firebase.example.fireeats.model.** {*;}
+-keep class com.google.firebase.example.fireeats.java.model.** {*;}
+-keep class com.google.firebase.example.fireeats.kotlin.model.** {*;}
 # Add project specific ProGuard rules here.
 # You can control the set of applied configuration files using the
 # proguardFiles setting in build.gradle.

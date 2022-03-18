@@ -200,10 +200,11 @@ class MainScreenAdmin : AppCompatActivity() {
             @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                listaAlunos.clear()
-                keysSelecionadas.clear()
-                keyAlunos.clear()
-
+                if(listaAlunos.isNotEmpty()) {
+                    listaAlunos.clear()
+                    keysSelecionadas.clear()
+                    keyAlunos.clear()
+                }
 
                 for (dados in snapshot.children) {
                     val usuario: Usuario? = dados.getValue(Usuario::class.java)
