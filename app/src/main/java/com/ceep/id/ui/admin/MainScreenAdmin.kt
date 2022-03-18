@@ -21,6 +21,8 @@ import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.Usuario
 import com.ceep.id.infra.auth.FirebaseConfig
 import com.ceep.id.ui.user.ViewPictureActivity
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -51,6 +53,9 @@ class MainScreenAdmin : AppCompatActivity() {
         usuarioRef = FirebaseConfig.getFirabaseDatabase()
         mSecurityPreferences = SecurityPreferences(this)
         idU = mSecurityPreferences.getString(USER_ID)
+
+        val adView = findViewById<AdView>(R.id.ad)
+        adView.loadAd(AdRequest.Builder().build())
 
         recyclerAlunos = findViewById(R.id.recyclerAlunos)
         referenciaAlunos = FirebaseConfig.getFirabaseDatabase()?.child("usuarios")

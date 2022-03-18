@@ -1,40 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.ceep.id">
+    package="com.ceep.id" >
+
+    <dist:module dist:instant="true" />
 
     <uses-feature android:name="android.hardware.camera.any" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CEEPiD.DayNight"
-        tools:targetApi="s">
+        android:theme="@style/Theme.CEEPiD.DayNight">
+<!--        <receiver-->
+<!--            android:name=".StatusWidget"-->
+<!--            android:exported="true" >-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
+<!--            </intent-filter>-->
 
-        <service
-            android:name=".infra.notifications.NotificationService"
-            android:enabled="true"
-            android:exported="false"
-            android:isolatedProcess="true"
-            android:process=":notificationService">
-            <intent-filter>
-                <action android:name="com.ceep.id.NotificationService" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </service>
+<!--            <meta-data-->
+<!--                android:name="android.appwidget.provider"-->
+<!--                android:resource="@xml/status_widget_info" />-->
+<!--        </receiver>-->
+
+<!--        <service-->
+<!--            android:name=".infra.notifications.NotificationService"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="false"-->
+<!--            android:isolatedProcess="true"-->
+<!--            android:process=":notificationService" >-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.ceep.id.NotificationService" />-->
+
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--            </intent-filter>-->
+<!--        </service>-->
 
         <activity
             android:name=".ui.admin.MainScreenAdmin"
@@ -52,11 +63,12 @@
             android:name=".ui.user.MainScreen"
             android:exported="false"
             android:windowSoftInputMode="adjustPan|adjustResize" />
-        <activity android:name=".ui.main.LoadingActivity"
+        <activity
+            android:name=".ui.main.LoadingActivity"
             android:exported="false" />
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -68,7 +80,7 @@
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.ceep.id.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true" >
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />

@@ -1,17 +1,72 @@
 package com.ceep.id.infra
 
+import androidx.annotation.Keep
 import com.ceep.id.infra.auth.FirebaseConfig.getFirabaseDatabase
 import java.io.File
+import java.io.Serializable
 import java.util.*
 
-
-class Usuario {
-
+@Keep
+class Usuario: Serializable {
     private var nome: String? = null
+    private var ano: String? = null
+    private var sala: String? = null
+    private var turma: String? = null
+    private var termo: String? = null
+    private var liberado: Boolean? = null
+    private var termo_aceito: Boolean? = null
 
     fun getNome(): String? {
         return nome
     }
+
+//    fun setNome(nome: String) {
+//        this.nome = nome
+//    }
+//
+//    fun getAno(): String? {
+//        return ano
+//    }
+//
+//    fun setAno(ano: String) {
+//        this.ano = ano
+//    }
+//
+//    fun getTurma(): String? {
+//        return turma
+//    }
+//
+//    fun setTurma(turma: String) {
+//        this.turma = turma
+//    }
+//
+//    fun getSala(): String? {
+//        return sala
+//    }
+//
+//    fun setSala(sala: String) {
+//        this.sala = sala
+//    }
+//
+//    fun getTermoData(): String? {
+//        return termo
+//    }
+//
+//    fun setTermoData(termo: String) {
+//        this.termo = termo
+//    }
+//
+//    fun getTermoAceite(): Boolean? {
+//        return termo_aceito
+//    }
+//
+//    fun setTermoAceite(termo_aceito: Boolean) {
+//        this.termo_aceito = termo_aceito
+//    }
+//
+//    fun getLiberacao(): Boolean? {
+//        return liberado
+//    }
 
     fun liberar(idU: String?) {
         val firebaseRef = getFirabaseDatabase()
