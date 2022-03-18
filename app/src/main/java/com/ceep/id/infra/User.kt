@@ -18,7 +18,6 @@ class Usuario {
         val usuario = firebaseRef!!.child("usuarios").child(idU!!)
             .child("liberado")
         usuario.setValue(true)
-
     }
 
     fun desliberar(idU: String?) {

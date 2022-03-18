@@ -22,33 +22,33 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CEEPiD.DayNight"
         tools:targetApi="s">
-        <receiver
-            android:name=".ui.user.StatusWidget"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.ceep.id.WIDGET_BUTTON"/>
-            </intent-filter>
+<!--        <receiver-->
+<!--            android:name=".ui.user.StatusWidget"-->
+<!--            android:exported="true">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
+<!--            </intent-filter>-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.ceep.id.WIDGET_BUTTON"/>-->
+<!--            </intent-filter>-->
 
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/status_widget_info" />
-        </receiver>
+<!--            <meta-data-->
+<!--                android:name="android.appwidget.provider"-->
+<!--                android:resource="@xml/status_widget_info" />-->
+<!--        </receiver>-->
 
-        <service
-            android:name=".infra.notifications.NotificationService"
-            android:enabled="true"
-            android:exported="false"
-            android:isolatedProcess="true"
-            android:process=":notificationService">
-            <intent-filter>
-                <action android:name="com.ceep.id.NotificationService" />
+<!--        <service-->
+<!--            android:name=".infra.notifications.NotificationService"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="false"-->
+<!--            android:isolatedProcess="true"-->
+<!--            android:process=":notificationService">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.ceep.id.NotificationService" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </service>
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--            </intent-filter>-->
+<!--        </service>-->
 
         <activity
             android:name=".ui.admin.MainScreenAdmin"
@@ -74,7 +74,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

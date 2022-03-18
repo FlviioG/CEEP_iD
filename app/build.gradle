@@ -8,6 +8,14 @@ plugins {
 
 android {
 
+    signingConfigs {
+        debug {
+            storeFile file('C:\\Users\\flavi\\Documents\\keystore\\google-play-key.jks')
+            storePassword 'google-play-key'
+            keyAlias '17100118'
+            keyPassword '17100118'
+        }
+    }
     compileSdk 31
 
     lintOptions {
@@ -18,8 +26,8 @@ android {
         applicationId "com.ceep.id"
         minSdk 21
         targetSdk 31
-        versionCode 26
-        versionName "1.5.1"
+        versionCode 27
+        versionName "1.5.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         targetSdkVersion 32
