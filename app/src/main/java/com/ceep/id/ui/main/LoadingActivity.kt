@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ceep.id.R
 import com.ceep.id.infra.Constants
 import com.ceep.id.infra.Constants.DATA.BASIC_INFORMATIONS
+import com.ceep.id.infra.Constants.USER.IS_ADM
 import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.auth.FirebaseConfig
 import com.ceep.id.ui.admin.MainScreenAdmin
@@ -75,6 +76,7 @@ class LoadingActivity : AppCompatActivity() {
                 progressBar.progress = 20
                 if (it.value == true) {
                     progressBar.progress = 100
+                    mSecurityPreferences.storeInt(IS_ADM, 1)
                     nextScreen(1)
                 } else if (idUsuario != "") {
                     when (mSecurityPreferences.getInt(BASIC_INFORMATIONS)) {

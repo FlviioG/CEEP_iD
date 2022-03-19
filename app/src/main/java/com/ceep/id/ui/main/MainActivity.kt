@@ -14,6 +14,7 @@ import com.ceep.id.R
 import com.ceep.id.infra.Constants.DATA.BASIC_INFORMATIONS
 import com.ceep.id.infra.Constants.DATA.USER_ID
 import com.ceep.id.infra.Constants.DATABASE.TERMO_B
+import com.ceep.id.infra.Constants.USER.IS_ADM
 import com.ceep.id.infra.SecurityPreferences
 import com.ceep.id.infra.auth.FirebaseConfig
 import com.google.android.gms.ads.MobileAds
@@ -70,27 +71,31 @@ class MainActivity : AppCompatActivity() {
 
         if (acct != null) {
             idUsuario = acct.id!!
-            if(mSecurityPreferences.getInt(BASIC_INFORMATIONS) == 1) {
+            if (mSecurityPreferences.getInt(BASIC_INFORMATIONS) == 1 || mSecurityPreferences.getInt(
+                    IS_ADM
+                ) == 1
+            ) {
                 unlock()
             }
         }
 
-        signIn = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if(result.resultCode == RESULT_OK) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                try {
-                    // Google Sign In was successful, authenticate with Firebase
-                    val account = task.getResult(ApiException::class.java)!!
-                    Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
-                    firebaseAuthWithGoogle(account.idToken!!)
-                    idUsuario = GoogleSignIn.getLastSignedInAccount(this)?.id.toString()
-                    mSecurityPreferences.storeString(USER_ID, idUsuario)
-                } catch (e: ApiException) {
-                    // Google Sign In failed, update UI appropriately
-                    Log.w(TAG, "O login do Google falhou.", e)
+        signIn =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == RESULT_OK) {
+                    val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                    try {
+                        // Google Sign In was successful, authenticate with Firebase
+                        val account = task.getResult(ApiException::class.java)!!
+                        Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
+                        firebaseAuthWithGoogle(account.idToken!!)
+                        idUsuario = GoogleSignIn.getLastSignedInAccount(this)?.id.toString()
+                        mSecurityPreferences.storeString(USER_ID, idUsuario)
+                    } catch (e: ApiException) {
+                        // Google Sign In failed, update UI appropriately
+                        Log.w(TAG, "O login do Google falhou.", e)
+                    }
                 }
             }
-        }
 
         signInButton.setOnClickListener {
             val signInIntent = googleSignInClient.signInIntent
@@ -141,11 +146,11 @@ class MainActivity : AppCompatActivity() {
                         }
                         BiometricPrompt.ERROR_NO_BIOMETRICS -> {
                             notifyUser("O dispositivo não possui bloqueio, é recomendável configurar.")
-                           nextScreen(1)
+                            nextScreen(1)
                         }
                         BiometricPrompt.ERROR_NO_DEVICE_CREDENTIAL -> {
                             notifyUser("O dispositivo não possui bloqueio, é recomendável configurar.")
-                           nextScreen(1)
+                            nextScreen(1)
                         }
                         else -> {
                             notifyUser("Erro de autenticação.")
@@ -156,7 +161,7 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                   nextScreen(1)
+                    nextScreen(1)
                 }
             })
 
@@ -184,9 +189,9 @@ class MainActivity : AppCompatActivity() {
                         val snap = it.value
 
                         if (snap == true) {
-                           nextScreen(1)
+                            nextScreen(1)
                         } else {
-                           nextScreen(0)
+                            nextScreen(0)
                         }
                     }
                 } else {
@@ -196,7 +201,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun nextScreen(screen: Int) {
-        when(screen) {
+        when (screen) {
             0 -> {
                 startActivity(Intent(this, GoogleSignInActivity::class.java))
                 overridePendingTransition(R.anim.right_to_left, R.anim.left_to_right)

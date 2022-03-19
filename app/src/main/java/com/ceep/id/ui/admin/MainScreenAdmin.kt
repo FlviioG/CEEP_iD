@@ -15,6 +15,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ceep.id.R
+import com.ceep.id.infra.Constants
 import com.ceep.id.infra.Constants.DATA.PIC_PERFIL
 import com.ceep.id.infra.Constants.DATA.USER_ID
 import com.ceep.id.infra.SecurityPreferences
@@ -64,7 +65,8 @@ class MainScreenAdmin : AppCompatActivity() {
 
         usuarioRef?.child("usuarios/${idU}/admin")?.get()?.addOnSuccessListener {
             if (it.value == false) {
-               this.finishAffinity()
+                mSecurityPreferences.storeInt(Constants.USER.IS_ADM, 0)
+                this.finishAffinity()
             }
         }
 

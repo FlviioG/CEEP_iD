@@ -21,13 +21,14 @@ class Constants : AppCompatActivity() {
     }
 
     object USER {
+        const val IS_ADM = "is_admin"
         const val NAME = "nome"
         const val TURMA = "turma"
         const val SALA = "sala"
     }
 
     object DATABASE {
-        const val TERMO_B = "termo aceito"
+        const val TERMO_B = "termo_aceito"
         const val TERMO = "termo"
     }
 }
