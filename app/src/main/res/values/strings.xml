@@ -78,4 +78,7 @@
     <string-array name="Salas_MAM_3">
         <item>3 MAM M1</item>
     </string-array>
+    <string name="appwidget_text">Login necessário</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">Monitor de Liberação</string>
 </resources>

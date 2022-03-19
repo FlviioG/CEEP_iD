@@ -33,18 +33,18 @@ import java.io.InputStream
 
 class MainScreenAdmin : AppCompatActivity() {
 
-    private var recyclerAlunos: RecyclerView? = null
-    private var adapter: AlunosAdapter? = null
-    private val listaAlunos: ArrayList<Usuario> = ArrayList()
-    private val keyAlunos: ArrayList<String?> = ArrayList()
-    private var referenciaAlunos: DatabaseReference? = null
-    private var valueEventListener: ValueEventListener? = null
-    private val keysSelecionadas: ArrayList<String?> = ArrayList()
-    private var isSelectedMode = false
-    private var usuarioRef: DatabaseReference? = null
-    private val viewsAlunos: ArrayList<View> = ArrayList()
-    private lateinit var mSecurityPreferences: SecurityPreferences
-    private lateinit var idU: String
+     var recyclerAlunos: RecyclerView? = null
+     var adapter: AlunosAdapter? = null
+     val listaAlunos: ArrayList<Usuario> = ArrayList()
+     val keyAlunos: ArrayList<String?> = ArrayList()
+     private var referenciaAlunos: DatabaseReference? = null
+     private var valueEventListener: ValueEventListener? = null
+     val keysSelecionadas: ArrayList<String?> = ArrayList()
+     var isSelectedMode = false
+     private var usuarioRef: DatabaseReference? = null
+     val viewsAlunos: ArrayList<View> = ArrayList()
+     lateinit var mSecurityPreferences: SecurityPreferences
+     private lateinit var idU: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -205,10 +205,11 @@ class MainScreenAdmin : AppCompatActivity() {
             @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                listaAlunos.clear()
-                keysSelecionadas.clear()
-                keyAlunos.clear()
-
+                if(listaAlunos.isNotEmpty()) {
+                    listaAlunos.clear()
+                    keysSelecionadas.clear()
+                    keyAlunos.clear()
+                }
 
                 for (dados in snapshot.children) {
                     val usuario: Usuario? = dados.getValue(Usuario::class.java)
